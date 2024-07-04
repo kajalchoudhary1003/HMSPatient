@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		244E8C6B2C36B89400812262 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E8C682C36B89400812262 /* ProfileView.swift */; };
+		244E8C6C2C36B89400812262 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E8C692C36B89400812262 /* ImagePicker.swift */; };
+		244E8C6D2C36B89400812262 /* OtpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E8C6A2C36B89400812262 /* OtpScreen.swift */; };
 		62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62530F652C33E6DF001B496B /* HMSPatientApp.swift */; };
 		62530F682C33E6DF001B496B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62530F672C33E6DF001B496B /* ContentView.swift */; };
 		62530F6A2C33E6E2001B496B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F692C33E6E2001B496B /* Assets.xcassets */; };
@@ -14,6 +17,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		244E8C682C36B89400812262 /* ProfileView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		244E8C692C36B89400812262 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		244E8C6A2C36B89400812262 /* OtpScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtpScreen.swift; sourceTree = "<group>"; };
 		62530F622C33E6DF001B496B /* HMSPatient.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HMSPatient.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		62530F652C33E6DF001B496B /* HMSPatientApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HMSPatientApp.swift; sourceTree = "<group>"; };
 		62530F672C33E6DF001B496B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -53,6 +59,9 @@
 			children = (
 				62530F652C33E6DF001B496B /* HMSPatientApp.swift */,
 				62530F672C33E6DF001B496B /* ContentView.swift */,
+				244E8C692C36B89400812262 /* ImagePicker.swift */,
+				244E8C6A2C36B89400812262 /* OtpScreen.swift */,
+				244E8C682C36B89400812262 /* ProfileView.swift */,
 				62530F692C33E6E2001B496B /* Assets.xcassets */,
 				62530F6B2C33E6E2001B496B /* Preview Content */,
 			);
@@ -137,7 +146,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				244E8C6D2C36B89400812262 /* OtpScreen.swift in Sources */,
 				62530F682C33E6DF001B496B /* ContentView.swift in Sources */,
+				244E8C6C2C36B89400812262 /* ImagePicker.swift in Sources */,
+				244E8C6B2C36B89400812262 /* ProfileView.swift in Sources */,
 				62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
