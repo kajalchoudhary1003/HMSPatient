@@ -1,5 +1,4 @@
 import SwiftUI
-import PhotosUI
 
 struct ProfileSetupView: View {
     @State private var firstName: String = ""
@@ -14,17 +13,17 @@ struct ProfileSetupView: View {
     @State private var isAddingEmergencyPhone = false
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var showingActionSheet = false
+    @State private var navigateToHome = false
 
     var body: some View {
-        NavigationView {
             VStack {
                 HStack {
-                                    Text("Set Profile")
-                                        .font(.largeTitle)
-                                        .bold()
-                                    Spacer()
-                                }
-                                .padding([.leading, .trailing, .top])
+                    Text("Set Profile")
+                        .font(.largeTitle)
+                        .bold()
+                    Spacer()
+                }
+                .padding([.leading, .trailing, .top])
                 VStack {
                     if let profileImage = profileImage {
                         profileImage
@@ -100,18 +99,19 @@ struct ProfileSetupView: View {
                     ])
                 }
             }
-            
-        }
-        
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    // Handle Done button action
-                }) {
-                    Text("Done")
+            .navigationBarBackButtonHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink(destination: HomeView(), isActive: $navigateToHome) {
+                        Button(action: {
+                            // Action for Done button
+                            navigateToHome = true
+                        }) {
+                            Text("Done")
+                        }
+                    }
                 }
             }
-        }
     }
 
     func loadImage() {

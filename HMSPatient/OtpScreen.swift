@@ -1,62 +1,64 @@
 import SwiftUI
 
 struct OtpView: View {
-    @State private var otpFields = ["", "", "", ""]
-    @State private var navigateToProfileSetup = false
+    @State private var otpCode: String = ""
+    @State private var isProfileSetupViewActive = false
 
     var body: some View {
         VStack {
-            Spacer().frame(height: 50) // Top spacer with fixed height
-
             Text("Enter the OTP")
-                .font(.headline)
-                .foregroundColor(.gray)
-                .padding(.bottom, 30) // Bottom padding for title
-
-            HStack(spacing: 10) { // OTP input fields
-                ForEach(0..<4) { index in
-                    TextField("", text: $otpFields[index])
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 50, height: 50)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 8)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
+                .font(.subheadline)
+                .padding(.bottom, 20)
+            
+            HStack() {
+                ForEach(0..<4, id: \.self) { index in
+                    otpDigitField(at: index)
                 }
             }
-            .padding(.bottom, 30) // Bottom padding for OTP fields
-
-            HStack { // Resend code button
-                Spacer()
+            .padding(.horizontal)
+            .padding(.bottom, 20)
+            
+            NavigationLink(destination: ProfileSetupView(), isActive: $isProfileSetupViewActive) {
                 Button(action: {
-                    // Action for resending code
+                    isProfileSetupViewActive = true
                 }) {
-                    Text("Resend code")
-                        .foregroundColor(.black)
-                        .font(.system(size: 12))
-                        .underline()
-                }
-            }
-            .padding(.bottom, 30) // Bottom padding for resend button
-
-            NavigationLink(destination: ProfileSetupView(), isActive: $navigateToProfileSetup) {
-                Button(action: {
-                    navigateToProfileSetup = true
-                }) {
-                    Text("Login")
+                    Text("Verify")
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color(red: 0.0, green: 0.49, blue: 0.45)) // Adjust the color as needed
+                        .background(Color.accentColor)
                         .cornerRadius(8)
                 }
-                .padding(.horizontal, 30) // Horizontal padding for login button
             }
-
-            Spacer() // Bottom spacer to fill remaining space
         }
-        .padding(.horizontal, 30) // Horizontal padding for entire view
+        .padding()
+        .navigationBarTitle("OTP Verification", displayMode: .inline)
+    }
+    
+    private func otpDigitField(at index: Int) -> some View {
+        let binding = Binding<String>(
+            get: {
+                guard otpCode.count > index else { return "" }
+                return String(otpCode[otpCode.index(otpCode.startIndex, offsetBy: index)])
+            },
+            set: {
+                if $0.count > 1 { return }
+                if index < otpCode.count {
+                    otpCode.remove(at: otpCode.index(otpCode.startIndex, offsetBy: index))
+                    otpCode.insert(contentsOf: $0, at: otpCode.index(otpCode.startIndex, offsetBy: index))
+                } else {
+                    otpCode.append($0)
+                }
+            }
+        )
+        
+        return TextField("", text: binding)
+            .keyboardType(.numberPad)
+            .frame(width: 40, height: 40)
+            .font(.title)
+            .multilineTextAlignment(.center)
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 10).stroke(Color.gray, lineWidth: 1))
     }
 }
 

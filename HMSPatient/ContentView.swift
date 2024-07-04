@@ -1,10 +1,3 @@
-//
-//  ContentView.swift
-//  HMSPatient
-//
-//  Created by Kajal Choudhary on 02/07/24.
-//
-
 import SwiftUI
 
 struct ContentView: View {
@@ -95,4 +88,3 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
     }
 }
-
