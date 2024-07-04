@@ -11,6 +11,8 @@
 		62530F682C33E6DF001B496B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62530F672C33E6DF001B496B /* ContentView.swift */; };
 		62530F6A2C33E6E2001B496B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F692C33E6E2001B496B /* Assets.xcassets */; };
 		62530F6D2C33E6E2001B496B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */; };
+		EA95BFE02C36B61D00582FDC /* Dashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA95BFDF2C36B61D00582FDC /* Dashboard.swift */; };
+		EA95BFE22C36B63600582FDC /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA95BFE12C36B63600582FDC /* Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +21,8 @@
 		62530F672C33E6DF001B496B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		62530F692C33E6E2001B496B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EA95BFDF2C36B61D00582FDC /* Dashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dashboard.swift; sourceTree = "<group>"; };
+		EA95BFE12C36B63600582FDC /* Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +56,8 @@
 			isa = PBXGroup;
 			children = (
 				62530F652C33E6DF001B496B /* HMSPatientApp.swift */,
+				EA95BFDF2C36B61D00582FDC /* Dashboard.swift */,
+				EA95BFE12C36B63600582FDC /* Extension.swift */,
 				62530F672C33E6DF001B496B /* ContentView.swift */,
 				62530F692C33E6E2001B496B /* Assets.xcassets */,
 				62530F6B2C33E6E2001B496B /* Preview Content */,
@@ -138,7 +144,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				62530F682C33E6DF001B496B /* ContentView.swift in Sources */,
+				EA95BFE02C36B61D00582FDC /* Dashboard.swift in Sources */,
 				62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */,
+				EA95BFE22C36B63600582FDC /* Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

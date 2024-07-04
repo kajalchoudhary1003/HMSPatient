@@ -11,7 +11,7 @@ import SwiftUI
 struct HMSPatientApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Dashboard()
         }
     }
 }
