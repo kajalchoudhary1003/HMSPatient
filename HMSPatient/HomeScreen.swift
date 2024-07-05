@@ -1,8 +1,10 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var searchText = ""
+    
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 5) {
             // Top section
             HStack {
                 Text("Hi, User")
@@ -11,8 +13,11 @@ struct HomeView: View {
                 Spacer()
                 Button(action: {
                     // Emergency Button Action
+                    if let url = URL(string: "tel://112") {
+                        UIApplication.shared.open(url)
+                    }
                 }) {
-                    Image(systemName: "plus.circle.fill")
+                    Image(systemName: "cross.circle.fill")
                         .font(.title)
                         .foregroundColor(.red)
                 }
@@ -26,12 +31,15 @@ struct HomeView: View {
             }
             .padding()
 
+            //SearchBar(searchText: $searchText)
+                //.padding(.horizontal)
+            
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     SearchBar()
                         .padding(.horizontal)
 
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 7) {
                         Text("Upcoming Appointments")
                             .font(.title2)
                             .fontWeight(.bold)
@@ -39,7 +47,7 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
 
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 7) {
                         Text("Features")
                             .font(.title2)
                             .fontWeight(.bold)
@@ -50,7 +58,7 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
 
-                    VStack(alignment: .leading) {
+                    VStack(alignment: .leading, spacing: 7) {
                         Text("For You")
                             .font(.title2)
                             .fontWeight(.bold)
@@ -97,8 +105,8 @@ struct SearchBar: View {
                 .foregroundColor(.gray)
         }
         .padding(10)
-        .background(Color.white)
-        .cornerRadius(8)
+        .background(Color(.systemGray5))
+        .cornerRadius(10)
     }
 }
 
@@ -107,7 +115,7 @@ struct AppointmentCard: View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
                 Text("Dr. Renu Luthra")
-                    .font(.headline)
+                    .font(.title)
                 Text("Gynecologist")
                     .font(.subheadline)
                     .foregroundColor(.gray)
@@ -118,16 +126,18 @@ struct AppointmentCard: View {
             Spacer()
             VStack(alignment: .trailing) {
                 Text("WED")
+                    .padding(.trailing, 6)
                     .font(.subheadline)
                     .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
                 Text("28")
-                    .font(.title)
+                    .font(.largeTitle)
                     .fontWeight(.bold)
             }
         }
         .padding()
         .background(Color.white)
         .cornerRadius(10)
+        .navigationBarHidden(true)
     }
 }
 
@@ -136,26 +146,31 @@ struct FeatureCard: View {
     var title: String
 
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                Spacer()
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
+        Button(action: {
+                    // Add your action here
+                    print("Tapped on \(title)")
+                }) {
+                    VStack(alignment: .leading) {
+                        HStack {
+                            Spacer()
+                            Image(systemName: icon)
+                                .font(.largeTitle)
+                                .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
+                        }
+                        Spacer()
+                        Text(title)
+                            .font(.headline)
+                            .multilineTextAlignment(.leading)
+                            .foregroundColor(.black)
+                    }
+                    .frame(height: 120)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+                }
             }
-            Spacer()
-            Text(title)
-                .font(.subheadline)
-                .multilineTextAlignment(.leading)
-                .foregroundColor(.black)
         }
-        .frame(height: 120)
-        .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-    }
-}
 
 struct OfferCards: View {
     var body: some View {
@@ -165,6 +180,7 @@ struct OfferCards: View {
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         .frame(height: 100)
+        .font(.title)
     }
 }
 
@@ -172,11 +188,15 @@ struct OfferCard: View {
     var offerText: String
 
     var body: some View {
-        Text(offerText)
-            .padding()
-            .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.white)
-            .cornerRadius(10)
+        Button(action: {
+            print("Tapped on offer: \(offerText)")
+        }) {
+            Text(offerText)
+                .padding()
+                .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.white)
+                .cornerRadius(10)
+        }
     }
 }
