@@ -12,12 +12,12 @@ struct Authentication: View {
                 VStack(alignment: .leading) {
                     Text("Welcome to")
                         .font(.title)
-                        .bold()
                         .padding(.top, 50)
                         .padding(.bottom, 5)
 
                     Text("Mediflex")
                         .font(.title)
+                        .bold()
                         .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -25,7 +25,7 @@ struct Authentication: View {
 
                 Spacer()
 
-                Image("Group 114")
+                Image("Doctor 3D")
                     .resizable()
                     .scaledToFit()
                     .frame(maxHeight: 400) // Adjust the height as needed
