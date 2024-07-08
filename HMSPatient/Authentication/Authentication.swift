@@ -9,6 +9,7 @@ struct Authentication: View {
     var body: some View {
         NavigationStack {
             VStack {
+                // Header text
                 VStack(alignment: .leading) {
                     Text("Welcome to")
                         .font(.title)
@@ -25,12 +26,14 @@ struct Authentication: View {
 
                 Spacer()
 
+                // Image
                 Image("Doctor 3D")
                     .resizable()
                     .scaledToFit()
                     .frame(maxHeight: 400) // Adjust the height as needed
                     .padding(.bottom, 10)
 
+                // Instruction text
                 VStack(alignment: .leading) {
                     Text("Enter your mobile number")
                         .font(.headline)
@@ -44,6 +47,7 @@ struct Authentication: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 30)
 
+                // Input fields for country code and mobile number
                 HStack {
                     TextField("+91", text: $countryCode)
                         .keyboardType(.numberPad)
@@ -62,13 +66,15 @@ struct Authentication: View {
                 .padding(.horizontal, 30)
                 .padding(.bottom, 30)
 
+                // Continue button
                 Button(action: {
                     let phoneNumber = "\(countryCode)\(mobileNumber)"
                     authManager.sendCode(phoneNumber: phoneNumber) { success in
                         if success {
-                            isOtpViewActive = true
+                            isOtpViewActive = true 
                         } else {
                             // Handle error (show an alert, etc.)
+                            
                         }
                     }
                 }) {
