@@ -31,6 +31,7 @@ struct HomeView: View {
                     SearchBar()
                         .padding(.horizontal)
 
+                    // Upcoming Appointments section
                     VStack(alignment: .leading) {
                         Text("Upcoming Appointments")
                             .font(.title2)
@@ -39,6 +40,7 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
 
+                    // Features section with cards for booking appointments and prescriptions
                     VStack(alignment: .leading) {
                         Text("Features")
                             .font(.title2)
@@ -50,6 +52,7 @@ struct HomeView: View {
                     }
                     .padding(.horizontal)
 
+                    // For You section with offer cards
                     VStack(alignment: .leading) {
                         Text("For You")
                             .font(.title2)
@@ -80,8 +83,8 @@ struct HomeView: View {
             .padding()
             .background(Color.white)
         }
-        .background(Color(.systemGray6))
-        .edgesIgnoringSafeArea(.bottom)
+        .background(Color(.systemGray6)) // Background color for the entire view
+        .edgesIgnoringSafeArea(.bottom) // Ignore safe area for bottom edge
     }
 }
 
@@ -179,4 +182,8 @@ struct OfferCard: View {
             .background(Color.white)
             .cornerRadius(10)
     }
+}
+
+#Preview{
+    HomeView()
 }
