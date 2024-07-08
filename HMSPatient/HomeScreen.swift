@@ -57,7 +57,6 @@ struct HomeTab: View {
                 VStack(alignment: .leading, spacing: 20) {
                     SearchBar(searchText: $searchText)
                         .padding(.horizontal)
-
                     VStack(alignment: .leading, spacing: 7) {
                         Text("Upcoming Appointments")
                             .font(.title2)
@@ -65,7 +64,6 @@ struct HomeTab: View {
                         AppointmentCard()
                     }
                     .padding(.horizontal)
-
                     VStack(alignment: .leading, spacing: 7) {
                         Text("Features")
                             .font(.title2)
@@ -76,7 +74,6 @@ struct HomeTab: View {
                         }
                     }
                     .padding(.horizontal)
-
                     VStack(alignment: .leading, spacing: 7) {
                         Text("For You")
                             .font(.title2)
@@ -204,4 +201,8 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
     }
+}
+
+#Preview{
+    HomeView()
 }
