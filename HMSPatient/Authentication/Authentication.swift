@@ -71,10 +71,9 @@ struct Authentication: View {
                     let phoneNumber = "\(countryCode)\(mobileNumber)"
                     authManager.sendCode(phoneNumber: phoneNumber) { success in
                         if success {
-                            isOtpViewActive = true 
+                            isOtpViewActive = true
                         } else {
                             // Handle error (show an alert, etc.)
-                            
                         }
                     }
                 }) {
@@ -95,9 +94,14 @@ struct Authentication: View {
             }
             .navigationBarHidden(true)
         }
+        .onAppear {
+            // Check if the user is new and navigate accordingly
+            if !authManager.isNewUser {
+                isOtpViewActive = false
+            }
+        }
     }
 }
-
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

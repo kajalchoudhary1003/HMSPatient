@@ -2,7 +2,7 @@ import SwiftUI
 
 struct OtpView: View {
     @State private var otpFields = ["", "", "", "", "", ""]
-    @State private var navigateToProfileSetup = false
+    @State private var navigateToNextView = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @ObservedObject var authManager: AuthManager
@@ -74,7 +74,7 @@ struct OtpView: View {
                 let otpCode = otpFields.joined()
                 authManager.verifyCode(verificationCode: otpCode) { success in
                     if success {
-                        navigateToProfileSetup = true
+                        navigateToNextView = true
                     } else {
                         alertMessage = "The OTP you entered is incorrect. Please try again."
                         showAlert = true
@@ -89,8 +89,12 @@ struct OtpView: View {
                     .cornerRadius(8)
             }
             .padding(.horizontal, 30) // Horizontal padding for login button
-            .navigationDestination(isPresented: $navigateToProfileSetup) {
-                ProfileSetupView()
+            .navigationDestination(isPresented: $navigateToNextView) {
+                if authManager.isNewUser {
+                    ProfileSetupView()
+                } else {
+                    HomeView()
+                }
             }
             .alert(isPresented: $showAlert) {
                 Alert(
