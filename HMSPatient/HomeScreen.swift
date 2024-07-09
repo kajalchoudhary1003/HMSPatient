@@ -1,30 +1,8 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var selectedTab = 0
-    
-    var body: some View {
-        TabView(selection: $selectedTab) {
-            HomeTab()
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
-                }
-                .tag(0)
-            
-            RecordsView()
-                .tabItem {
-                    Image(systemName: "doc.text")
-                    Text("Records")
-                }
-                .tag(1)
-        }
-    }
-}
-
-struct HomeTab: View {
     @State private var searchText = ""
-    
+
     var body: some View {
         VStack(spacing: 5) {
             // Top section
@@ -53,10 +31,14 @@ struct HomeTab: View {
             }
             .padding()
 
+            // Search Bar
+            // SearchBar(searchText: $searchText)
+//            TextField("Search...", text: $searchText)
+//                .padding(.horizontal)
+//                .textFieldStyle(RoundedBorderTextFieldStyle())
+            
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    SearchBar(searchText: $searchText)
-                        .padding(.horizontal)
                     VStack(alignment: .leading, spacing: 7) {
                         Text("Upcoming Appointments")
                             .font(.title2)
@@ -64,6 +46,7 @@ struct HomeTab: View {
                         AppointmentCard()
                     }
                     .padding(.horizontal)
+
                     VStack(alignment: .leading, spacing: 7) {
                         Text("Features")
                             .font(.title2)
@@ -74,6 +57,7 @@ struct HomeTab: View {
                         }
                     }
                     .padding(.horizontal)
+
                     VStack(alignment: .leading, spacing: 7) {
                         Text("For You")
                             .font(.title2)
@@ -83,29 +67,33 @@ struct HomeTab: View {
                     .padding(.horizontal)
                 }
             }
-            .navigationBarHidden(true)
-            .background(Color(.systemGray6))
-            .edgesIgnoringSafeArea(.bottom)
+
+            // Bottom Tab Bar
+            HStack {
+                Spacer()
+                VStack {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+                .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
+                Spacer()
+                Spacer()
+                VStack {
+                    Image(systemName: "doc.text")
+                    Text("Records")
+                }
+                .foregroundColor(.gray)
+                Spacer()
+            }
+            .padding()
+            .background(Color.white)
         }
+        .searchable(text: $searchText)  // Binding<String> needed here
+        .background(Color(.systemGray6))
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
-struct SearchBar: View {
-    @Binding var searchText: String
-
-    var body: some View {
-        HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
-            TextField("Search", text: $searchText)
-            Image(systemName: "mic")
-                .foregroundColor(.gray)
-        }
-        .padding(10)
-        .background(Color(.systemGray5))
-        .cornerRadius(10)
-    }
-}
 
 struct AppointmentCard: View {
     var body: some View {
