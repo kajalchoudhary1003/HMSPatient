@@ -1,6 +1,29 @@
 import SwiftUI
 
 struct HomeView: View {
+    @State private var selectedTab = 0
+    
+    
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            HomeTab()
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+                .tag(0)
+            
+            RecordsView()
+                .tabItem {
+                    Image(systemName: "doc.text")
+                    Text("Records")
+                }
+                .tag(1)
+        }
+    }
+}
+
+struct HomeTab: View {
     @State private var searchText = ""
 
     var body: some View {

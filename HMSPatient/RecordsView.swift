@@ -12,11 +12,14 @@ struct RecordsView: View {
         Record(title: "X-Ray Report", date: "May 19", audioURL: "audio5"),
         Record(title: "X-Ray Report", date: "May 20", audioURL: "audio6")
     ]
-    
+    @State private var showActionSheet = false
+    @State private var showImagePicker = false
+    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
+    @State private var selectedImage: UIImage?
+
     var body: some View {
         NavigationView {
             VStack {
-                
                 List {
                     ForEach(records.filter {
                         searchText.isEmpty ? true : $0.title.localizedCaseInsensitiveContains(searchText)
@@ -34,10 +37,30 @@ struct RecordsView: View {
             .searchable(text: $searchText, prompt: "Search")
             .navigationTitle("Records")
             .navigationBarItems(trailing: Button(action: {
-                print("Add new record")
+                showActionSheet = true
             }) {
                 Image(systemName: "plus")
             })
+            .actionSheet(isPresented: $showActionSheet) {
+                ActionSheet(
+                    title: Text("Add New Record"),
+                    message: Text("Choose an option"),
+                    buttons: [
+                        .default(Text("Take Photo")) {
+                            sourceType = .camera
+                            showImagePicker = true
+                        },
+                        .default(Text("Upload from Device")) {
+                            sourceType = .photoLibrary
+                            showImagePicker = true
+                        },
+                        .cancel()
+                    ]
+                )
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(image: $selectedImage, sourceType: $sourceType)
+            }
         }
     }
 }
