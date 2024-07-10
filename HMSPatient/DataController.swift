@@ -1,4 +1,5 @@
 import Foundation
+import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 import Zip
@@ -6,7 +7,8 @@ import Zip
 class DataController {
     private let database = Database.database().reference()
     private let storage = Storage.storage().reference()
-    
+    private let currentUser = Auth.auth().currentUser?.uid // Assuming you're using FirebaseAuth
+
     // Save user data to the database
     func saveUser(userId: String, user: User, completion: @escaping (Bool) -> Void) {
         let userDict: [String: Any] = [
@@ -94,6 +96,15 @@ class DataController {
                 completion(records)
             }
         }
+    }
+
+    // Fetch documents only for the current user
+    func fetchCurrentUserDocuments(completion: @escaping ([Record]) -> Void) {
+        guard let userId = currentUser else {
+            completion([])
+            return
+        }
+        fetchDocuments(userId: userId, completion: completion)
     }
 
     // Download and unzip the files

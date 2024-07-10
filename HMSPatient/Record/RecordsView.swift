@@ -1,4 +1,5 @@
 import SwiftUI
+import FirebaseAuth
 import AVFoundation
 import MobileCoreServices
 import FirebaseStorage
@@ -9,7 +10,7 @@ struct RecordsView: View {
     @State private var expandedId: UUID?
     @State private var records: [Record] = []
     @State private var isShowingDocumentPicker = false
-    @State private var userId: String = "user123" // Replace with actual user ID
+    @State private var userId: String = Auth.auth().currentUser?.uid ?? "" // Get the current user's ID
     
     private let dataController = DataController()
 
@@ -96,7 +97,7 @@ struct RecordsView: View {
     }
 
     private func fetchRecords() {
-        dataController.fetchDocuments(userId: userId) { fetchedRecords in
+        dataController.fetchCurrentUserDocuments { fetchedRecords in
             self.records = fetchedRecords
         }
     }
