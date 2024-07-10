@@ -4,7 +4,7 @@ import FirebaseAuth
 struct ProfileSetupView: View {
     @State private var firstName: String = ""
     @State private var lastName: String = ""
-    @State private var dateOfBirth: Date = Date()
+    @State private var dateOfBirth: Date = Calendar.current.date(byAdding: .year, value: -13, to: Date()) ?? Date()
     @State private var gender: String = "Select"
     @State private var bloodGroup: String = "Select"
     @State private var emergencyPhone: String = ""
@@ -16,6 +16,21 @@ struct ProfileSetupView: View {
     @State private var showingActionSheet = false
     @State private var navigateToHome = false
     private let dataController = DataController()
+
+    var isSaveDisabled: Bool {
+        !isFormValid || (isAddingEmergencyPhone && !isEmergencyPhoneValid)
+    }
+
+    var isFormValid: Bool {
+        !firstName.isEmpty && !lastName.isEmpty && gender != "Select" && bloodGroup != "Select" &&
+        firstName.count <= 25 && lastName.count <= 25
+    }
+
+    var isEmergencyPhoneValid: Bool {
+        let phoneRegEx = "^[0-9]{10}$"
+        let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegEx)
+        return phoneTest.evaluate(with: emergencyPhone)
+    }
 
     var body: some View {
         VStack {
@@ -50,11 +65,41 @@ struct ProfileSetupView: View {
             Form {
                 Section(header: Text("Personal Information")) {
                     TextField("First name", text: $firstName)
+                        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
+                            firstName = firstName.trimmingCharacters(in: .whitespacesAndNewlines)
+                        }
+                        .onChange(of: firstName) { newValue in
+                            if newValue.count > 25 {
+                                firstName = String(newValue.prefix(25))
+                            }
+                        }
+                        .overlay(
+                            Text("\(firstName.count)/25")
+                                .font(.caption)
+                                .foregroundColor(firstName.count > 25 ? .red : .gray)
+                                .padding(.trailing, 8),
+                            alignment: .trailing
+                        )
                     TextField("Last name", text: $lastName)
+                        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
+                            lastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
+                        }
+                        .onChange(of: lastName) { newValue in
+                            if newValue.count > 25 {
+                                lastName = String(newValue.prefix(25))
+                            }
+                        }
+                        .overlay(
+                            Text("\(lastName.count)/25")
+                                .font(.caption)
+                                .foregroundColor(lastName.count > 25 ? .red : .gray)
+                                .padding(.trailing, 8),
+                            alignment: .trailing
+                        )
                 }
 
                 Section(header: Text("Details")) {
-                    DatePicker("Date Of Birth", selection: $dateOfBirth, displayedComponents: .date)
+                    DatePicker("Date Of Birth", selection: $dateOfBirth, in: ageRange, displayedComponents: .date)
                     Picker("Gender", selection: $gender) {
                         ForEach(["Select", "Male", "Female", "Other"], id: \.self) {
                             Text($0)
@@ -71,6 +116,30 @@ struct ProfileSetupView: View {
                     if isAddingEmergencyPhone {
                         TextField("Emergency Contact", text: $emergencyPhone)
                             .keyboardType(.phonePad)
+                            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
+                                emergencyPhone = emergencyPhone.trimmingCharacters(in: .whitespacesAndNewlines)
+                            }
+                            .onChange(of: emergencyPhone) { newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if emergencyPhone != filtered {
+                                    emergencyPhone = filtered
+                                }
+                                if emergencyPhone.count > 10 {
+                                    emergencyPhone = String(emergencyPhone.prefix(10))
+                                }
+                            }
+                            .overlay(
+                                Text("\(emergencyPhone.count)/10")
+                                    .font(.caption)
+                                    .foregroundColor(emergencyPhone.count > 10 ? .red : .gray)
+                                    .padding(.trailing, 8),
+                                alignment: .trailing
+                            )
+                        if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
+                            Text("Phone number should be 10 digits")
+                                .foregroundColor(.red)
+                                .font(.caption)
+                        }
                     } else {
                         Button(action: {
                             isAddingEmergencyPhone.toggle()
@@ -110,6 +179,7 @@ struct ProfileSetupView: View {
                     }) {
                         Text("Done")
                     }
+                    .disabled(isSaveDisabled)
                 }
             }
         }
@@ -138,6 +208,14 @@ struct ProfileSetupView: View {
                 // Handle error (show an alert, etc.)
             }
         }
+    }
+
+    var ageRange: ClosedRange<Date> {
+        let calendar = Calendar.current
+        let now = Date()
+        let minAge = calendar.date(byAdding: .year, value: -100, to: now)!
+        let maxAge = calendar.date(byAdding: .year, value: -13, to: now)!
+        return minAge...maxAge
     }
 }
 

@@ -14,7 +14,8 @@ struct RecordsView: View {
     @State private var selectedUrls: [URL] = [] // To hold selected URLs for upload
     @State private var isProcessing = false
     @State private var processingMessage = ""
-
+    @State private var isLoading = true
+    
     private let dataController = DataController()
 
     var body: some View {
@@ -27,23 +28,49 @@ struct RecordsView: View {
                         Text(processingMessage)
                             .padding()
                     }
+                } else if isLoading {
+                    ProgressView("Fetching documents...")
+                        .progressViewStyle(CircularProgressViewStyle())
+                        .onAppear {
+                            fetchRecords()
+                        }
+                } else if records.isEmpty {
+                    VStack {
+                        Image(systemName: "doc.text.magnifyingglass")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 100, height: 100)
+                            .foregroundColor(.gray)
+                        Text("No Documents Available")
+                            .font(.title)
+                            .foregroundColor(.gray)
+                            .padding(.top, 8)
+                        Text("Please upload documents to manage them here.")
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                            .padding(.top, 4)
+                    }
                 } else {
-                    List {
-                        ForEach(records.filter {
-                            searchText.isEmpty ? true : $0.title.localizedCaseInsensitiveContains(searchText)
-                        }) { record in
-                            NavigationLink(destination: DocumentView(record: record)) {
-                                RecordCard(record: record, isExpanded: expandedId == record.id) {
-                                    if expandedId == record.id {
-                                        expandedId = nil
-                                    } else {
-                                        expandedId = record.id
+                    ScrollView {
+                        LazyVStack(spacing: 16) {
+                            ForEach(records.filter {
+                                searchText.isEmpty ? true : $0.title.localizedCaseInsensitiveContains(searchText)
+                            }) { record in
+                                NavigationLink(destination: DocumentView(record: record)) {
+                                    RecordCard(record: record, isExpanded: expandedId == record.id) {
+                                        if expandedId == record.id {
+                                            expandedId = nil
+                                        } else {
+                                            expandedId = record.id
+                                        }
                                     }
                                 }
                             }
+                            .onDelete(perform: confirmDeleteRecords)
                         }
-                        .onDelete(perform: confirmDeleteRecords)
+                        .padding()
                     }
+                    .background(Color(UIColor.systemGray6))
                 }
             }
             .searchable(text: $searchText, prompt: "Search")
@@ -59,9 +86,6 @@ struct RecordsView: View {
                 allowsMultipleSelection: true
             ) { result in
                 handleFiles(result: result)
-            }
-            .onAppear {
-                fetchRecords()
             }
         }
     }
@@ -141,6 +165,7 @@ struct RecordsView: View {
         dataController.fetchCurrentUserDocuments { fetchedRecords in
             self.records = fetchedRecords
             self.isProcessing = false
+            self.isLoading = false
         }
     }
 
