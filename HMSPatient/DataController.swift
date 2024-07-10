@@ -15,7 +15,7 @@ class DataController {
             "emergencyPhone": user.emergencyPhone
         ]
         
-        database.child("users").child(userId).setValue(userDict) { error, _ in
+        database.child("patient_users").child(userId).setValue(userDict) { error, _ in
             if let error = error {
                 print("Error saving user data: \(error.localizedDescription)")
                 completion(false)
@@ -27,7 +27,7 @@ class DataController {
     
     // Check if the user data exists in the database
     func checkIfUserExists(userId: String, completion: @escaping (Bool) -> Void) {
-        database.child("users").child(userId).observeSingleEvent(of: .value) { snapshot in
+        database.child("patient_users").child(userId).observeSingleEvent(of: .value) { snapshot in
             if snapshot.exists() {
                 completion(true)
             } else {
