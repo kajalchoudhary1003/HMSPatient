@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct Authentication: View {
-    @State private var countryCode: String = "+91"
-    @State private var mobileNumber: String = ""
+    @State private var countryCode: String = "+1"
+    @State private var mobileNumber: String = "6505551234"
     @State private var isOtpViewActive = false
     @StateObject private var authManager = AuthManager()
     @State private var errorMessage = ""
