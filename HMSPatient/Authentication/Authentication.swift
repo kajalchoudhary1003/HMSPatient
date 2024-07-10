@@ -4,8 +4,6 @@ struct Authentication: View {
     @State private var countryCode: String = "+91"
     @State private var mobileNumber: String = ""
     @State private var isOtpViewActive = false
-    @State private var isValidPhoneNumber = false // Track if the phone number is valid
-    @State private var errorMessage = "" // Track error message for invalid phone number
     @StateObject private var authManager = AuthManager()
     @State private var errorMessage = ""
     @State private var showErrorAlert = false
@@ -103,21 +101,31 @@ struct Authentication: View {
                 .padding(.horizontal, 30)
                 .padding(.bottom, 30)
 
-                // Error message for invalid phone number
-                Text(errorMessage)
-                    .foregroundColor(.red)
-                    .padding(.horizontal, 30)
-                    .padding(.bottom, 10)
-                    .opacity(errorMessage.isEmpty ? 0 : 1) // Show only when errorMessage is not empty
+                // Error messages for invalid inputs
+                if !isValidCountryCode(countryCode) && !countryCode.isEmpty {
+                    Text("Invalid country code")
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .padding(.bottom, 5)
+                }
+                if !isValidPhoneNumber(mobileNumber) && !mobileNumber.isEmpty {
+                    Text("Phone number should be 10 digits")
+                        .foregroundColor(.red)
+                        .font(.caption)
+                        .padding(.bottom, 5)
+                }
 
-                // Continue button with validation
+                // Continue button
                 Button(action: {
                     let phoneNumber = "\(countryCode)\(mobileNumber)"
-                    authManager.sendCode(phoneNumber: phoneNumber) { success in
-                        if success {
-                            isOtpViewActive = true
-                        } else {
-                            // Handle error (show an alert, etc.)
+                    if isFormValid {
+                        authManager.sendCode(phoneNumber: phoneNumber) { success in
+                            if success {
+                                isOtpViewActive = true
+                            } else {
+                                errorMessage = "Failed to send OTP. Please try again."
+                                showErrorAlert = true
+                            }
                         }
                     } else {
                         errorMessage = "Please enter valid details."
@@ -128,25 +136,14 @@ struct Authentication: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(isValidPhoneNumber ? Color(red: 0.0, green: 0.49, blue: 0.45) : Color.gray)
+                        .background(isFormValid ? Color(red: 0.0, green: 0.49, blue: 0.45) : Color.gray)
                         .cornerRadius(8)
                 }
                 .disabled(!isFormValid)
                 .padding(.horizontal, 30)
                 .padding(.bottom, 30)
-                .disabled(!isValidPhoneNumber) // Disable button if phone number is invalid
 
                 Spacer()
-            }
-            .onChange(of: mobileNumber) { newValue in
-                // Validate phone number whenever mobileNumber changes
-                if newValue.count > 10 {
-                    errorMessage = "Please enter correct phone number"
-                    isValidPhoneNumber = false
-                } else {
-                    errorMessage = ""
-                    isValidPhoneNumber = isValidMobileNumber(newValue)
-                }
             }
             .navigationDestination(isPresented: $isOtpViewActive) {
                 OtpView(authManager: authManager, phoneNumber: "\(countryCode)\(mobileNumber)")
@@ -175,12 +172,6 @@ struct Authentication: View {
         let phoneRegEx = "^[0-9]{10}$"
         let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegEx)
         return phoneTest.evaluate(with: number)
-    }
-
-    // Function to validate a 10-digit mobile number
-    private func isValidMobileNumber(_ number: String) -> Bool {
-        let mobileNumberRegex = #"^\d{10}$"#
-        return NSPredicate(format: "SELF MATCHES %@", mobileNumberRegex).evaluate(with: number)
     }
 }
 

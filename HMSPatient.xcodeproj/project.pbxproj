@@ -26,6 +26,9 @@
 		E9EB70DA2C3DBC440086F6E5 /* Data Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB70D92C3DBC440086F6E5 /* Data Model.swift */; };
 		E9EB70DC2C3DBCB40086F6E5 /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB70DB2C3DBCB40086F6E5 /* DataController.swift */; };
 		E9EB70E62C3DC69C0086F6E5 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB70E52C3DC69C0086F6E5 /* LocationManager.swift */; };
+		E9EB71012C3E918A0086F6E5 /* FileType.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB71002C3E918A0086F6E5 /* FileType.swift */; };
+		E9EB71032C3E91F00086F6E5 /* DocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9EB71022C3E91F00086F6E5 /* DocumentView.swift */; };
+		E9EB71062C3E93CC0086F6E5 /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = E9EB71052C3E93CC0086F6E5 /* Zip */; };
 		EA95BFFE2C371FB100582FDC /* HomeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA95BFFD2C371FB100582FDC /* HomeScreen.swift */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +50,8 @@
 		E9EB70D92C3DBC440086F6E5 /* Data Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data Model.swift"; sourceTree = "<group>"; };
 		E9EB70DB2C3DBCB40086F6E5 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		E9EB70E52C3DC69C0086F6E5 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+		E9EB71002C3E918A0086F6E5 /* FileType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileType.swift; sourceTree = "<group>"; };
+		E9EB71022C3E91F00086F6E5 /* DocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DocumentView.swift; sourceTree = "<group>"; };
 		EA95BFFD2C371FB100582FDC /* HomeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeScreen.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,6 +64,7 @@
 				E94E68D42C37F4CA00ED9F1C /* FirebaseStorage in Frameworks */,
 				E94E68D02C37F4CA00ED9F1C /* FirebaseDatabase in Frameworks */,
 				E94E68CE2C37F4CA00ED9F1C /* FirebaseAuth in Frameworks */,
+				E9EB71062C3E93CC0086F6E5 /* Zip in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,7 +97,7 @@
 				EA95BFFD2C371FB100582FDC /* HomeScreen.swift */,
 				E9EB70D92C3DBC440086F6E5 /* Data Model.swift */,
 				E9EB70DB2C3DBCB40086F6E5 /* DataController.swift */,
-				249FD5BA2C37EC4D008CC7F9 /* RecordsView.swift */,
+				E9EB70FD2C3E91640086F6E5 /* Record */,
 				E9EB70E72C3DC6A20086F6E5 /* GPS */,
 				E94E68C62C37F2F600ED9F1C /* Authentication */,
 				E94E68C72C37F31300ED9F1C /* Profile */,
@@ -137,6 +143,16 @@
 			path = GPS;
 			sourceTree = "<group>";
 		};
+		E9EB70FD2C3E91640086F6E5 /* Record */ = {
+			isa = PBXGroup;
+			children = (
+				E9EB71022C3E91F00086F6E5 /* DocumentView.swift */,
+				E9EB71002C3E918A0086F6E5 /* FileType.swift */,
+				249FD5BA2C37EC4D008CC7F9 /* RecordsView.swift */,
+			);
+			path = Record;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -158,6 +174,7 @@
 				E94E68CF2C37F4CA00ED9F1C /* FirebaseDatabase */,
 				E94E68D12C37F4CA00ED9F1C /* FirebaseDatabaseSwift */,
 				E94E68D32C37F4CA00ED9F1C /* FirebaseStorage */,
+				E9EB71052C3E93CC0086F6E5 /* Zip */,
 			);
 			productName = HMSPatient;
 			productReference = 62530F622C33E6DF001B496B /* HMSPatient.app */;
@@ -189,6 +206,7 @@
 			mainGroup = 62530F592C33E6DE001B496B;
 			packageReferences = (
 				E94E68CC2C37F4CA00ED9F1C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				E9EB71042C3E93CC0086F6E5 /* XCRemoteSwiftPackageReference "Zip" */,
 			);
 			productRefGroup = 62530F632C33E6DF001B496B /* Products */;
 			projectDirPath = "";
@@ -222,9 +240,11 @@
 				E9EB70DC2C3DBCB40086F6E5 /* DataController.swift in Sources */,
 				244E8C6D2C36B89400812262 /* OtpScreen.swift in Sources */,
 				249FD5BB2C37EC4D008CC7F9 /* RecordsView.swift in Sources */,
+				E9EB71032C3E91F00086F6E5 /* DocumentView.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */,
+				E9EB71012C3E918A0086F6E5 /* FileType.swift in Sources */,
 				EA95BFFE2C371FB100582FDC /* HomeScreen.swift in Sources */,
 				244E8C6C2C36B89400812262 /* ImagePicker.swift in Sources */,
 				244E8C6B2C36B89400812262 /* Profile_Setup_View.swift in Sources */,
@@ -460,6 +480,14 @@
 				minimumVersion = 10.28.1;
 			};
 		};
+		E9EB71042C3E93CC0086F6E5 /* XCRemoteSwiftPackageReference "Zip" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/marmelroy/Zip.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -482,6 +510,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = E94E68CC2C37F4CA00ED9F1C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		E9EB71052C3E93CC0086F6E5 /* Zip */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E9EB71042C3E93CC0086F6E5 /* XCRemoteSwiftPackageReference "Zip" */;
+			productName = Zip;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

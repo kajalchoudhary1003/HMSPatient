@@ -9,7 +9,6 @@ struct OtpView: View {
     @FocusState private var focusedField: Int?
     @State private var phoneNumber: String
 
-    // Remove the private access level to make the initializer accessible
     init(authManager: AuthManager, phoneNumber: String) {
         self.authManager = authManager
         self._phoneNumber = State(initialValue: phoneNumber)
@@ -32,7 +31,16 @@ struct OtpView: View {
                             if newValue.count <= 1 && newValue.allSatisfy({ $0.isNumber }) {
                                 otpFields[index] = newValue
                                 if newValue.count == 1 {
-                                    focusedField = index + 1
+                                    if index < 5 {
+                                        focusedField = index + 1
+                                    } else {
+                                        focusedField = nil
+                                    }
+                                }
+                            } else if newValue.isEmpty {
+                                otpFields[index] = ""
+                                if index > 0 {
+                                    focusedField = index - 1
                                 }
                             }
                         }
