@@ -2,14 +2,13 @@ import SwiftUI
 
 struct OtpView: View {
     @State private var otpFields = ["", "", "", "", "", ""]
-    @State private var navigateToProfileSetup = false
+    @State private var navigateToNextView = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @ObservedObject var authManager: AuthManager
     @FocusState private var focusedField: Int?
     @State private var phoneNumber: String
 
-    // Remove the private access level to make the initializer accessible
     init(authManager: AuthManager, phoneNumber: String) {
         self.authManager = authManager
         self._phoneNumber = State(initialValue: phoneNumber)
@@ -32,7 +31,16 @@ struct OtpView: View {
                             if newValue.count <= 1 && newValue.allSatisfy({ $0.isNumber }) {
                                 otpFields[index] = newValue
                                 if newValue.count == 1 {
-                                    focusedField = index + 1
+                                    if index < 5 {
+                                        focusedField = index + 1
+                                    } else {
+                                        focusedField = nil
+                                    }
+                                }
+                            } else if newValue.isEmpty {
+                                otpFields[index] = ""
+                                if index > 0 {
+                                    focusedField = index - 1
                                 }
                             }
                         }
@@ -74,7 +82,7 @@ struct OtpView: View {
                 let otpCode = otpFields.joined()
                 authManager.verifyCode(verificationCode: otpCode) { success in
                     if success {
-                        navigateToProfileSetup = true
+                        navigateToNextView = true
                     } else {
                         alertMessage = "The OTP you entered is incorrect. Please try again."
                         showAlert = true
@@ -89,8 +97,12 @@ struct OtpView: View {
                     .cornerRadius(8)
             }
             .padding(.horizontal, 30) // Horizontal padding for login button
-            .navigationDestination(isPresented: $navigateToProfileSetup) {
-                ProfileSetupView()
+            .navigationDestination(isPresented: $navigateToNextView) {
+                if authManager.isNewUser {
+                    ProfileSetupView()
+                } else {
+                    HomeView()
+                }
             }
             .alert(isPresented: $showAlert) {
                 Alert(
