@@ -11,25 +11,38 @@ struct RecordsView: View {
     @State private var records: [Record] = []
     @State private var isShowingDocumentPicker = false
     @State private var userId: String = Auth.auth().currentUser?.uid ?? "" // Get the current user's ID
-    
+    @State private var selectedUrls: [URL] = [] // To hold selected URLs for upload
+    @State private var isProcessing = false
+    @State private var processingMessage = ""
+
     private let dataController = DataController()
 
     var body: some View {
         NavigationView {
             VStack {
-                List {
-                    ForEach(records.filter {
-                        searchText.isEmpty ? true : $0.title.localizedCaseInsensitiveContains(searchText)
-                    }) { record in
-                        NavigationLink(destination: DocumentView(record: record)) {
-                            RecordCard(record: record, isExpanded: expandedId == record.id) {
-                                if expandedId == record.id {
-                                    expandedId = nil
-                                } else {
-                                    expandedId = record.id
+                if isProcessing {
+                    VStack {
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                        Text(processingMessage)
+                            .padding()
+                    }
+                } else {
+                    List {
+                        ForEach(records.filter {
+                            searchText.isEmpty ? true : $0.title.localizedCaseInsensitiveContains(searchText)
+                        }) { record in
+                            NavigationLink(destination: DocumentView(record: record)) {
+                                RecordCard(record: record, isExpanded: expandedId == record.id) {
+                                    if expandedId == record.id {
+                                        expandedId = nil
+                                    } else {
+                                        expandedId = record.id
+                                    }
                                 }
                             }
                         }
+                        .onDelete(perform: confirmDeleteRecords)
                     }
                 }
             }
@@ -42,7 +55,7 @@ struct RecordsView: View {
             })
             .fileImporter(
                 isPresented: $isShowingDocumentPicker,
-                allowedContentTypes: [.image, .pdf],
+                allowedContentTypes: [.image, .pdf, .init("public.heic")!],
                 allowsMultipleSelection: true
             ) { result in
                 handleFiles(result: result)
@@ -52,37 +65,63 @@ struct RecordsView: View {
             }
         }
     }
-    
+
     private func handleFiles(result: Result<[URL], Error>) {
         switch result {
         case .success(let urls):
-            uploadFiles(urls: urls)
+            selectedUrls = urls
+            confirmUploadFiles(urls: urls)
         case .failure(let error):
             print("Failed to select files: \(error.localizedDescription)")
         }
     }
-    
+
+    private func confirmUploadFiles(urls: [URL]) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootVC = windowScene.windows.first?.rootViewController else {
+            return
+        }
+        
+        let alert = UIAlertController(title: "Upload Documents", message: "Are you sure you want to upload these documents?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Upload", style: .default, handler: { _ in
+            self.processingMessage = "Uploading documents..."
+            self.isProcessing = true
+            self.uploadFiles(urls: urls)
+        }))
+        
+        rootVC.present(alert, animated: true, completion: nil)
+    }
+
     private func uploadFiles(urls: [URL]) {
         let fileManager = FileManager.default
         let tempDirectory = fileManager.temporaryDirectory
         let zipFilePath = tempDirectory.appendingPathComponent("files.zip")
 
-        do {
-            // Create zip file
-            try Zip.zipFiles(paths: urls, zipFilePath: zipFilePath, password: nil, progress: nil)
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                // Create zip file
+                try Zip.zipFiles(paths: urls, zipFilePath: zipFilePath, password: nil, progress: nil)
 
-            // Upload to Firebase Storage
-            dataController.uploadZippedFiles(userId: userId, localFile: zipFilePath) { result in
-                switch result {
-                case .success(let fileURL):
-                    let newRecord = Record(title: "New Record", date: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none), fileURL: fileURL, fileType: determineFileType(for: urls.first!))
-                    saveRecord(record: newRecord)
-                case .failure(let error):
-                    print("Upload failed: \(error.localizedDescription)")
+                // Upload to Firebase Storage
+                self.dataController.uploadZippedFiles(userId: self.userId, localFile: zipFilePath) { result in
+                    DispatchQueue.main.async {
+                        self.isProcessing = false
+                    }
+                    switch result {
+                    case .success(let fileURL):
+                        let newRecord = Record(title: "New Record", date: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none), fileURL: fileURL, fileType: self.determineFileType(for: urls.first!))
+                        self.saveRecord(record: newRecord)
+                    case .failure(let error):
+                        print("Upload failed: \(error.localizedDescription)")
+                    }
                 }
+            } catch {
+                DispatchQueue.main.async {
+                    self.isProcessing = false
+                }
+                print("Failed to zip files: \(error.localizedDescription)")
             }
-        } catch {
-            print("Failed to zip files: \(error.localizedDescription)")
         }
     }
     
@@ -97,8 +136,44 @@ struct RecordsView: View {
     }
 
     private func fetchRecords() {
+        processingMessage = "Fetching documents..."
+        isProcessing = true
         dataController.fetchCurrentUserDocuments { fetchedRecords in
             self.records = fetchedRecords
+            self.isProcessing = false
+        }
+    }
+
+    private func confirmDeleteRecords(at offsets: IndexSet) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let rootVC = windowScene.windows.first?.rootViewController else {
+            return
+        }
+
+        let alert = UIAlertController(title: "Delete Document", message: "Are you sure you want to delete this document?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { _ in
+            self.processingMessage = "Deleting document..."
+            self.isProcessing = true
+            self.deleteRecords(at: offsets)
+        }))
+        
+        rootVC.present(alert, animated: true, completion: nil)
+    }
+
+    private func deleteRecords(at offsets: IndexSet) {
+        offsets.forEach { index in
+            let record = records[index]
+            dataController.deleteDocument(userId: userId, documentId: record.id.uuidString, documentURL: record.fileURL) { success in
+                DispatchQueue.main.async {
+                    self.isProcessing = false
+                    if success {
+                        records.remove(at: index)
+                    } else {
+                        print("Failed to delete record")
+                    }
+                }
+            }
         }
     }
 
@@ -107,7 +182,7 @@ struct RecordsView: View {
         switch ext {
         case "mp3":
             return .audio
-        case "jpg", "jpeg", "png":
+        case "jpg", "jpeg", "png", "heic":
             return .image
         case "pdf":
             return .pdf

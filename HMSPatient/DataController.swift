@@ -109,32 +109,41 @@ class DataController {
 
     // Download and unzip the files
     private func downloadAndUnzipFile(documentURL: String, completion: @escaping (Result<URL, Error>) -> Void) {
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .userInitiated).async {
             let storageRef = Storage.storage().reference(forURL: documentURL)
             let tempDirectory = FileManager.default.temporaryDirectory
             let zipFilePath = tempDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension("zip")
             
+            let semaphore = DispatchSemaphore(value: 0)
+            var downloadError: Error?
+            
             storageRef.write(toFile: zipFilePath) { url, error in
-                if let error = error {
+                downloadError = error
+                semaphore.signal()
+            }
+            
+            semaphore.wait()
+            
+            if let error = downloadError {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+            
+            do {
+                let unzipDirectory = tempDirectory.appendingPathComponent(UUID().uuidString)
+                try Zip.unzipFile(zipFilePath, destination: unzipDirectory, overwrite: true, password: nil)
+                if let fileURL = try FileManager.default.contentsOfDirectory(at: unzipDirectory, includingPropertiesForKeys: nil).first {
                     DispatchQueue.main.async {
-                        completion(.failure(error))
+                        completion(.success(fileURL))
                     }
                 } else {
-                    do {
-                        let unzipDirectory = tempDirectory.appendingPathComponent(UUID().uuidString)
-                        try Zip.unzipFile(zipFilePath, destination: unzipDirectory, overwrite: true, password: nil)
-                        if let fileURL = try FileManager.default.contentsOfDirectory(at: unzipDirectory, includingPropertiesForKeys: nil).first {
-                            DispatchQueue.main.async {
-                                completion(.success(fileURL))
-                            }
-                        } else {
-                            throw NSError(domain: "DataController", code: 1, userInfo: [NSLocalizedDescriptionKey: "No file found after unzipping"])
-                        }
-                    } catch {
-                        DispatchQueue.main.async {
-                            completion(.failure(error))
-                        }
-                    }
+                    throw NSError(domain: "DataController", code: 1, userInfo: [NSLocalizedDescriptionKey: "No file found after unzipping"])
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
                 }
             }
         }
@@ -145,7 +154,7 @@ class DataController {
         switch ext {
         case "mp3":
             return .audio
-        case "jpg", "jpeg", "png":
+        case "jpg", "jpeg", "png", "heic":
             return .image
         case "pdf":
             return .pdf
@@ -169,6 +178,28 @@ class DataController {
                 completion(false)
             } else {
                 completion(true)
+            }
+        }
+    }
+
+    // Delete a user's document
+    func deleteDocument(userId: String, documentId: String, documentURL: String, completion: @escaping (Bool) -> Void) {
+        let documentRef = database.child("patient_users").child(userId).child("documents").child(documentId)
+        let storageRef = Storage.storage().reference(forURL: documentURL)
+        
+        storageRef.delete { storageError in
+            if let storageError = storageError {
+                print("Error deleting file from storage: \(storageError.localizedDescription)")
+                completion(false)
+                return
+            }
+            documentRef.removeValue { error, _ in
+                if let error = error {
+                    print("Error deleting document: \(error.localizedDescription)")
+                    completion(false)
+                } else {
+                    completion(true)
+                }
             }
         }
     }
