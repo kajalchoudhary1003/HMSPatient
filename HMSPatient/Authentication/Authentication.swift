@@ -4,6 +4,8 @@ struct Authentication: View {
     @State private var countryCode: String = "+91"
     @State private var mobileNumber: String = ""
     @State private var isOtpViewActive = false
+    @State private var isValidPhoneNumber = false // Track if the phone number is valid
+    @State private var errorMessage = "" // Track error message for invalid phone number
     @StateObject private var authManager = AuthManager()
 
     var body: some View {
@@ -66,15 +68,21 @@ struct Authentication: View {
                 .padding(.horizontal, 30)
                 .padding(.bottom, 30)
 
-                // Continue button
+                // Error message for invalid phone number
+                Text(errorMessage)
+                    .foregroundColor(.red)
+                    .padding(.horizontal, 30)
+                    .padding(.bottom, 10)
+                    .opacity(errorMessage.isEmpty ? 0 : 1) // Show only when errorMessage is not empty
+
+                // Continue button with validation
                 Button(action: {
                     let phoneNumber = "\(countryCode)\(mobileNumber)"
                     authManager.sendCode(phoneNumber: phoneNumber) { success in
                         if success {
-                            isOtpViewActive = true 
+                            isOtpViewActive = true
                         } else {
                             // Handle error (show an alert, etc.)
-                            
                         }
                     }
                 }) {
@@ -82,13 +90,24 @@ struct Authentication: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color(red: 0.0, green: 0.49, blue: 0.45))
+                        .background(isValidPhoneNumber ? Color(red: 0.0, green: 0.49, blue: 0.45) : Color.gray)
                         .cornerRadius(8)
                 }
                 .padding(.horizontal, 30)
                 .padding(.bottom, 30)
+                .disabled(!isValidPhoneNumber) // Disable button if phone number is invalid
 
                 Spacer()
+            }
+            .onChange(of: mobileNumber) { newValue in
+                // Validate phone number whenever mobileNumber changes
+                if newValue.count > 10 {
+                    errorMessage = "Please enter correct phone number"
+                    isValidPhoneNumber = false
+                } else {
+                    errorMessage = ""
+                    isValidPhoneNumber = isValidMobileNumber(newValue)
+                }
             }
             .navigationDestination(isPresented: $isOtpViewActive) {
                 OtpView(authManager: authManager, phoneNumber: "\(countryCode)\(mobileNumber)")
@@ -96,8 +115,13 @@ struct Authentication: View {
             .navigationBarHidden(true)
         }
     }
-}
 
+    // Function to validate a 10-digit mobile number
+    private func isValidMobileNumber(_ number: String) -> Bool {
+        let mobileNumberRegex = #"^\d{10}$"#
+        return NSPredicate(format: "SELF MATCHES %@", mobileNumberRegex).evaluate(with: number)
+    }
+}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
