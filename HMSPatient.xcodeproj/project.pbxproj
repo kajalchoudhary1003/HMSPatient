@@ -15,6 +15,12 @@
 		62530F682C33E6DF001B496B /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62530F672C33E6DF001B496B /* Authentication.swift */; };
 		62530F6A2C33E6E2001B496B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F692C33E6E2001B496B /* Assets.xcassets */; };
 		62530F6D2C33E6E2001B496B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */; };
+		81ACDCAF2C3FA7400097CAB6 /* BookAppointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */; };
+		81ACDCB02C3FA7400097CAB6 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */; };
+		81ACDCB12C3FA7400097CAB6 /* DoctorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */; };
+		81ACDCB22C3FA7400097CAB6 /* Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAA2C3FA7400097CAB6 /* Summary.swift */; };
+		81ACDCB32C3FA7400097CAB6 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAC2C3FA7400097CAB6 /* Blur.swift */; };
+		81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */; };
 		E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */; };
 		E94E68CB2C37F42500ED9F1C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E94E68CA2C37F42500ED9F1C /* GoogleService-Info.plist */; };
 		E94E68CE2C37F4CA00ED9F1C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CD2C37F4CA00ED9F1C /* FirebaseAuth */; };
@@ -41,6 +47,12 @@
 		62530F672C33E6DF001B496B /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		62530F692C33E6E2001B496B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookAppointment.swift; sourceTree = "<group>"; };
+		81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoctorPickerView.swift; sourceTree = "<group>"; };
+		81ACDCAA2C3FA7400097CAB6 /* Summary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Summary.swift; sourceTree = "<group>"; };
+		81ACDCAC2C3FA7400097CAB6 /* Blur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
+		81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication_Logic.swift; sourceTree = "<group>"; };
 		E94E68CA2C37F42500ED9F1C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E94E68D52C37F55A00ED9F1C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -100,6 +112,8 @@
 				E94E68C72C37F31300ED9F1C /* Profile */,
 				E9EB70FD2C3E91640086F6E5 /* Record */,
 				62530F692C33E6E2001B496B /* Assets.xcassets */,
+				81ACDCAB2C3FA7400097CAB6 /* Book Appointment */,
+				81ACDCAE2C3FA7400097CAB6 /* Utils */,
 				62530F6B2C33E6E2001B496B /* Preview Content */,
 			);
 			path = HMSPatient;
@@ -111,6 +125,26 @@
 				62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		81ACDCAB2C3FA7400097CAB6 /* Book Appointment */ = {
+			isa = PBXGroup;
+			children = (
+				81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */,
+				81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */,
+				81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */,
+				81ACDCAA2C3FA7400097CAB6 /* Summary.swift */,
+			);
+			path = "Book Appointment";
+			sourceTree = "<group>";
+		};
+		81ACDCAE2C3FA7400097CAB6 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				81ACDCAC2C3FA7400097CAB6 /* Blur.swift */,
+				81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		E94E68C62C37F2F600ED9F1C /* Authentication */ = {
@@ -234,14 +268,20 @@
 			files = (
 				E94E68D62C37F55A00ED9F1C /* AppDelegate.swift in Sources */,
 				E9EB70DC2C3DBCB40086F6E5 /* DataController.swift in Sources */,
+				81ACDCB32C3FA7400097CAB6 /* Blur.swift in Sources */,
 				244E8C6D2C36B89400812262 /* OtpScreen.swift in Sources */,
+				81ACDCB12C3FA7400097CAB6 /* DoctorPickerView.swift in Sources */,
+				81ACDCB02C3FA7400097CAB6 /* CalendarView.swift in Sources */,
+				81ACDCB22C3FA7400097CAB6 /* Summary.swift in Sources */,
 				249FD5BB2C37EC4D008CC7F9 /* RecordsView.swift in Sources */,
 				E9EB71032C3E91F00086F6E5 /* DocumentView.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */,
 				E9EB71012C3E918A0086F6E5 /* FileType.swift in Sources */,
+				81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */,
 				EA95BFFE2C371FB100582FDC /* HomeScreen.swift in Sources */,
+				81ACDCAF2C3FA7400097CAB6 /* BookAppointment.swift in Sources */,
 				244E8C6C2C36B89400812262 /* ImagePicker.swift in Sources */,
 				244E8C6B2C36B89400812262 /* Profile_Setup_View.swift in Sources */,
 				62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */,
