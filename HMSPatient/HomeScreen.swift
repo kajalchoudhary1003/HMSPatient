@@ -3,7 +3,6 @@ import SwiftUI
 struct HomeView: View {
     @State private var selectedTab = 0
     
-    
     var body: some View {
         TabView(selection: $selectedTab) {
             HomeTab()
@@ -20,6 +19,7 @@ struct HomeView: View {
                 }
                 .tag(1)
         }
+        
     }
 }
 
@@ -27,66 +27,70 @@ struct HomeTab: View {
     @State private var searchText = ""
     
     var body: some View {
-        VStack(spacing: 5) {
-            // Top section
-            HStack {
-                Text("Hi, User")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                Spacer()
-                Button(action: {
-                    // Emergency Button Action
-                    if let url = URL(string: "tel://112") {
-                        UIApplication.shared.open(url)
-                    }
-                }) {
-                    Image(systemName: "cross.circle.fill")
-                        .font(.title)
-                        .foregroundColor(.red)
-                }
-                Button(action: {
-                    // Profile Button Action
-                }) {
-                    Image(systemName: "person.circle.fill")
-                        .font(.title)
-                        .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
-                }
-            }
-            .padding()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    SearchBar(searchText: $searchText)
-                        .padding(.horizontal)
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text("Upcoming Appointments")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        AppointmentCard()
-                    }
-                    .padding(.horizontal)
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text("Features")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        HStack {
-                            FeatureCard(icon: "stethoscope.circle.fill", title: "Book an\nAppointment")
-                            FeatureCard(icon: "newspaper.circle.fill", title: "My\nPrescriptions")
+        NavigationView {
+            VStack(spacing: 5) {
+                // Top section
+                HStack {
+                    Text("Hi, User")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Spacer()
+                    Button(action: {
+                        // Emergency Button Action
+                        if let url = URL(string: "tel://112") {
+                            UIApplication.shared.open(url)
                         }
+                    }) {
+                        Image(systemName: "cross.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.red)
                     }
-                    .padding(.horizontal)
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text("For You")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        OfferCards()
+                    Button(action: {
+                        // Profile Button Action
+                    }) {
+                        Image(systemName: "person.circle.fill")
+                            .font(.title)
+                            .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
                     }
-                    .padding(.horizontal)
                 }
+                .padding()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        SearchBar(searchText: $searchText)
+                            .padding(.horizontal)
+                        VStack(alignment: .leading, spacing: 7) {
+                            Text("Upcoming Appointments")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            AppointmentCard()
+                        }
+                        .padding(.horizontal)
+                        VStack(alignment: .leading, spacing: 7) {
+                            Text("Features")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            HStack {
+                                FeatureCard(icon: "stethoscope.circle.fill", title: "Book an\nAppointment")
+                                NavigationLink(destination: PrescriptionListView()) {
+                                    FeatureCard(icon: "newspaper.circle.fill", title: "My\nPrescriptions")
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                        VStack(alignment: .leading, spacing: 7) {
+                            Text("For You")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            OfferCards()
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+                .navigationBarHidden(true)
+                .background(Color(.systemGray6))
+                .edgesIgnoringSafeArea(.bottom)
             }
-            .navigationBarHidden(true)
-            .background(Color(.systemGray6))
-            .edgesIgnoringSafeArea(.bottom)
         }
     }
 }
@@ -143,29 +147,24 @@ struct FeatureCard: View {
     var title: String
 
     var body: some View {
-        Button(action: {
-            // Add your action here
-            print("Tapped on \(title)")
-        }) {
-            VStack(alignment: .leading) {
-                HStack {
-                    Spacer()
-                    Image(systemName: icon)
-                        .font(.largeTitle)
-                        .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
-                }
+        VStack(alignment: .leading) {
+            HStack {
                 Spacer()
-                Text(title)
-                    .font(.headline)
-                    .multilineTextAlignment(.leading)
-                    .foregroundColor(.black)
+                Image(systemName: icon)
+                    .font(.largeTitle)
+                    .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
             }
-            .frame(height: 120)
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.white)
-            .cornerRadius(10)
+            Spacer()
+            Text(title)
+                .font(.headline)
+                .multilineTextAlignment(.leading)
+                .foregroundColor(.black)
         }
+        .frame(height: 120)
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color.white)
+        .cornerRadius(10)
     }
 }
 
@@ -204,6 +203,6 @@ struct HomeView_Previews: PreviewProvider {
     }
 }
 
-#Preview{
+#Preview {
     HomeView()
 }
