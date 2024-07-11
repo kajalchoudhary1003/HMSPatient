@@ -52,7 +52,7 @@ struct BookAppointment: View {
                                 Spacer()
                                 Image(systemName: "chevron.right")
                             }
-                            .foregroundColor(selectedDoctorIndex != nil ? .black : .gray)
+                            .foregroundColor(selectedDoctorIndex != nil ? .gray : .black) // Adjusted color based on selection
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
