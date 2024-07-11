@@ -5,9 +5,17 @@ import FirebaseStorage
 import Zip
 
 class DataController {
-    private let database = Database.database().reference()
+    private var database = Database.database().reference()
     private let storage = Storage.storage().reference()
     private let currentUser = Auth.auth().currentUser?.uid // Assuming you're using FirebaseAuth
+    private var doctors: [String: Doctor] = [:]
+    static let shared = DataController()
+    
+//    private init() {
+//        // Initialize the Firebase database reference
+//        self.database = Database.database(url: "https://hms-team02-default-rtdb.asia-southeast1.firebasedatabase.app").reference()
+//        fetchDoctors()
+//    }
 
     // Save user data to the database
     func saveUser(userId: String, user: User, completion: @escaping (Bool) -> Void) {
@@ -201,6 +209,27 @@ class DataController {
                     completion(true)
                 }
             }
+        }
+    }
+    
+    
+    // Fetch doctors data from Firebase
+    func fetchDoctors() {
+        let ref = database.child("doctors")
+        ref.observe(.value) { snapshot in
+            self.doctors = [:] // Clear the doctors dictionary
+            print("Snapshot has \(snapshot.childrenCount) children.")
+            for child in snapshot.children {
+                if let childSnapshot = child as? DataSnapshot,
+                   let doctorData = childSnapshot.value as? [String: Any],
+                   let doctor = Doctor(from: doctorData, id: childSnapshot.key) {
+                    self.doctors[doctor.id ?? UUID().uuidString] = doctor
+                    print("Added doctor: \(doctor.firstName) \(doctor.lastName) with ID: \(doctor.id ?? "unknown")")
+                } else {
+                    print("Failed to parse doctor data from snapshot.")
+                }
+            }
+            NotificationCenter.default.post(name: NSNotification.Name("DoctorsUpdated"), object: nil)
         }
     }
 }

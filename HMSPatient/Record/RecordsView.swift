@@ -19,7 +19,6 @@ struct RecordsView: View {
     private let dataController = DataController()
 
     var body: some View {
-        NavigationView {
             VStack {
                 if isProcessing {
                     VStack {
@@ -87,7 +86,6 @@ struct RecordsView: View {
             ) { result in
                 handleFiles(result: result)
             }
-        }
     }
 
     private func handleFiles(result: Result<[URL], Error>) {

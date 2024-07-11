@@ -2,16 +2,17 @@ import SwiftUI
 
 struct OtpView: View {
     @State private var otpFields = ["", "", "", "", "", ""]
-    @State private var navigateToNextView = false
     @State private var showAlert = false
     @State private var alertMessage = ""
     @ObservedObject var authManager: AuthManager
     @FocusState private var focusedField: Int?
+    @Binding var navigateToHome: Bool
     @State private var phoneNumber: String
 
-    init(authManager: AuthManager, phoneNumber: String) {
+    init(authManager: AuthManager, phoneNumber: String, navigateToHome: Binding<Bool>) {
         self.authManager = authManager
         self._phoneNumber = State(initialValue: phoneNumber)
+        self._navigateToHome = navigateToHome
     }
 
     var body: some View {
@@ -71,60 +72,63 @@ struct OtpView: View {
                     }
                 }) {
                     Text("Resend code")
-                        .foregroundColor(.black)
-                        .font(.system(size: 12))
-                        .underline()
+                        .foregroundColor(.blue)
+                        .padding()
+                }
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Alert"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                 }
             }
-            .padding(.bottom, 30) // Bottom padding for resend button
 
+            Spacer()
+
+            // Continue button
             Button(action: {
-                let otpCode = otpFields.joined()
-                authManager.verifyCode(verificationCode: otpCode) { success in
-                    if success {
-                        navigateToNextView = true
-                    } else {
-                        alertMessage = "The OTP you entered is incorrect. Please try again."
-                        showAlert = true
+                let otp = otpFields.joined()
+                if otp.count == 6 {
+                    authManager.verifyCode(verificationCode: otp) { success in
+                        if success {
+                            // Navigate based on isNewUser flag
+                            if authManager.isNewUser {
+                                navigateToHome = false
+                                navigateToSetupProfile()
+                            } else {
+                                navigateToHome = true
+                            }
+                        } else {
+                            alertMessage = "Invalid OTP. Please try again."
+                            showAlert = true
+                        }
                     }
+                } else {
+                    alertMessage = "Please enter a 6-digit OTP."
+                    showAlert = true
                 }
             }) {
-                Text("Login")
+                Text("Continue")
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color(red: 0.0, green: 0.49, blue: 0.45)) // Adjust the color as needed
+                    .background(Color.blue)
                     .cornerRadius(8)
             }
-            .padding(.horizontal, 30) // Horizontal padding for login button
-            .navigationDestination(isPresented: $navigateToNextView) {
-                if authManager.isNewUser {
-                    ProfileSetupView()
-                } else {
-                    HomeView()
-                }
-            }
-            .alert(isPresented: $showAlert) {
-                Alert(
-                    title: Text("Message"),
-                    message: Text(alertMessage),
-                    dismissButton: .default(Text("OK"))
-                )
-            }
+            .padding(.horizontal, 30)
+            .padding(.bottom, 30)
+        }
+        .navigationDestination(isPresented: $navigateToSetupProfileView) {
+            ProfileSetupView()
+        }
+    }
 
-            Spacer() // Bottom spacer to fill remaining space
-        }
-        .padding(.horizontal, 30) // Horizontal padding for entire view
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.focusedField = 0
-            }
-        }
+    @State private var navigateToSetupProfileView = false
+
+    private func navigateToSetupProfile() {
+        navigateToSetupProfileView = true
     }
 }
 
 struct OtpView_Previews: PreviewProvider {
     static var previews: some View {
-        OtpView(authManager: AuthManager(), phoneNumber: "+1234567890")
+        OtpView(authManager: AuthManager(), phoneNumber: "+1234567890", navigateToHome: .constant(false))
     }
 }

@@ -27,89 +27,69 @@ struct HomeTab: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 5) {
-                // Top section
-                HStack {
-                    Text("Hi, User")
-                        .font(.largeTitle)
-                        .fontWeight(.bold)
-                    Spacer()
-                    Button(action: {
-                        // Emergency Button Action
-                        if let url = URL(string: "tel://112") {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        Image(systemName: "cross.circle.fill")
-                            .font(.title)
-                            .foregroundColor(.red)
-                    }
-                    Button(action: {
-                        // Profile Button Action
-                    }) {
-                        Image(systemName: "person.circle.fill")
-                            .font(.title)
-                            .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
-                    }
-                }
-                .padding()
-                
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 20) {
-                        SearchBar(searchText: $searchText)
+            GeometryReader { geometry in
+                VStack(spacing: 5) {
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 20) {
+                            VStack(alignment: .leading, spacing: 7) {
+                                Text("Upcoming Appointments")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                AppointmentCard()
+                            }
                             .padding(.horizontal)
-                        VStack(alignment: .leading, spacing: 7) {
-                            Text("Upcoming Appointments")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                            AppointmentCard()
-                        }
-                        .padding(.horizontal)
-                        VStack(alignment: .leading, spacing: 7) {
-                            Text("Features")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                            HStack {
-                                FeatureCard(icon: "stethoscope.circle.fill", title: "Book an\nAppointment")
-                                NavigationLink(destination: PrescriptionListView()) {
-                                    FeatureCard(icon: "newspaper.circle.fill", title: "My\nPrescriptions")
+                            VStack(alignment: .leading, spacing: 7) {
+                                Text("Features")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                HStack {
+                                    NavigationLink(destination: BookAppointment(doctors: sampleDoctors)){
+                                        FeatureCard(icon: "stethoscope.circle.fill", title: "Book an\nAppointment")
+                                    }
+                                    NavigationLink(destination: PrescriptionListView()) {
+                                        FeatureCard(icon: "newspaper.circle.fill", title: "My\nPrescriptions")
+                                    }
                                 }
                             }
+                            .padding(.horizontal)
+                            VStack(alignment: .leading, spacing: 7) {
+                                Text("For You")
+                                    .font(.title2)
+                                    .fontWeight(.bold)
+                                OfferCards()
+                            }
+                            .padding(.horizontal)
                         }
-                        .padding(.horizontal)
-                        VStack(alignment: .leading, spacing: 7) {
-                            Text("For You")
-                                .font(.title2)
-                                .fontWeight(.bold)
-                            OfferCards()
-                        }
-                        .padding(.horizontal)
+                        .frame(width: geometry.size.width) // Ensure ScrollView does not exceed the screen width
                     }
                 }
-                .navigationBarHidden(true)
+                }
+                .searchable(text: $searchText)
                 .background(Color(.systemGray6))
-                .edgesIgnoringSafeArea(.bottom)
-            }
-        }
+                .navigationBarTitle("Hi, User") // Set navigationTitle outside GeometryReader
+                .toolbar {
+                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+                        Button(action: {
+                            if let url = URL(string: "tel://112") {
+                                UIApplication.shared.open(url)
+                            }
+                        }) {
+                            Image(systemName: "cross.circle.fill")
+                                .foregroundColor(Color(UIColor.systemRed))
+                        }
+                        Button(action: {
+                            // Profile Button Action
+                        }) {
+                            Image(systemName: "person.circle.fill")
+                                .foregroundColor(Color(hex: "006666"))
+                        }
+                    }
+                }
+        }.navigationBarHidden(true)
     }
 }
 
-struct SearchBar: View {
-    @Binding var searchText: String
 
-    var body: some View {
-        HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundColor(.gray)
-            TextField("Search", text: $searchText)
-            Image(systemName: "mic")
-                .foregroundColor(.gray)
-        }
-        .padding(10)
-        .background(Color(.systemGray5))
-        .cornerRadius(10)
-    }
-}
 
 struct AppointmentCard: View {
     var body: some View {
@@ -196,12 +176,39 @@ struct OfferCard: View {
     }
 }
 
+let sampleDoctors: [Doctor] = [
+    Doctor(
+        id: "1",
+        firstName: "John",
+        lastName: "Doe",
+        email: "john.doe@example.com",
+        phone: "123-456-7890",
+        dob: Date(),
+        designation: .generalPractitioner,
+        titles: "MD",
+        timeSlots: [
+//                    TimeSlot(startTime: "09:00 AM", endTime: "09:30 AM", isAvailable: true, isPremium: false)
+        ],
+        experience: 10
+    ),
+    Doctor(
+        id: "2",
+        firstName: "Jane",
+        lastName: "Smith",
+        email: "jane.smith@example.com",
+        phone: "987-654-3210",
+        dob: Date(),
+        designation: .cardiologist,
+        titles: "MD",
+        timeSlots: [
+//                    TimeSlot(startTime: "10:00 AM", endTime: "10:30 AM", isAvailable: true, isPremium: true)
+        ],
+        experience: 8
+    )
+]
+
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
     }
-}
-
-#Preview {
-    HomeView()
 }

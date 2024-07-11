@@ -7,6 +7,7 @@ struct Authentication: View {
     @StateObject private var authManager = AuthManager()
     @State private var errorMessage = ""
     @State private var showErrorAlert = false
+    @State private var navigateToHome = false
 
     var isFormValid: Bool {
         isValidCountryCode(countryCode) && isValidPhoneNumber(mobileNumber)
@@ -146,9 +147,11 @@ struct Authentication: View {
                 Spacer()
             }
             .navigationDestination(isPresented: $isOtpViewActive) {
-                OtpView(authManager: authManager, phoneNumber: "\(countryCode)\(mobileNumber)")
+                OtpView(authManager: authManager, phoneNumber: "\(countryCode)\(mobileNumber)", navigateToHome: $navigateToHome)
             }
-            .navigationBarHidden(true)
+            .navigationDestination(isPresented: $navigateToHome) {
+                HomeView()
+            }
             .alert(isPresented: $showErrorAlert) {
                 Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
             }
