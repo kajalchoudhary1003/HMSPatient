@@ -16,6 +16,13 @@
 		62530F682C33E6DF001B496B /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62530F672C33E6DF001B496B /* Authentication.swift */; };
 		62530F6A2C33E6E2001B496B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F692C33E6E2001B496B /* Assets.xcassets */; };
 		62530F6D2C33E6E2001B496B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */; };
+		8164B04E2C3D6D5900D61CD6 /* BookAppointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164B04D2C3D6D5900D61CD6 /* BookAppointment.swift */; };
+		8164B0502C3D6D6700D61CD6 /* DoctorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164B04F2C3D6D6700D61CD6 /* DoctorPickerView.swift */; };
+		8164B0522C3D6D7D00D61CD6 /* Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164B0512C3D6D7D00D61CD6 /* Summary.swift */; };
+		8164B0562C3E49B900D61CD6 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164B0542C3E49B900D61CD6 /* Blur.swift */; };
+		8164B0572C3E49B900D61CD6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164B0552C3E49B900D61CD6 /* Extensions.swift */; };
+		8164B0592C3E9A2D00D61CD6 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164B0582C3E9A2D00D61CD6 /* DataModel.swift */; };
+		8164B05B2C3E9B0E00D61CD6 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8164B05A2C3E9B0E00D61CD6 /* CalendarView.swift */; };
 		E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */; };
 		E94E68CB2C37F42500ED9F1C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E94E68CA2C37F42500ED9F1C /* GoogleService-Info.plist */; };
 		E94E68CE2C37F4CA00ED9F1C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CD2C37F4CA00ED9F1C /* FirebaseAuth */; };
@@ -37,6 +44,13 @@
 		62530F672C33E6DF001B496B /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		62530F692C33E6E2001B496B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		8164B04D2C3D6D5900D61CD6 /* BookAppointment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookAppointment.swift; sourceTree = "<group>"; };
+		8164B04F2C3D6D6700D61CD6 /* DoctorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorPickerView.swift; sourceTree = "<group>"; };
+		8164B0512C3D6D7D00D61CD6 /* Summary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Summary.swift; sourceTree = "<group>"; };
+		8164B0542C3E49B900D61CD6 /* Blur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
+		8164B0552C3E49B900D61CD6 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		8164B0582C3E9A2D00D61CD6 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
+		8164B05A2C3E9B0E00D61CD6 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication_Logic.swift; sourceTree = "<group>"; };
 		E94E68CA2C37F42500ED9F1C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E94E68D52C37F55A00ED9F1C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -82,11 +96,13 @@
 				E94E68D72C37F5DC00ED9F1C /* Info.plist */,
 				E94E68CA2C37F42500ED9F1C /* GoogleService-Info.plist */,
 				62530F652C33E6DF001B496B /* HMSPatientApp.swift */,
-				EA95BFFD2C371FB100582FDC /* HomeScreen.swift */,
-				249FD5BA2C37EC4D008CC7F9 /* RecordsView.swift */,
 				E94E68D52C37F55A00ED9F1C /* AppDelegate.swift */,
+				8164B0582C3E9A2D00D61CD6 /* DataModel.swift */,
+				8164B04C2C3D6CF400D61CD6 /* Book Appointment */,
+				8164B04B2C3D6CD700D61CD6 /* Tab Bar */,
 				E94E68C62C37F2F600ED9F1C /* Authentication */,
 				E94E68C72C37F31300ED9F1C /* Profile */,
+				8164B0532C3E498300D61CD6 /* Utils */,
 				62530F692C33E6E2001B496B /* Assets.xcassets */,
 				62530F6B2C33E6E2001B496B /* Preview Content */,
 			);
@@ -99,6 +115,35 @@
 				62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8164B04B2C3D6CD700D61CD6 /* Tab Bar */ = {
+			isa = PBXGroup;
+			children = (
+				EA95BFFD2C371FB100582FDC /* HomeScreen.swift */,
+				249FD5BA2C37EC4D008CC7F9 /* RecordsView.swift */,
+			);
+			path = "Tab Bar";
+			sourceTree = "<group>";
+		};
+		8164B04C2C3D6CF400D61CD6 /* Book Appointment */ = {
+			isa = PBXGroup;
+			children = (
+				8164B04D2C3D6D5900D61CD6 /* BookAppointment.swift */,
+				8164B05A2C3E9B0E00D61CD6 /* CalendarView.swift */,
+				8164B04F2C3D6D6700D61CD6 /* DoctorPickerView.swift */,
+				8164B0512C3D6D7D00D61CD6 /* Summary.swift */,
+			);
+			path = "Book Appointment";
+			sourceTree = "<group>";
+		};
+		8164B0532C3E498300D61CD6 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				8164B0542C3E49B900D61CD6 /* Blur.swift */,
+				8164B0552C3E49B900D61CD6 /* Extensions.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 		E94E68C62C37F2F600ED9F1C /* Authentication */ = {
@@ -204,12 +249,19 @@
 				E94E68D62C37F55A00ED9F1C /* AppDelegate.swift in Sources */,
 				244E8C6D2C36B89400812262 /* OtpScreen.swift in Sources */,
 				249FD5BB2C37EC4D008CC7F9 /* RecordsView.swift in Sources */,
-				62530F682C33E6DF001B496B /* ContentView.swift in Sources */,
+				8164B05B2C3E9B0E00D61CD6 /* CalendarView.swift in Sources */,
+				8164B0522C3D6D7D00D61CD6 /* Summary.swift in Sources */,
+				8164B0562C3E49B900D61CD6 /* Blur.swift in Sources */,
+				8164B0592C3E9A2D00D61CD6 /* DataModel.swift in Sources */,
+				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */,
 				EA95BFFE2C371FB100582FDC /* HomeScreen.swift in Sources */,
 				244E8C6C2C36B89400812262 /* ImagePicker.swift in Sources */,
+				8164B0572C3E49B900D61CD6 /* Extensions.swift in Sources */,
 				244E8C6B2C36B89400812262 /* ProfileView.swift in Sources */,
+				8164B0502C3D6D6700D61CD6 /* DoctorPickerView.swift in Sources */,
+				8164B04E2C3D6D5900D61CD6 /* BookAppointment.swift in Sources */,
 				62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
