@@ -4,22 +4,20 @@ struct HomeView: View {
     @State private var selectedTab = 0
     
     var body: some View {
-        NavigationView {
-            TabView(selection: $selectedTab) {
-                HomeTab()
-                    .tabItem {
-                        Image(systemName: "house.fill")
-                        Text("Home")
-                    }
-                    .tag(0)
-                
-                RecordsView()
-                    .tabItem {
-                        Image(systemName: "doc.text")
-                        Text("Records")
-                    }
-                    .tag(1)
-            }
+        TabView(selection: $selectedTab) {
+            HomeTab()
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+                .tag(0)
+            
+            RecordsView()
+                .tabItem {
+                    Image(systemName: "doc.text")
+                    Text("Records")
+                }
+                .tag(1)
         }
     }
 }
@@ -28,68 +26,70 @@ struct HomeTab: View {
     @State private var searchText = ""
     
     var body: some View {
-        VStack(spacing: 5) {
-            // Top section
-            HStack {
-                Text("Hi, User")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                Spacer()
-                Button(action: {
-                    // Emergency Button Action
-                    if let url = URL(string: "tel://112") {
-                        UIApplication.shared.open(url)
-                    }
-                }) {
-                    Image(systemName: "cross.circle.fill")
-                        .font(.title)
-                        .foregroundColor(.red)
-                }
-                Button(action: {
-                    // Profile Button Action
-                }) {
-                    Image(systemName: "person.circle.fill")
-                        .font(.title)
-                        .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
-                }
-            }
-            .padding()
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    SearchBar(searchText: $searchText)
-                        .padding(.horizontal)
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text("Upcoming Appointments")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        AppointmentCard()
-                    }
-                    .padding(.horizontal)
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text("Features")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        HStack {
-                            NavigationLink(destination: BookAppointment()) {
-                                FeatureCard(icon: "stethoscope.circle.fill", title: "Book an\nAppointment")
-                            }
-                            FeatureCard(icon: "newspaper.circle.fill", title: "My\nPrescriptions")
+        NavigationView {
+            VStack(spacing: 5) {
+                // Top section
+                HStack {
+                    Text("Hi, User")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                    Spacer()
+                    Button(action: {
+                        // Emergency Button Action
+                        if let url = URL(string: "tel://112") {
+                            UIApplication.shared.open(url)
                         }
+                    }) {
+                        Image(systemName: "cross.circle.fill")
+                            .font(.title)
+                            .foregroundColor(.red)
                     }
-                    .padding(.horizontal)
-                    VStack(alignment: .leading, spacing: 7) {
-                        Text("For You")
-                            .font(.title2)
-                            .fontWeight(.bold)
-                        OfferCards()
+                    Button(action: {
+                        // Profile Button Action
+                    }) {
+                        Image(systemName: "person.circle.fill")
+                            .font(.title)
+                            .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
                     }
-                    .padding(.horizontal)
                 }
+                .padding()
+                
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        SearchBar(searchText: $searchText)
+                            .padding(.horizontal)
+                        VStack(alignment: .leading, spacing: 7) {
+                            Text("Upcoming Appointments")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            AppointmentCard()
+                        }
+                        .padding(.horizontal)
+                        VStack(alignment: .leading, spacing: 7) {
+                            Text("Features")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            HStack {
+                                FeatureCard(icon: "stethoscope.circle.fill", title: "Book an\nAppointment")
+                                NavigationLink(destination: PrescriptionListView()) {
+                                    FeatureCard(icon: "newspaper.circle.fill", title: "My\nPrescriptions")
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                        VStack(alignment: .leading, spacing: 7) {
+                            Text("For You")
+                                .font(.title2)
+                                .fontWeight(.bold)
+                            OfferCards()
+                        }
+                        .padding(.horizontal)
+                    }
+                }
+                .navigationBarHidden(true)
+                .background(Color(.systemGray6))
+                .edgesIgnoringSafeArea(.bottom)
             }
-            .navigationBarHidden(true)
-            .background(Color(.systemGray6))
-            .edgesIgnoringSafeArea(.bottom)
         }
     }
 }
@@ -200,4 +200,8 @@ struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
     }
+}
+
+#Preview {
+    HomeView()
 }
