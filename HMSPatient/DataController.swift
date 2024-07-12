@@ -7,17 +7,10 @@ import Zip
 class DataController {
     private var database = Database.database().reference()
     private let storage = Storage.storage().reference()
-    private let currentUser = Auth.auth().currentUser?.uid // Assuming you're using FirebaseAuth
+    private let currentUser = Auth.auth().currentUser?.uid
     private var doctors: [String: Doctor] = [:]
     static let shared = DataController()
     
-//    private init() {
-//        // Initialize the Firebase database reference
-//        self.database = Database.database(url: "https://hms-team02-default-rtdb.asia-southeast1.firebasedatabase.app").reference()
-//        fetchDoctors()
-//    }
-
-    // Save user data to the database
     func saveUser(userId: String, user: User, completion: @escaping (Bool) -> Void) {
         let userDict: [String: Any] = [
             "firstName": user.firstName,
@@ -29,41 +22,32 @@ class DataController {
         ]
         
         database.child("patient_users").child(userId).setValue(userDict) { error, _ in
-            if let error = error {
-                print("Error saving user data: \(error.localizedDescription)")
-                completion(false)
-            } else {
-                completion(true)
-            }
+            completion(error == nil)
         }
     }
     
     // Check if the user data exists in the database
     func checkIfUserExists(userId: String, completion: @escaping (Bool) -> Void) {
         database.child("patient_users").child(userId).observeSingleEvent(of: .value) { snapshot in
-            if snapshot.exists() {
-                completion(true)
-            } else {
-                completion(false)
-            }
+            completion(snapshot.exists())
         }
     }
 
     // Upload zipped files to Firebase Storage and save document UIDs to the user's data in Firebase Database
     func uploadZippedFiles(userId: String, localFile: URL, completion: @escaping (Result<String, Error>) -> Void) {
         let fileName = "\(UUID().uuidString).zip"
-        let storageRef = storage.child("users/\(userId)/zipped_files/\(fileName)") // User-specific directory
+        let storageRef = storage.child("users/\(userId)/zipped_files/\(fileName)")
         
-        storageRef.putFile(from: localFile, metadata: nil) { metadata, error in
+        storageRef.putFile(from: localFile, metadata: nil) { _, error in
             if let error = error {
                 completion(.failure(error))
             } else {
                 storageRef.downloadURL { url, error in
-                    if let error = error {
-                        completion(.failure(error))
-                    } else if let url = url {
+                    if let url = url {
                         self.saveDocumentUID(userId: userId, documentURL: url.absoluteString)
                         completion(.success(url.absoluteString))
+                    } else {
+                        completion(.failure(error!))
                     }
                 }
             }
@@ -87,13 +71,10 @@ class DataController {
                    let documentURL = childSnapshot.value as? String {
                     group.enter()
                     self.downloadAndUnzipFile(documentURL: documentURL) { result in
-                        switch result {
-                        case .success(let url):
+                        if case .success(let url) = result {
                             let fileType = self.determineFileType(for: url)
                             let record = Record(title: url.lastPathComponent, date: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none), fileURL: url.absoluteString, fileType: fileType)
                             records.append(record)
-                        case .failure(let error):
-                            print("Failed to unzip file: \(error.localizedDescription)")
                         }
                         group.leave()
                     }
@@ -122,36 +103,28 @@ class DataController {
             let tempDirectory = FileManager.default.temporaryDirectory
             let zipFilePath = tempDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension("zip")
             
-            let semaphore = DispatchSemaphore(value: 0)
-            var downloadError: Error?
-            
-            storageRef.write(toFile: zipFilePath) { url, error in
-                downloadError = error
-                semaphore.signal()
-            }
-            
-            semaphore.wait()
-            
-            if let error = downloadError {
-                DispatchQueue.main.async {
-                    completion(.failure(error))
-                }
-                return
-            }
-            
-            do {
-                let unzipDirectory = tempDirectory.appendingPathComponent(UUID().uuidString)
-                try Zip.unzipFile(zipFilePath, destination: unzipDirectory, overwrite: true, password: nil)
-                if let fileURL = try FileManager.default.contentsOfDirectory(at: unzipDirectory, includingPropertiesForKeys: nil).first {
+            storageRef.write(toFile: zipFilePath) { _, error in
+                if let error = error {
                     DispatchQueue.main.async {
-                        completion(.success(fileURL))
+                        completion(.failure(error))
                     }
-                } else {
-                    throw NSError(domain: "DataController", code: 1, userInfo: [NSLocalizedDescriptionKey: "No file found after unzipping"])
+                    return
                 }
-            } catch {
-                DispatchQueue.main.async {
-                    completion(.failure(error))
+                
+                do {
+                    let unzipDirectory = tempDirectory.appendingPathComponent(UUID().uuidString)
+                    try Zip.unzipFile(zipFilePath, destination: unzipDirectory, overwrite: true, password: nil)
+                    if let fileURL = try FileManager.default.contentsOfDirectory(at: unzipDirectory, includingPropertiesForKeys: nil).first {
+                        DispatchQueue.main.async {
+                            completion(.success(fileURL))
+                        }
+                    } else {
+                        throw NSError(domain: "DataController", code: 1, userInfo: [NSLocalizedDescriptionKey: "No file found after unzipping"])
+                    }
+                } catch {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
                 }
             }
         }
@@ -167,7 +140,7 @@ class DataController {
         case "pdf":
             return .pdf
         default:
-            return .pdf // default to pdf if unknown
+            return .pdf
         }
     }
 
@@ -181,12 +154,7 @@ class DataController {
         ]
         
         database.child("records").child(record.id.uuidString).setValue(recordDict) { error, _ in
-            if let error = error {
-                print("Error saving record: \(error.localizedDescription)")
-                completion(false)
-            } else {
-                completion(true)
-            }
+            completion(error == nil)
         }
     }
 
@@ -199,14 +167,9 @@ class DataController {
             if let storageError = storageError {
                 print("Error deleting file from storage: \(storageError.localizedDescription)")
                 completion(false)
-                return
-            }
-            documentRef.removeValue { error, _ in
-                if let error = error {
-                    print("Error deleting document: \(error.localizedDescription)")
-                    completion(false)
-                } else {
-                    completion(true)
+            } else {
+                documentRef.removeValue { error, _ in
+                    completion(error == nil)
                 }
             }
         }

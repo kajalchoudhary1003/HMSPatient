@@ -113,13 +113,12 @@
 				24A780FB2C3FA8B000C8F3B1 /* PrescriptionDetailView.swift */,
 				E9EB70D92C3DBC440086F6E5 /* Data Model.swift */,
 				E9EB70DB2C3DBCB40086F6E5 /* DataController.swift */,
+				81ACDCAE2C3FA7400097CAB6 /* Utils */,
 				E9EB70E72C3DC6A20086F6E5 /* GPS */,
-				E94E68C62C37F2F600ED9F1C /* Authentication */,
 				E94E68C72C37F31300ED9F1C /* Profile */,
 				E9EB70FD2C3E91640086F6E5 /* Record */,
-				62530F692C33E6E2001B496B /* Assets.xcassets */,
+				E94E68C62C37F2F600ED9F1C /* Authentication */,
 				81ACDCAB2C3FA7400097CAB6 /* Book Appointment */,
-				81ACDCAE2C3FA7400097CAB6 /* Utils */,
 				62530F6B2C33E6E2001B496B /* Preview Content */,
 			);
 			path = HMSPatient;
@@ -129,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */,
+				62530F692C33E6E2001B496B /* Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
