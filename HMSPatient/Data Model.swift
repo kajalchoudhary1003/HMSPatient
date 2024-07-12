@@ -19,6 +19,7 @@ struct TimeSlot: Codable, Identifiable, Equatable {
     static func == (lhs: TimeSlot, rhs: TimeSlot) -> Bool {
         return lhs.id == rhs.id && lhs.startTime == rhs.startTime && lhs.endTime == rhs.endTime
     }
+
     var time: String {
         return "\(startTime) \(endTime)"
     }
@@ -39,7 +40,6 @@ struct TimeSlot: Codable, Identifiable, Equatable {
         self.endTime = Date(timeIntervalSince1970: endTime)
     }
 }
-
 
 struct Appointment: Hashable, Codable {
     var id: String?
@@ -80,6 +80,7 @@ struct Doctor: Codable, Identifiable, Equatable {
     var designation: DoctorDesignation
     var titles: String // Assuming this represents years of experience or titles
     var timeSlots: [TimeSlot]
+    var experience: Int
 
     var interval: String {
         return designation.interval
@@ -90,7 +91,6 @@ struct Doctor: Codable, Identifiable, Equatable {
     var fees: String {
         return designation.fees
     }
-    var experience: Int
 
     init(id: String, firstName: String, lastName: String, email: String, phone: String, dob: Date, designation: DoctorDesignation, titles: String, timeSlots: [TimeSlot], experience: Int) {
         self.id = id
@@ -102,7 +102,7 @@ struct Doctor: Codable, Identifiable, Equatable {
         self.designation = designation
         self.titles = titles
         self.timeSlots = timeSlots
-        self.experience = experience // Initialize experience property
+        self.experience = experience
     }
 
     init?(from dictionary: [String: Any], id: String) {
@@ -116,7 +116,7 @@ struct Doctor: Codable, Identifiable, Equatable {
             let designation = DoctorDesignation(rawValue: designationRaw),
             let titles = dictionary["titles"] as? String,
             let timeSlotDictionaries = dictionary["timeSlots"] as? [[String: Any]],
-            let experience = dictionary["experience"] as? Int // Parse experience from dictionary
+            let experience = dictionary["experience"] as? Int
         else {
             return nil
         }
@@ -132,7 +132,7 @@ struct Doctor: Codable, Identifiable, Equatable {
         self.designation = designation
         self.titles = titles
         self.timeSlots = timeSlots
-        self.experience = experience // Assign experience to the property
+        self.experience = experience
     }
 
     static func == (lhs: Doctor, rhs: Doctor) -> Bool {
@@ -175,6 +175,3 @@ enum DoctorDesignation: String, Codable, CaseIterable {
         return [nil] + DoctorDesignation.allCases
     }
 }
-
-
-
