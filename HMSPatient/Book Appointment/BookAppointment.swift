@@ -96,7 +96,7 @@ struct BookAppointment: View {
                             Text("Premium Slots")
                                 .font(.headline)
                         }
-                        .toggleStyle(SwitchToggleStyle(tint: Color(hex: "8C309D")))
+                        .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#AE75AC")))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
@@ -110,7 +110,7 @@ struct BookAppointment: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .foregroundColor(.white)
                             .padding().padding(.vertical, 4)
-                            .background(isPremiumSlotsEnabled ? Color(hex: "8C309D") : Color(hex: "006666"))
+                            .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "006666"))
                             .cornerRadius(10)
                     }
                     .padding(.vertical)
