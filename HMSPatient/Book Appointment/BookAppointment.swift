@@ -9,8 +9,9 @@ struct BookAppointment: View {
     @State private var weeks: [[Date]] = []
     @State private var selectedTimeSlot: TimeSlot?
     @State private var isPremiumSlotsEnabled = false
+    @State private var filteredDoctors: [Doctor] = []
+    @State private var isLoadingDoctors = false
 
-    var doctors: [Doctor]
     var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
 
     var body: some View {
@@ -23,7 +24,7 @@ struct BookAppointment: View {
 
                         Spacer()
 
-                        Picker("Speciality", selection: $selectedCategoryIndex.onChange(resetSelections)) {
+                        Picker("Speciality", selection: $selectedCategoryIndex.onChange(categoryChanged)) {
                             ForEach(0..<categories.count, id: \.self) { index in
                                 Text(categories[index]?.title ?? "Select").tag(index as Int?)
                             }
@@ -36,23 +37,13 @@ struct BookAppointment: View {
                     .cornerRadius(10)
 
                     if selectedCategoryIndex != 0 {
-                        NavigationLink(destination:
-                            DoctorPickerView(doctors: doctors, selectedDoctorIndex: Binding(
-                                get: {
-                                    selectedDoctorIndex
-                                },
-                                set: { newValue in
-                                    selectedDoctorIndex = newValue
-                                    doctorSelected = newValue != nil
-                                }
-                            ))
-                        ){
+                        NavigationLink(destination: DoctorPickerView(doctors: $filteredDoctors, selectedDoctorIndex: $selectedDoctorIndex, isLoading: $isLoadingDoctors)) {
                             HStack {
                                 Text(selectedDoctorLabel)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                             }
-                            .foregroundColor(selectedDoctorIndex != nil ? .gray : .black) // Adjusted color based on selection
+                            .foregroundColor(selectedDoctorIndex != nil ? .gray : .black)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
@@ -63,7 +54,7 @@ struct BookAppointment: View {
                 }
 
                 if doctorSelected,
-                   let selectedDoctor = doctors[safe: selectedDoctorIndex ?? -1] {
+                   let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1] {
                     VStack {
                         DoctorCardView(doctor: selectedDoctor)
                             .padding()
@@ -83,7 +74,7 @@ struct BookAppointment: View {
                     }
                     .padding(.vertical, 16)
 
-                    if let selectedDoctor = doctors[safe: selectedDoctorIndex ?? -1] {
+                    if let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1] {
                         VStack {
                             TimeSlotView(selectedDoctor: selectedDoctor, timeSlots: selectedDoctor.timeSlots, selectedTimeSlot: $selectedTimeSlot, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
                                 .padding()
@@ -127,9 +118,22 @@ struct BookAppointment: View {
         .background(Color(hex: "ECEEEE"))
     }
 
-    private func resetSelections(_ index: Int) {
+    private func categoryChanged(_ index: Int) {
         selectedDoctorIndex = nil
         doctorSelected = false
+        fetchDoctors()
+    }
+
+    private func fetchDoctors() {
+        guard let selectedCategory = categories[safe: selectedCategoryIndex] else { return }
+        isLoadingDoctors = true
+        DataController.shared.fetchDoctors(byCategory: selectedCategory) { doctors in
+            DispatchQueue.main.async {
+                filteredDoctors = doctors
+                isLoadingDoctors = false
+                print("Filtered doctors count: \(filteredDoctors.count)")
+            }
+        }
     }
 
     private var selectedDoctorLabel: String {
@@ -198,31 +202,123 @@ private func fetchWeeks(from baseDate: Date) -> [[Date]] {
 
 struct BookAppointment_Previews: PreviewProvider {
     static var previews: some View {
-        BookAppointment(doctors: [
-            Doctor(
-                id: "1",
-                firstName: "John",
-                lastName: "Doe",
-                email: "john.doe@example.com",
-                phone: "123-456-7890",
-                dob: Date(),
-                designation: .generalPractitioner,
-                titles: "MD",
-                timeSlots: [],
-                experience: 10
-            ),
-            Doctor(
-                id: "2",
-                firstName: "Jane",
-                lastName: "Smith",
-                email: "jane.smith@example.com",
-                phone: "987-654-3210",
-                dob: Date(),
-                designation: .cardiologist,
-                titles: "MD",
-                timeSlots: [],
-                experience: 8
-            )
-        ])
+        BookAppointment()
+    }
+}
+
+struct DoctorPickerView: View {
+    @Binding var doctors: [Doctor]
+    @Binding var selectedDoctorIndex: Int?
+    @Binding var isLoading: Bool
+    @Environment(\.presentationMode) var presentationMode
+    @State private var searchText = ""
+
+    func removePrefix(from name: String) -> String {
+        if name.hasPrefix("Dr. ") {
+            return String(name.dropFirst(4))
+        }
+        return name
+    }
+
+    var filteredDoctors: [Doctor] {
+        if searchText.isEmpty {
+            return doctors
+        } else {
+            return doctors.filter { removePrefix(from: $0.name).lowercased().contains(searchText.lowercased()) }
+        }
+    }
+
+    var groupedDoctors: [String: [Doctor]] {
+        Dictionary(grouping: filteredDoctors) { String(removePrefix(from: $0.name).prefix(1)).uppercased() }
+    }
+
+    var sortedKeys: [String] {
+        groupedDoctors.keys.sorted()
+    }
+
+    var body: some View {
+        VStack {
+            if isLoading {
+                ProgressView()
+                    .progressViewStyle(CircularProgressViewStyle())
+                    .scaleEffect(2.0)
+                    .padding()
+            } else {
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 16) {
+                        ForEach(sortedKeys, id: \.self) { key in
+                            Section(header: Text(key)) {
+                                ForEach(groupedDoctors[key]!, id: \.id) { doctor in
+                                    Button(action: {
+                                        if let index = doctors.firstIndex(where: { $0.id == doctor.id }) {
+                                            print("Selected doctor: \(doctor.name), Index: \(index)")
+                                            selectedDoctorIndex = index
+                                            presentationMode.wrappedValue.dismiss()
+                                        } else {
+                                            print("Doctor not found in doctors array.")
+                                        }
+                                    }) {
+                                        DoctorCardView(doctor: doctor)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(selectedDoctorIndex == doctors.firstIndex(where: { $0.id == doctor.id }) ? Color(hex: "006666") : Color.clear, lineWidth: 2)
+                                            )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding()
+                }
+                .background(Color(hex: "ECEEEE"))
+                .navigationTitle("Select Doctor")
+                .searchable(text: $searchText, prompt: "Search Doctor")
+                .onAppear {
+                    print("DoctorPickerView appeared with \(doctors.count) doctors.")
+                }
+            }
+        }
+    }
+}
+
+struct DoctorCardView: View {
+    var doctor: Doctor
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(doctor.name)
+                .font(.title2)
+                .foregroundColor(.black)
+
+            if doctor.name != "Select Doctor" {
+                Text("Age: \(calculateAge(from: doctor.dob))")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+
+                HStack {
+                    Text("Experience: \(doctor.experience) years")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+
+                    Spacer()
+
+                    Text(String(format: "Fees: %@", doctor.fees))
+                        .font(.footnote)
+                        .foregroundColor(Color(hex: "006666"))
+                }
+            }
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(10)
+        .onAppear {
+            print("DoctorCardView appeared for \(doctor.name)")
+        }
+    }
+
+    private func calculateAge(from dateOfBirth: Date) -> Int {
+        let calendar = Calendar.current
+        let ageComponents = calendar.dateComponents([.year], from: dateOfBirth, to: Date())
+        return ageComponents.year ?? 0
     }
 }

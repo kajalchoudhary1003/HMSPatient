@@ -8,7 +8,6 @@ class DataController {
     private var database = Database.database().reference()
     private let storage = Storage.storage().reference()
     private let currentUser = Auth.auth().currentUser?.uid
-    private var doctors: [String: Doctor] = [:]
     static let shared = DataController()
     
     func saveUser(userId: String, user: User, completion: @escaping (Bool) -> Void) {
@@ -26,14 +25,12 @@ class DataController {
         }
     }
     
-    // Check if the user data exists in the database
     func checkIfUserExists(userId: String, completion: @escaping (Bool) -> Void) {
         database.child("patient_users").child(userId).observeSingleEvent(of: .value) { snapshot in
             completion(snapshot.exists())
         }
     }
 
-    // Upload zipped files to Firebase Storage and save document UIDs to the user's data in Firebase Database
     func uploadZippedFiles(userId: String, localFile: URL, completion: @escaping (Result<String, Error>) -> Void) {
         let fileName = "\(UUID().uuidString).zip"
         let storageRef = storage.child("users/\(userId)/zipped_files/\(fileName)")
@@ -54,13 +51,11 @@ class DataController {
         }
     }
 
-    // Save document UID to the user's data in Firebase Database
     private func saveDocumentUID(userId: String, documentURL: String) {
         let documentUID = UUID().uuidString
         database.child("patient_users").child(userId).child("documents").child(documentUID).setValue(documentURL)
     }
 
-    // Fetch documents from the user's data in Firebase Database, download and unzip them
     func fetchDocuments(userId: String, completion: @escaping ([Record]) -> Void) {
         database.child("patient_users").child(userId).child("documents").observeSingleEvent(of: .value) { snapshot in
             var records: [Record] = []
@@ -87,7 +82,6 @@ class DataController {
         }
     }
 
-    // Fetch documents only for the current user
     func fetchCurrentUserDocuments(completion: @escaping ([Record]) -> Void) {
         guard let userId = currentUser else {
             completion([])
@@ -96,7 +90,6 @@ class DataController {
         fetchDocuments(userId: userId, completion: completion)
     }
 
-    // Download and unzip the files
     private func downloadAndUnzipFile(documentURL: String, completion: @escaping (Result<URL, Error>) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             let storageRef = Storage.storage().reference(forURL: documentURL)
@@ -144,7 +137,6 @@ class DataController {
         }
     }
 
-    // Save record metadata to the database
     func saveRecord(record: Record, completion: @escaping (Bool) -> Void) {
         let recordDict: [String: Any] = [
             "title": record.title,
@@ -158,7 +150,6 @@ class DataController {
         }
     }
 
-    // Delete a user's document
     func deleteDocument(userId: String, documentId: String, documentURL: String, completion: @escaping (Bool) -> Void) {
         let documentRef = database.child("patient_users").child(userId).child("documents").child(documentId)
         let storageRef = Storage.storage().reference(forURL: documentURL)
@@ -175,24 +166,27 @@ class DataController {
         }
     }
     
-    
-    // Fetch doctors data from Firebase
-    func fetchDoctors() {
+    func fetchDoctors(byCategory category: DoctorDesignation? = nil, completion: @escaping ([Doctor]) -> Void) {
         let ref = database.child("doctors")
-        ref.observe(.value) { snapshot in
-            self.doctors = [:] // Clear the doctors dictionary
-            print("Snapshot has \(snapshot.childrenCount) children.")
+        ref.observeSingleEvent(of: .value) { snapshot in
+            var doctors: [Doctor] = []
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot,
                    let doctorData = childSnapshot.value as? [String: Any],
                    let doctor = Doctor(from: doctorData, id: childSnapshot.key) {
-                    self.doctors[doctor.id ?? UUID().uuidString] = doctor
-                    print("Added doctor: \(doctor.firstName) \(doctor.lastName) with ID: \(doctor.id ?? "unknown")")
+                    if let category = category {
+                        if doctor.designation == category {
+                            doctors.append(doctor)
+                        }
+                    } else {
+                        doctors.append(doctor)
+                    }
                 } else {
                     print("Failed to parse doctor data from snapshot.")
                 }
             }
-            NotificationCenter.default.post(name: NSNotification.Name("DoctorsUpdated"), object: nil)
+            print("Fetched doctors: \(doctors.count)")
+            completion(doctors)
         }
     }
 }
