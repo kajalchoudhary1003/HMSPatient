@@ -2,6 +2,7 @@ import SwiftUI
 import FirebaseAuth
 
 class AuthManager: ObservableObject {
+    @Published var isLoggedIn = false
     @Published var verificationID: String = ""
     @AppStorage("isNewUser") var isNewUser: Bool = true // Flag to check if the user is new
     private let dataController = DataController()
