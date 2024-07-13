@@ -31,13 +31,25 @@ struct TimeSlot: Codable, Identifiable, Equatable {
         ]
     }
     
+    init(startTime: TimeInterval, endTime: TimeInterval) {
+        self.startTime = Date(timeIntervalSince1970: startTime)
+        self.endTime = Date(timeIntervalSince1970: endTime)
+    }
+
     init?(from dictionary: [String: Any]) {
-        guard let startTime = dictionary["startTime"] as? TimeInterval,
-              let endTime = dictionary["endTime"] as? TimeInterval else {
+        print("Attempting to parse TimeSlot from dictionary: \(dictionary)")
+        guard let startTime = dictionary["startTime"] as? TimeInterval else {
+            print("Failed to parse startTime from timeSlot")
+            return nil
+        }
+        guard let endTime = dictionary["endTime"] as? TimeInterval else {
+            print("Failed to parse endTime from timeSlot")
             return nil
         }
         self.startTime = Date(timeIntervalSince1970: startTime)
         self.endTime = Date(timeIntervalSince1970: endTime)
+        self.isAvailable = dictionary["isAvailable"] as? Bool ?? true
+        self.isPremium = dictionary["isPremium"] as? Bool ?? false
     }
 }
 
@@ -78,7 +90,7 @@ struct Doctor: Codable, Identifiable, Equatable {
     var phone: String
     var dob: Date
     var designation: DoctorDesignation
-    var titles: String // Assuming this represents years of experience or titles
+    var titles: String
     var timeSlots: [TimeSlot]
     var experience: Int
 
@@ -107,21 +119,53 @@ struct Doctor: Codable, Identifiable, Equatable {
 
     init?(from dictionary: [String: Any], id: String) {
         guard
-            let firstName = dictionary["firstName"] as? String,
-            let lastName = dictionary["lastName"] as? String,
-            let email = dictionary["email"] as? String,
-            let phone = dictionary["phone"] as? String,
-            let dobTimestamp = dictionary["dob"] as? TimeInterval,
+            let firstName = dictionary["firstName"] as? String else {
+                print("Failed to parse firstName")
+                return nil
+            }
+        guard
+            let lastName = dictionary["lastName"] as? String else {
+                print("Failed to parse lastName")
+                return nil
+            }
+        guard
+            let email = dictionary["email"] as? String else {
+                print("Failed to parse email")
+                return nil
+            }
+        guard
+            let phone = dictionary["phone"] as? String else {
+                print("Failed to parse phone")
+                return nil
+            }
+        guard
+            let dobTimestamp = dictionary["dob"] as? TimeInterval else {
+                print("Failed to parse dob")
+                return nil
+            }
+        guard
             let designationRaw = dictionary["designation"] as? String,
-            let designation = DoctorDesignation(rawValue: designationRaw),
-            let titles = dictionary["titles"] as? String,
-            let timeSlotDictionaries = dictionary["timeSlots"] as? [[String: Any]],
-            let experience = dictionary["experience"] as? Int
-        else {
-            return nil
-        }
+            let designation = DoctorDesignation(rawValue: designationRaw) else {
+                print("Failed to parse designation")
+                return nil
+            }
+        guard
+            let titles = dictionary["titles"] as? String else {
+                print("Failed to parse titles")
+                return nil
+            }
+        guard
+            let startTime = dictionary["starts"] as? TimeInterval else {
+                print("Failed to parse starts")
+                return nil
+            }
+        guard
+            let endTime = dictionary["ends"] as? TimeInterval else {
+                print("Failed to parse ends")
+                return nil
+            }
 
-        let timeSlots = timeSlotDictionaries.compactMap { TimeSlot(from: $0) }
+        let timeSlot = TimeSlot(startTime: startTime, endTime: endTime)
 
         self.id = id
         self.firstName = firstName
@@ -131,8 +175,8 @@ struct Doctor: Codable, Identifiable, Equatable {
         self.dob = Date(timeIntervalSince1970: dobTimestamp)
         self.designation = designation
         self.titles = titles
-        self.timeSlots = timeSlots
-        self.experience = experience
+        self.timeSlots = [timeSlot]
+        self.experience = 0  // Adjust this if the experience field is available
     }
 
     static func == (lhs: Doctor, rhs: Doctor) -> Bool {
@@ -264,4 +308,3 @@ enum DoctorDesignation: String, Codable, CaseIterable {
         return [nil] + DoctorDesignation.allCases
     }
 }
-

@@ -172,17 +172,21 @@ class DataController {
             var doctors: [Doctor] = []
             for child in snapshot.children {
                 if let childSnapshot = child as? DataSnapshot,
-                   let doctorData = childSnapshot.value as? [String: Any],
-                   let doctor = Doctor(from: doctorData, id: childSnapshot.key) {
-                    if let category = category {
-                        if doctor.designation == category {
+                   let doctorData = childSnapshot.value as? [String: Any] {
+                    print("Doctor data for snapshot \(childSnapshot.key): \(doctorData)")
+                    if let doctor = Doctor(from: doctorData, id: childSnapshot.key) {
+                        if let category = category {
+                            if doctor.designation == category {
+                                doctors.append(doctor)
+                            }
+                        } else {
                             doctors.append(doctor)
                         }
                     } else {
-                        doctors.append(doctor)
+                        print("Failed to parse doctor data from snapshot: \(childSnapshot.key)")
                     }
                 } else {
-                    print("Failed to parse doctor data from snapshot.")
+                    print("Failed to parse child snapshot")
                 }
             }
             print("Fetched doctors: \(doctors.count)")
