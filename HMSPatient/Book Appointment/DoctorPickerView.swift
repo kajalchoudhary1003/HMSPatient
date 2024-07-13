@@ -15,7 +15,7 @@ struct DoctorPickerView: View {
 
     var filteredDoctors: [Doctor] {
         if searchText.isEmpty {
-            return doctors.filter { $0.name != "Select Doctor" } // Exclude "Select Doctor"
+            return doctors.filter { $0.name != "Select Doctor" }
         } else {
             return doctors.filter { removePrefix(from: $0.name).lowercased().contains(searchText.lowercased()) && $0.name != "Select Doctor" }
         }
@@ -32,7 +32,6 @@ struct DoctorPickerView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
-                // Display other doctors grouped by initials
                 ForEach(sortedKeys, id: \.self) { key in
                     Section(header: Text(key)) {
                         ForEach(groupedDoctors[key]!, id: \.id) { doctor in
@@ -40,7 +39,7 @@ struct DoctorPickerView: View {
                                 if let index = doctors.firstIndex(where: { $0.id == doctor.id }) {
                                     print("Selected doctor: \(doctor.name), Index: \(index)")
                                     selectedDoctorIndex = index
-                                    presentationMode.wrappedValue.dismiss() // Dismiss the view after selection
+                                    presentationMode.wrappedValue.dismiss()
                                 } else {
                                     print("Doctor not found in doctors array.")
                                 }
@@ -65,7 +64,6 @@ struct DoctorPickerView: View {
         }
     }
 }
-
 
 struct DoctorCardView: View {
     var doctor: Doctor

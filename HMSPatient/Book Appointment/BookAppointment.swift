@@ -9,6 +9,7 @@ struct BookAppointment: View {
     @State private var weeks: [[Date]] = []
     @State private var selectedTimeSlot: TimeSlot?
     @State private var isPremiumSlotsEnabled = false
+    @State private var forceUpdate = false  // Added for UI update triggering
 
     var doctors: [Doctor]
     var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
@@ -29,7 +30,6 @@ struct BookAppointment: View {
                             }
                         }
                         .pickerStyle(.menu)
-
                     }
                     .padding()
                     .background(Color.white)
@@ -37,22 +37,14 @@ struct BookAppointment: View {
 
                     if selectedCategoryIndex != 0 {
                         NavigationLink(destination:
-                            DoctorPickerView(doctors: doctors, selectedDoctorIndex: Binding(
-                                get: {
-                                    selectedDoctorIndex
-                                },
-                                set: { newValue in
-                                    selectedDoctorIndex = newValue
-                                    doctorSelected = newValue != nil
-                                }
-                            ))
+                            DoctorPickerView(doctors: doctors, selectedDoctorIndex: $selectedDoctorIndex)
                         ){
                             HStack {
                                 Text(selectedDoctorLabel)
                                 Spacer()
                                 Image(systemName: "chevron.right")
                             }
-                            .foregroundColor(selectedDoctorIndex != nil ? .gray : .black) // Adjusted color based on selection
+                            .foregroundColor(selectedDoctorIndex != nil ? .gray : .black)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                         }
@@ -70,9 +62,7 @@ struct BookAppointment: View {
                             .background(Color.white)
                             .cornerRadius(10)
                     }
-                }
 
-                if doctorSelected {
                     ScrollView(.horizontal) {
                         LazyHStack(spacing: 20) {
                             ForEach(weeks.indices, id: \.self) { weekIndex in
@@ -83,12 +73,17 @@ struct BookAppointment: View {
                     }
                     .padding(.vertical, 16)
 
-                    if let selectedDoctor = doctors[safe: selectedDoctorIndex ?? -1] {
-                        VStack {
-                            TimeSlotView(selectedDoctor: selectedDoctor, timeSlots: selectedDoctor.timeSlots, selectedTimeSlot: $selectedTimeSlot, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
-                                .padding()
-                                .cornerRadius(10)
-                        }
+                    VStack {
+                        TimeSlotView(selectedDoctor: selectedDoctor,
+                                     timeSlots: selectedDoctor.timeSlots,
+                                     selectedTimeSlot: $selectedTimeSlot,
+                                     isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
+                            .padding()
+                            .cornerRadius(10)
+                            .onAppear {
+                                print("TimeSlotView appeared for doctor: \(selectedDoctor.name)")
+                                print("Number of time slots: \(selectedDoctor.timeSlots.count)")
+                            }
                     }
 
                     HStack {
@@ -122,9 +117,21 @@ struct BookAppointment: View {
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
                 weeks = fetchWeeks(from: currentDate)
+                print("BookAppointment view appeared")
+                print("Number of doctors: \(doctors.count)")
+                for doctor in doctors {
+                    print("Doctor: \(doctor.name), Time slots: \(doctor.timeSlots.count)")
+                }
             }
         }
         .background(Color(hex: "ECEEEE"))
+        .onChange(of: selectedDoctorIndex) { newValue in
+            doctorSelected = newValue != nil
+            if let index = newValue, let doctor = doctors[safe: index] {
+                print("Selected doctor: \(doctor.name)")
+                print("Number of time slots: \(doctor.timeSlots.count)")
+            }
+        }
     }
 
     private func resetSelections(_ index: Int) {
@@ -141,6 +148,7 @@ struct BookAppointment: View {
     }
 }
 
+
 struct TimeSlotView: View {
     let selectedDoctor: Doctor
     var timeSlots: [TimeSlot]
@@ -154,33 +162,60 @@ struct TimeSlotView: View {
     ]
 
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 12) {
-            ForEach(timeSlots.filter { timeSlot in
-                if isPremiumSlotsEnabled {
-                    return timeSlot.isPremium
-                } else {
-                    return !timeSlot.isPremium
+        VStack {
+            if timeSlots.isEmpty {
+                Text("No time slots available for this doctor.")
+                    .foregroundColor(.red)
+                    .padding()
+            } else {
+                let filteredTimeSlots = timeSlots.filter { timeSlot in
+                    isPremiumSlotsEnabled ? timeSlot.isPremium : !timeSlot.isPremium
                 }
-            }) { timeSlot in
-                Button(action: {
-                    if timeSlot.isAvailable {
-                        selectedTimeSlot = timeSlot
-                    }
-                }) {
-                    Text("\(timeSlot.startTime)") // Adjust as per your TimeSlot structure
-                        .font(.body)
-                        .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
+                
+                if filteredTimeSlots.isEmpty {
+                    Text("No time slots available for the selected criteria.")
+                        .foregroundColor(.red)
                         .padding()
-                        .frame(maxWidth: .infinity, minHeight: 50)
-                        .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex:"8C309D") : Color(hex: "006666")) : Color.white) : Color.gray.opacity(0.3))
-                        .cornerRadius(10)
+                } else {
+                    LazyVGrid(columns: columns, spacing: 12) {
+                        ForEach(filteredTimeSlots) { timeSlot in
+                            Button(action: {
+                                if timeSlot.isAvailable {
+                                    selectedTimeSlot = timeSlot
+                                }
+                            }) {
+                                Text(formatTimeRange(start: timeSlot.startTime, end: timeSlot.endTime))
+                                    .font(.body)
+                                    .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
+                                    .padding()
+                                    .frame(maxWidth: .infinity, minHeight: 50)
+                                    .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex:"8C309D") : Color(hex: "006666")) : Color.white) : Color.gray.opacity(0.3))
+                                    .cornerRadius(10)
+                            }
+                            .disabled(!timeSlot.isAvailable)
+                        }
+                    }
                 }
-                .disabled(!timeSlot.isAvailable)
+            }
+        }
+        .padding()
+        .onAppear {
+            print("TimeSlotView appeared")
+            print("Number of time slots: \(timeSlots.count)")
+            for slot in timeSlots {
+                print("TimeSlot: \(slot.id), isAvailable: \(slot.isAvailable), isPremium: \(slot.isPremium)")
             }
         }
     }
+
+    private func formatTimeRange(start: Date, end: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return "\(formatter.string(from: start)) - \(formatter.string(from: end))"
+    }
 }
 
+// Helper function
 private func fetchWeeks(from baseDate: Date) -> [[Date]] {
     var calendar = Calendar.current
     calendar.firstWeekday = 1 // Sunday as the first day of the week
@@ -208,7 +243,22 @@ struct BookAppointment_Previews: PreviewProvider {
                 dob: Date(),
                 designation: .generalPractitioner,
                 titles: "MD",
-                timeSlots: [],
+                timeSlots: [
+                    TimeSlot(
+                        id: "1_1",
+                        startTime: Date().addingTimeInterval(3600),
+                        endTime: Date().addingTimeInterval(5400),
+                        isAvailable: true,
+                        isPremium: false
+                    ),
+                    TimeSlot(
+                        id: "1_2",
+                        startTime: Date().addingTimeInterval(5400),
+                        endTime: Date().addingTimeInterval(7200),
+                        isAvailable: true,
+                        isPremium: true
+                    ),
+                ],
                 experience: 10
             ),
             Doctor(
@@ -220,7 +270,22 @@ struct BookAppointment_Previews: PreviewProvider {
                 dob: Date(),
                 designation: .cardiologist,
                 titles: "MD",
-                timeSlots: [],
+                timeSlots: [
+                    TimeSlot(
+                        id: "2_1",
+                        startTime: Date().addingTimeInterval(3600),
+                        endTime: Date().addingTimeInterval(5400),
+                        isAvailable: true,
+                        isPremium: false
+                    ),
+                    TimeSlot(
+                        id: "2_2",
+                        startTime: Date().addingTimeInterval(5400),
+                        endTime: Date().addingTimeInterval(7200),
+                        isAvailable: false,
+                        isPremium: true
+                    ),
+                ],
                 experience: 8
             )
         ])

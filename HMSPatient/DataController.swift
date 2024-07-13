@@ -212,24 +212,31 @@ class DataController {
         }
     }
     
-    
-    // Fetch doctors data from Firebase
     func fetchDoctors() {
         let ref = database.child("doctors")
-        ref.observe(.value) { snapshot in
-            self.doctors = [:] // Clear the doctors dictionary
-            print("Snapshot has \(snapshot.childrenCount) children.")
-            for child in snapshot.children {
-                if let childSnapshot = child as? DataSnapshot,
-                   let doctorData = childSnapshot.value as? [String: Any],
-                   let doctor = Doctor(from: doctorData, id: childSnapshot.key) {
-                    self.doctors[doctor.id ?? UUID().uuidString] = doctor
-                    print("Added doctor: \(doctor.firstName) \(doctor.lastName) with ID: \(doctor.id ?? "unknown")")
-                } else {
-                    print("Failed to parse doctor data from snapshot.")
+        ref.observe(.value) { [weak self] snapshot in
+            guard let self = self else { return }
+            
+            DispatchQueue.global(qos: .userInitiated).async {
+                var newDoctors: [String: Doctor] = [:]
+                print("Snapshot has \(snapshot.childrenCount) children.")
+                
+                for child in snapshot.children {
+                    guard let childSnapshot = child as? DataSnapshot,
+                          let doctorData = childSnapshot.value as? [String: Any],
+                          let doctor = Doctor(from: doctorData, id: childSnapshot.key) else {
+                        print("Failed to parse doctor data from snapshot.")
+                        continue
+                    }
+                    newDoctors[doctor.id] = doctor
+                    print("Added doctor: \(doctor.firstName) \(doctor.lastName) with ID: \(doctor.id)")
+                }
+                
+                DispatchQueue.main.async {
+                    self.doctors = newDoctors
+                    NotificationCenter.default.post(name: NSNotification.Name("DoctorsUpdated"), object: nil)
                 }
             }
-            NotificationCenter.default.post(name: NSNotification.Name("DoctorsUpdated"), object: nil)
         }
     }
 }

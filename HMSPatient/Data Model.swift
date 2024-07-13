@@ -9,34 +9,48 @@ struct User: Codable {
     var emergencyPhone: String
 }
 
-struct TimeSlot: Codable, Identifiable, Equatable {
-    var id: String = UUID().uuidString
+struct TimeSlot: Identifiable, Codable, Equatable {
+    var id: String
     var startTime: Date
     var endTime: Date
-    var isAvailable: Bool = true
-    var isPremium: Bool = false
-    
-    static func == (lhs: TimeSlot, rhs: TimeSlot) -> Bool {
-        return lhs.id == rhs.id && lhs.startTime == rhs.startTime && lhs.endTime == rhs.endTime
-    }
-    var time: String {
-        return "\(startTime) \(endTime)"
+    var isAvailable: Bool
+    var isPremium: Bool
+
+    // Initialize TimeSlot
+    init(id: String, startTime: Date, endTime: Date, isAvailable: Bool, isPremium: Bool) {
+        self.id = id
+        self.startTime = startTime
+        self.endTime = endTime
+        self.isAvailable = isAvailable
+        self.isPremium = isPremium
     }
 
-    func toDictionary() -> [String: Any] {
-        return [
-            "startTime": startTime.timeIntervalSince1970,
-            "endTime": endTime.timeIntervalSince1970
-        ]
+    // Decoder initializer
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.startTime = try container.decode(Date.self, forKey: .startTime)
+        self.endTime = try container.decode(Date.self, forKey: .endTime)
+        self.isAvailable = try container.decode(Bool.self, forKey: .isAvailable)
+        self.isPremium = try container.decode(Bool.self, forKey: .isPremium)
     }
-    
-    init?(from dictionary: [String: Any]) {
-        guard let startTime = dictionary["startTime"] as? TimeInterval,
-              let endTime = dictionary["endTime"] as? TimeInterval else {
+
+    // Initialize from dictionary
+    init?(from dictionary: [String: Any], id: String) {
+        guard
+            let startTimeTimestamp = dictionary["startTime"] as? TimeInterval,
+            let endTimeTimestamp = dictionary["endTime"] as? TimeInterval,
+            let isAvailable = dictionary["isAvailable"] as? Bool,
+            let isPremium = dictionary["isPremium"] as? Bool
+        else {
             return nil
         }
-        self.startTime = Date(timeIntervalSince1970: startTime)
-        self.endTime = Date(timeIntervalSince1970: endTime)
+
+        self.id = id
+        self.startTime = Date(timeIntervalSince1970: startTimeTimestamp)
+        self.endTime = Date(timeIntervalSince1970: endTimeTimestamp)
+        self.isAvailable = isAvailable
+        self.isPremium = isPremium
     }
 }
 
@@ -79,18 +93,20 @@ struct Doctor: Codable, Identifiable, Equatable {
     var dob: Date
     var designation: DoctorDesignation
     var titles: String // Assuming this represents years of experience or titles
-    var timeSlots: [TimeSlot]
+    var timeSlots: [TimeSlot] // Array of TimeSlot objects
+    var experience: Int
 
     var interval: String {
         return designation.interval
     }
+
     var name: String {
         return "\(firstName) \(lastName)"
     }
+
     var fees: String {
         return designation.fees
     }
-    var experience: Int
 
     init(id: String, firstName: String, lastName: String, email: String, phone: String, dob: Date, designation: DoctorDesignation, titles: String, timeSlots: [TimeSlot], experience: Int) {
         self.id = id
@@ -102,7 +118,7 @@ struct Doctor: Codable, Identifiable, Equatable {
         self.designation = designation
         self.titles = titles
         self.timeSlots = timeSlots
-        self.experience = experience // Initialize experience property
+        self.experience = experience
     }
 
     init?(from dictionary: [String: Any], id: String) {
@@ -115,13 +131,18 @@ struct Doctor: Codable, Identifiable, Equatable {
             let designationRaw = dictionary["designation"] as? String,
             let designation = DoctorDesignation(rawValue: designationRaw),
             let titles = dictionary["titles"] as? String,
-            let timeSlotDictionaries = dictionary["timeSlots"] as? [[String: Any]],
-            let experience = dictionary["experience"] as? Int // Parse experience from dictionary
+            let experience = dictionary["experience"] as? Int,
+            let timeSlotDictionaries = dictionary["timeSlots"] as? [[String: Any]] // Ensure timeSlots are fetched correctly
         else {
             return nil
         }
 
-        let timeSlots = timeSlotDictionaries.compactMap { TimeSlot(from: $0) }
+        var timeSlots = [TimeSlot]()
+         for (index, timeSlotDict) in timeSlotDictionaries.enumerated() {
+             if let timeSlot = TimeSlot(from: timeSlotDict, id: "\(id)_slot_\(index)") {
+                 timeSlots.append(timeSlot)
+             }
+         }
 
         self.id = id
         self.firstName = firstName
@@ -132,13 +153,15 @@ struct Doctor: Codable, Identifiable, Equatable {
         self.designation = designation
         self.titles = titles
         self.timeSlots = timeSlots
-        self.experience = experience // Assign experience to the property
+        self.experience = experience
     }
 
     static func == (lhs: Doctor, rhs: Doctor) -> Bool {
         return lhs.id == rhs.id
     }
 }
+
+
 
 enum DoctorDesignation: String, Codable, CaseIterable {
     case generalPractitioner = "General Practitioner"
