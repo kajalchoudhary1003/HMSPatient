@@ -17,6 +17,7 @@
 		62530F682C33E6DF001B496B /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62530F672C33E6DF001B496B /* Authentication.swift */; };
 		62530F6A2C33E6E2001B496B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F692C33E6E2001B496B /* Assets.xcassets */; };
 		62530F6D2C33E6E2001B496B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */; };
+		802E5B232C40034E0039A184 /* PatientProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 802E5B222C40034E0039A184 /* PatientProfile.swift */; };
 		81ACDCAF2C3FA7400097CAB6 /* BookAppointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */; };
 		81ACDCB02C3FA7400097CAB6 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */; };
 		81ACDCB12C3FA7400097CAB6 /* DoctorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */; };
@@ -51,6 +52,7 @@
 		62530F672C33E6DF001B496B /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		62530F692C33E6E2001B496B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		802E5B222C40034E0039A184 /* PatientProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientProfile.swift; sourceTree = "<group>"; };
 		81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookAppointment.swift; sourceTree = "<group>"; };
 		81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoctorPickerView.swift; sourceTree = "<group>"; };
@@ -113,13 +115,12 @@
 				24A780FB2C3FA8B000C8F3B1 /* PrescriptionDetailView.swift */,
 				E9EB70D92C3DBC440086F6E5 /* Data Model.swift */,
 				E9EB70DB2C3DBCB40086F6E5 /* DataController.swift */,
+				81ACDCAE2C3FA7400097CAB6 /* Utils */,
 				E9EB70E72C3DC6A20086F6E5 /* GPS */,
-				E94E68C62C37F2F600ED9F1C /* Authentication */,
 				E94E68C72C37F31300ED9F1C /* Profile */,
 				E9EB70FD2C3E91640086F6E5 /* Record */,
-				62530F692C33E6E2001B496B /* Assets.xcassets */,
+				E94E68C62C37F2F600ED9F1C /* Authentication */,
 				81ACDCAB2C3FA7400097CAB6 /* Book Appointment */,
-				81ACDCAE2C3FA7400097CAB6 /* Utils */,
 				62530F6B2C33E6E2001B496B /* Preview Content */,
 			);
 			path = HMSPatient;
@@ -129,6 +130,7 @@
 			isa = PBXGroup;
 			children = (
 				62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */,
+				62530F692C33E6E2001B496B /* Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -168,6 +170,7 @@
 			children = (
 				244E8C692C36B89400812262 /* ImagePicker.swift */,
 				244E8C682C36B89400812262 /* Profile_Setup_View.swift */,
+				802E5B222C40034E0039A184 /* PatientProfile.swift */,
 			);
 			path = Profile;
 			sourceTree = "<group>";
@@ -285,6 +288,7 @@
 				24A780FC2C3FA8B000C8F3B1 /* PrescriptionDetailView.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
+				802E5B232C40034E0039A184 /* PatientProfile.swift in Sources */,
 				E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */,
 				E9EB71012C3E918A0086F6E5 /* FileType.swift in Sources */,
 				81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */,

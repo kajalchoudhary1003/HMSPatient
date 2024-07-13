@@ -19,6 +19,7 @@ struct RecordsView: View {
     private let dataController = DataController()
 
     var body: some View {
+        NavigationView {
             VStack {
                 if isProcessing {
                     VStack {
@@ -86,6 +87,7 @@ struct RecordsView: View {
             ) { result in
                 handleFiles(result: result)
             }
+        }
     }
 
     private func handleFiles(result: Result<[URL], Error>) {
@@ -122,8 +124,18 @@ struct RecordsView: View {
 
         DispatchQueue.global(qos: .userInitiated).async {
             do {
+                // Start accessing the security scoped resources
+                for url in urls {
+                    _ = url.startAccessingSecurityScopedResource()
+                }
+                
                 // Create zip file
                 try Zip.zipFiles(paths: urls, zipFilePath: zipFilePath, password: nil, progress: nil)
+
+                // Stop accessing the security scoped resources
+                for url in urls {
+                    url.stopAccessingSecurityScopedResource()
+                }
 
                 // Upload to Firebase Storage
                 self.dataController.uploadZippedFiles(userId: self.userId, localFile: zipFilePath) { result in

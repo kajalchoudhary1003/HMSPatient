@@ -198,6 +198,3 @@ enum DoctorDesignation: String, Codable, CaseIterable {
         return [nil] + DoctorDesignation.allCases
     }
 }
-
-
-
