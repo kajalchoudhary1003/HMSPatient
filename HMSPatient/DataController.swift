@@ -193,4 +193,33 @@ class DataController {
             completion(doctors)
         }
     }
+
+    func saveAppointment(appointment: Appointment, completion: @escaping (Bool) -> Void) {
+        guard let userId = currentUser else {
+            completion(false)
+            return
+        }
+        
+        let appointmentDict: [String: Any] = [
+            "patientID": userId,
+            "doctorID": appointment.doctorID ?? "",
+            "date": appointment.date.timeIntervalSince1970,
+            "timeSlotID": appointment.timeSlotID
+        ]
+        
+        let appointmentId = appointment.id ?? UUID().uuidString
+        let appointmentRef = database.child("appointments").child(appointmentId)
+        
+        appointmentRef.setValue(appointmentDict) { [self] error, _ in
+            if let error = error {
+                print("Error saving appointment: \(error.localizedDescription)")
+                completion(false)
+            } else {
+                let userAppointmentRef = database.child("patient_users").child(userId).child("appointments").child(appointmentId)
+                userAppointmentRef.setValue(true) { error, _ in
+                    completion(error == nil)
+                }
+            }
+        }
+    }
 }
