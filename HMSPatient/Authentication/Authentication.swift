@@ -137,8 +137,8 @@ struct Authentication: View {
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(isFormValid ? Color(red: 0.0, green: 0.49, blue: 0.45) : Color.gray)
-                        .cornerRadius(8)
+                        .background(isFormValid ? Color(hex: "0E6B60"):Color.gray)
+                        .cornerRadius(10)
                 }
                 .disabled(!isFormValid)
                 .padding(.horizontal, 30)
