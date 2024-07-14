@@ -104,3 +104,25 @@ extension Collection {
 }
 
 
+extension Doctor {
+    func generateTimeSlots() -> [TimeSlot] {
+        let intervalMinutes = 15
+        
+        var currentTime = self.starts
+        var slots: [TimeSlot] = []
+        while currentTime < self.ends {
+            let slotEndTime = min(currentTime.addingTimeInterval(TimeInterval(intervalMinutes * 60)), self.ends)
+            let newSlot = TimeSlot(startTime: currentTime.timeIntervalSince1970, endTime: slotEndTime.timeIntervalSince1970)
+            slots.append(newSlot)
+            print("Added slot from \(currentTime.formattedString("HH:mm")) to \(slotEndTime.formattedString("HH:mm"))")
+            currentTime = slotEndTime
+            
+            if currentTime >= self.ends {
+                break
+            }
+        }
+        
+        print("Total slots generated: \(slots.count)")
+        return slots
+    }
+}  
