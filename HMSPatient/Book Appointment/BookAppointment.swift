@@ -16,7 +16,7 @@ struct BookAppointment: View {
     var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
     @StateObject private var eventKitManager = EventKitManager()
     @State private var appointmentBooked = false
-    
+
     var body: some View {
         ScrollView {
             VStack(alignment: .center, spacing: 16) {
@@ -130,34 +130,6 @@ struct BookAppointment: View {
                                 if success {
                                     // Handle successful appointment booking
                                     print("Appointment booked successfully")
-                                    
-                                    // Create a formatted notes string with relevant information
-                                    let notesFormatter = DateFormatter()
-                                    notesFormatter.dateFormat = "MMM d, yyyy"
-                                    let formattedDate = notesFormatter.string(from: currentDate)
-                                    
-                                    let notes = """
-Doctor: Dr. \(selectedDoctor.firstName) \(selectedDoctor.lastName)
-Specialty: \(selectedDoctor.designation)
-
-Please arrive 15 minutes early.
-Bring your insurance card and ID.
-"""
-                                    
-                                    eventKitManager.requestCalendarAccessAndAddEvent(
-                                        title: "Doctor Appointment",
-                                        startDate: selectedTimeSlot.startTime,
-                                        endDate: selectedTimeSlot.endTime,
-                                        notes: notes
-                                    ) { success in
-                                        if success {
-                                            print("Event added to calendar successfully")
-                                        } else {
-                                            print("Failed to add event to calendar")
-                                        }
-                                    }
-                                    
-                                    // Trigger navigation to AppointmentSummaryView
                                     self.appointmentBooked = true
                                 } else {
                                     // Handle error in booking appointment
@@ -229,10 +201,10 @@ struct TimeSlotView: View {
 
     var body: some View {
         if timeSlots.isEmpty {
-                    Text("No time slots available")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                        .padding()
+            Text("No time slots available")
+                .font(.headline)
+                .foregroundColor(.gray)
+                .padding()
         } else {
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(timeSlots.filter { timeSlot in
@@ -252,7 +224,7 @@ struct TimeSlotView: View {
                             .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
                             .padding()
                             .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex:"BC79B8") : Color(hex: "0E6B60")) : Color.white) : Color.gray.opacity(0.3))
+                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : Color(hex: "0E6B60")) : Color.white) : Color.gray.opacity(0.3))
                             .cornerRadius(10)
                     }
                     .disabled(!timeSlot.isAvailable)

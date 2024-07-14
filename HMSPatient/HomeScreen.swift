@@ -38,6 +38,7 @@ struct HomeTab: View {
                                 AppointmentCard()
                             }
                             .padding(.horizontal)
+                            .padding(.top,7)
                             VStack(alignment: .leading, spacing: 7) {
                                 Text("Features")
                                     .font(.title2)
