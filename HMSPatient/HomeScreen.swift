@@ -43,7 +43,7 @@ struct HomeTab: View {
                                     .font(.title2)
                                     .fontWeight(.bold)
                                 HStack {
-                                    NavigationLink(destination: BookAppointment(doctors: sampleDoctors)){
+                                    NavigationLink(destination: BookAppointment()){
                                         FeatureCard(icon: "stethoscope.circle.fill", title: "Book an\nAppointment")
                                     }
                                     NavigationLink(destination: PrescriptionListView()) {
@@ -88,8 +88,6 @@ struct HomeTab: View {
         }.navigationBarHidden(true)
     }
 }
-
-
 
 struct AppointmentCard: View {
     var body: some View {
@@ -175,37 +173,6 @@ struct OfferCard: View {
         }
     }
 }
-
-let sampleDoctors: [Doctor] = [
-    Doctor(
-        id: "1",
-        firstName: "John",
-        lastName: "Doe",
-        email: "john.doe@example.com",
-        phone: "123-456-7890",
-        dob: Date(),
-        designation: .generalPractitioner,
-        titles: "MD",
-        timeSlots: [
-//                    TimeSlot(startTime: "09:00 AM", endTime: "09:30 AM", isAvailable: true, isPremium: false)
-        ],
-        experience: 10
-    ),
-    Doctor(
-        id: "2",
-        firstName: "Jane",
-        lastName: "Smith",
-        email: "jane.smith@example.com",
-        phone: "987-654-3210",
-        dob: Date(),
-        designation: .cardiologist,
-        titles: "MD",
-        timeSlots: [
-//                    TimeSlot(startTime: "10:00 AM", endTime: "10:30 AM", isAvailable: true, isPremium: true)
-        ],
-        experience: 8
-    )
-]
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
