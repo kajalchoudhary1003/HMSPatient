@@ -30,7 +30,6 @@ struct BookAppointment: View {
                             }
                         }
                         .pickerStyle(.menu)
-
                     }
                     .padding()
                     .background(Color.white)
