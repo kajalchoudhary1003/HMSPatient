@@ -32,7 +32,7 @@ struct HomeTab: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
                             VStack(alignment: .leading, spacing: 7) {
-                                Text("Upcoming Appointments")
+                                Text("My Appointments")
                                     .font(.title2)
                                     .fontWeight(.bold)
                                 AppointmentCard()
@@ -44,10 +44,10 @@ struct HomeTab: View {
                                     .fontWeight(.bold)
                                 HStack {
                                     NavigationLink(destination: BookAppointment()){
-                                        FeatureCard(icon: "stethoscope.circle.fill", title: "Book an\nAppointment")
+                                        FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
                                     }
                                     NavigationLink(destination: PrescriptionListView()) {
-                                        FeatureCard(icon: "newspaper.circle.fill", title: "My\nPrescriptions")
+                                        FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
                                     }
                                 }
                             }
@@ -92,25 +92,27 @@ struct HomeTab: View {
 struct AppointmentCard: View {
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading) {
                 Text("Dr. Renu Luthra")
                     .font(.title)
                 Text("Gynecologist")
                     .font(.subheadline)
                     .foregroundColor(.gray)
+                    .padding(.bottom,5)
                 Text("10:15 - 10:35")
                     .font(.subheadline)
-                    .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
+                    .foregroundColor(Color(hex: "0E6B60"))
             }
             Spacer()
             VStack(alignment: .trailing) {
                 Text("WED")
                     .padding(.trailing, 6)
                     .font(.subheadline)
-                    .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
+                    .fontWeight(.bold)
+                    .foregroundColor(Color(hex: "0E6B60"))
                 Text("28")
                     .font(.largeTitle)
-                    .fontWeight(.bold)
+                    .fontWeight(.regular)
             }
         }
         .padding()
@@ -128,16 +130,21 @@ struct FeatureCard: View {
             HStack {
                 Spacer()
                 Image(systemName: icon)
-                    .font(.largeTitle)
-                    .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .foregroundColor(.white)
+                    .padding(8)
+                    .frame(width: 40, height: 40)
+                    .background(Circle().fill(Color(hex: "0E6B60")))
             }
             Spacer()
             Text(title)
                 .font(.headline)
+                .fontWeight(.regular)
                 .multilineTextAlignment(.leading)
                 .foregroundColor(.black)
         }
-        .frame(height: 120)
+        .frame(height: 130)
         .frame(maxWidth: .infinity)
         .padding()
         .background(Color.white)
@@ -166,7 +173,7 @@ struct OfferCard: View {
         }) {
             Text(offerText)
                 .padding()
-                .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
+                .foregroundColor(Color(hex: "0E6B60"))
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.white)
                 .cornerRadius(10)
