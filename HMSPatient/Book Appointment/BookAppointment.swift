@@ -1,4 +1,5 @@
 import SwiftUI
+import FirebaseAuth
 
 struct BookAppointment: View {
     @State private var selectedCategoryIndex = 0
@@ -11,9 +12,10 @@ struct BookAppointment: View {
     @State private var isPremiumSlotsEnabled = false
     @State private var filteredDoctors: [Doctor] = []
     @State private var isLoadingDoctors = false
-
+    @State private var generatedTimeSlots: [TimeSlot] = []
     var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
-
+    
+    
     var body: some View {
         ScrollView {
             VStack(alignment: .center, spacing: 16) {
@@ -46,6 +48,16 @@ struct BookAppointment: View {
                             .foregroundColor(selectedDoctorIndex != nil ? .gray : .black)
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
+                            .onChange(of: selectedDoctorIndex) { newValue in
+                                if let index = newValue, let doctor = filteredDoctors[safe: index] {
+                                    generatedTimeSlots = doctor.generateTimeSlots()
+                                    doctorSelected = true
+                                    print("Generated \(generatedTimeSlots.count) time slots for \(doctor.name)")
+                                } else {
+                                    generatedTimeSlots = []
+                                    doctorSelected = false
+                                }
+                            }
                         }
                         .background(Color.white)
                         .cornerRadius(10)
@@ -76,7 +88,7 @@ struct BookAppointment: View {
 
                     if let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1] {
                         VStack {
-                            TimeSlotView(selectedDoctor: selectedDoctor, timeSlots: selectedDoctor.timeSlots, selectedTimeSlot: $selectedTimeSlot, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
+                            TimeSlotView(selectedDoctor: selectedDoctor, timeSlots: generatedTimeSlots, selectedTimeSlot: $selectedTimeSlot, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
                                 .padding()
                                 .cornerRadius(10)
                         }
@@ -94,17 +106,42 @@ struct BookAppointment: View {
                     .background(Color.white)
                     .cornerRadius(10)
 
-                    Button(action: {
-                        // Implement booking action here
-                    }) {
-                        Text("Book").fontWeight(.bold)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .foregroundColor(.white)
-                            .padding().padding(.vertical, 4)
-                            .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "006666"))
-                            .cornerRadius(10)
-                    }
-                    .padding(.vertical)
+Button(action: {
+    guard let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1],
+          let selectedTimeSlot = selectedTimeSlot,
+          let currentUserId = Auth.auth().currentUser?.uid else {
+        print("Missing required information for booking appointment")
+        return
+    }
+    
+    let appointment = Appointment(
+        patientID: currentUserId,
+        doctorID: selectedDoctor.id,
+        date: currentDate,
+        timeSlotID: selectedTimeSlot.id
+    )
+    
+    DataController.shared.saveAppointment(appointment: appointment) { success in
+        if success {
+            // Handle successful appointment booking
+            print("Appointment booked successfully")
+            // You might want to show an alert or navigate to a confirmation screen here
+        } else {
+            // Handle error in booking appointment
+            print("Failed to book appointment")
+            // You might want to show an error alert here
+        }
+    }
+}) {
+    Text("Book").fontWeight(.bold)
+        .frame(maxWidth: .infinity, alignment: .center)
+        .foregroundColor(.white)
+        .padding().padding(.vertical, 4)
+        .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "006666"))
+        .cornerRadius(10)
+}
+.padding(.vertical)
+
                 }
             }
             .padding()
@@ -158,30 +195,43 @@ struct TimeSlotView: View {
     ]
 
     var body: some View {
-        LazyVGrid(columns: columns, spacing: 12) {
-            ForEach(timeSlots.filter { timeSlot in
-                if isPremiumSlotsEnabled {
-                    return timeSlot.isPremium
-                } else {
-                    return !timeSlot.isPremium
-                }
-            }) { timeSlot in
-                Button(action: {
-                    if timeSlot.isAvailable {
-                        selectedTimeSlot = timeSlot
-                    }
-                }) {
-                    Text("\(timeSlot.startTime)") // Adjust as per your TimeSlot structure
-                        .font(.body)
-                        .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
+        if timeSlots.isEmpty {
+                    Text("No time slots available")
+                        .font(.headline)
+                        .foregroundColor(.gray)
                         .padding()
-                        .frame(maxWidth: .infinity, minHeight: 50)
-                        .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex:"8C309D") : Color(hex: "006666")) : Color.white) : Color.gray.opacity(0.3))
-                        .cornerRadius(10)
+        } else {
+            LazyVGrid(columns: columns, spacing: 12) {
+                ForEach(timeSlots.filter { timeSlot in
+                    isPremiumSlotsEnabled ? timeSlot.isPremium : !timeSlot.isPremium
+                }) { timeSlot in
+                    Button(action: {
+                        if timeSlot.isAvailable {
+                            if selectedTimeSlot == timeSlot {
+                                selectedTimeSlot = nil
+                            } else {
+                                selectedTimeSlot = timeSlot
+                            }
+                        }
+                    }) {
+                        Text(formatTimeSlot(timeSlot))
+                            .font(.body)
+                            .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
+                            .padding()
+                            .frame(maxWidth: .infinity, minHeight: 50)
+                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex:"8C309D") : Color(hex: "006666")) : Color.white) : Color.gray.opacity(0.3))
+                            .cornerRadius(10)
+                    }
+                    .disabled(!timeSlot.isAvailable)
                 }
-                .disabled(!timeSlot.isAvailable)
             }
         }
+    }
+
+    private func formatTimeSlot(_ timeSlot: TimeSlot) -> String {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        return "\(formatter.string(from: timeSlot.startTime))   "
     }
 }
 

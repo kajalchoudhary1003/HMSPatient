@@ -91,8 +91,9 @@ struct Doctor: Codable, Identifiable, Equatable {
     var dob: Date
     var designation: DoctorDesignation
     var titles: String
-    var timeSlots: [TimeSlot]
     var experience: Int
+    var starts: Date
+    var ends: Date
 
     var interval: String {
         return designation.interval
@@ -104,7 +105,7 @@ struct Doctor: Codable, Identifiable, Equatable {
         return designation.fees
     }
 
-    init(id: String, firstName: String, lastName: String, email: String, phone: String, dob: Date, designation: DoctorDesignation, titles: String, timeSlots: [TimeSlot], experience: Int) {
+    init(id: String, firstName: String, lastName: String, email: String, phone: String, dob: Date, designation: DoctorDesignation, titles: String, experience: Int, starts: Date, ends: Date) {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
@@ -113,59 +114,27 @@ struct Doctor: Codable, Identifiable, Equatable {
         self.dob = dob
         self.designation = designation
         self.titles = titles
-        self.timeSlots = timeSlots
         self.experience = experience
+        self.starts = starts
+        self.ends = ends
     }
 
     init?(from dictionary: [String: Any], id: String) {
         guard
-            let firstName = dictionary["firstName"] as? String else {
-                print("Failed to parse firstName")
-                return nil
-            }
-        guard
-            let lastName = dictionary["lastName"] as? String else {
-                print("Failed to parse lastName")
-                return nil
-            }
-        guard
-            let email = dictionary["email"] as? String else {
-                print("Failed to parse email")
-                return nil
-            }
-        guard
-            let phone = dictionary["phone"] as? String else {
-                print("Failed to parse phone")
-                return nil
-            }
-        guard
-            let dobTimestamp = dictionary["dob"] as? TimeInterval else {
-                print("Failed to parse dob")
-                return nil
-            }
-        guard
+            let firstName = dictionary["firstName"] as? String,
+            let lastName = dictionary["lastName"] as? String,
+            let email = dictionary["email"] as? String,
+            let phone = dictionary["phone"] as? String,
+            let dobTimestamp = dictionary["dob"] as? TimeInterval,
             let designationRaw = dictionary["designation"] as? String,
-            let designation = DoctorDesignation(rawValue: designationRaw) else {
-                print("Failed to parse designation")
-                return nil
-            }
-        guard
-            let titles = dictionary["titles"] as? String else {
-                print("Failed to parse titles")
-                return nil
-            }
-        guard
-            let startTime = dictionary["starts"] as? TimeInterval else {
-                print("Failed to parse starts")
-                return nil
-            }
-        guard
-            let endTime = dictionary["ends"] as? TimeInterval else {
-                print("Failed to parse ends")
-                return nil
-            }
-
-        let timeSlot = TimeSlot(startTime: startTime, endTime: endTime)
+            let designation = DoctorDesignation(rawValue: designationRaw),
+            let titles = dictionary["titles"] as? String,
+            let starts = dictionary["starts"] as? TimeInterval,
+            let ends = dictionary["ends"] as? TimeInterval
+        else {
+            print("Failed to parse Doctor data")
+            return nil
+        }
 
         self.id = id
         self.firstName = firstName
@@ -175,8 +144,9 @@ struct Doctor: Codable, Identifiable, Equatable {
         self.dob = Date(timeIntervalSince1970: dobTimestamp)
         self.designation = designation
         self.titles = titles
-        self.timeSlots = [timeSlot]
-        self.experience = 0  // Adjust this if the experience field is available
+        self.experience = dictionary["experience"] as? Int ?? 0
+        self.starts = Date(timeIntervalSince1970: starts)
+        self.ends = Date(timeIntervalSince1970: ends)
     }
 
     static func == (lhs: Doctor, rhs: Doctor) -> Bool {
