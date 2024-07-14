@@ -91,7 +91,7 @@ struct BookAppointment: View {
                             Text("Premium Slots")
                                 .font(.headline)
                         }
-                        .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#AE75AC")))
+                        .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#BC79B8")))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
@@ -105,7 +105,7 @@ struct BookAppointment: View {
                             .frame(maxWidth: .infinity, alignment: .center)
                             .foregroundColor(.white)
                             .padding().padding(.vertical, 4)
-                            .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "006666"))
+                            .background(isPremiumSlotsEnabled ? Color(hex: "#BC79B8") : Color(hex: "0E6B60"))
                             .cornerRadius(10)
                     }
                     .padding(.vertical)
@@ -189,7 +189,7 @@ struct TimeSlotView: View {
                                     .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
                                     .padding()
                                     .frame(maxWidth: .infinity, minHeight: 50)
-                                    .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex:"8C309D") : Color(hex: "006666")) : Color.white) : Color.gray.opacity(0.3))
+                                    .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex:"8C309D") : Color(hex: "0E6B60")) : Color.white) : Color.gray.opacity(0.3))
                                     .cornerRadius(10)
                             }
                             .disabled(!timeSlot.isAvailable)

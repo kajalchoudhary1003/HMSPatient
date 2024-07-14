@@ -47,7 +47,7 @@ struct DoctorPickerView: View {
                                 DoctorCardView(doctor: doctor)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 10)
-                                            .stroke(selectedDoctorIndex == doctors.firstIndex(where: { $0.id == doctor.id }) ? Color(hex: "006666") : Color.clear, lineWidth: 2)
+                                            .stroke(selectedDoctorIndex == doctors.firstIndex(where: { $0.id == doctor.id }) ? Color(hex: "0E6B60") : Color.clear, lineWidth: 2)
                                     )
                             }
                         }
@@ -88,7 +88,7 @@ struct DoctorCardView: View {
 
                     Text(String(format: "Fees: %@", doctor.fees))
                         .font(.footnote)
-                        .foregroundColor(Color(hex: "006666"))
+                        .foregroundColor(Color(hex: "0E6B60"))
                 }
             }
         }
