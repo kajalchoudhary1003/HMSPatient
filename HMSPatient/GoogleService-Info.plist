@@ -3,30 +3,30 @@
 <plist version="1.0">
 <dict>
 	<key>API_KEY</key>
-	<string>AIzaSyDZpFkVqAu_dUt_JlEQZE5LNgQK5yng9-c</string>
+	<string>AIzaSyB0Xt1xfn9zWhkWG-LmCd_mlIFm0hyQl_M</string>
 	<key>GCM_SENDER_ID</key>
-	<string>585219974067</string>
+	<string>438439766467</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>team02.HMS-Patient</string>
+	<string>team02.HMS-PatientApp</string>
 	<key>PROJECT_ID</key>
-	<string>hms-team02</string>
+	<string>hms-hospital-management-system</string>
 	<key>STORAGE_BUCKET</key>
-	<string>hms-team02.appspot.com</string>
+	<string>hms-hospital-management-system.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<false/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:585219974067:ios:54a8bd17b804ddc420e1c6</string>
+	<string>1:438439766467:ios:05b063a26f950cbe773576</string>
 	<key>DATABASE_URL</key>
-	<string>https://hms-team02-default-rtdb.asia-southeast1.firebasedatabase.app</string>
+	<string>https://hms-hospital-management-system-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>
 </plist>

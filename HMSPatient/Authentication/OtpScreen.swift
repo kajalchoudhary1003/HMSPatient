@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct OtpView: View {
-    @State private var otpFields = ["", "", "", "", "", ""]
+    @State private var otpFields = ["1", "2", "3", "4", "5", "6"]
     @State private var showAlert = false
     @State private var alertMessage = ""
     @ObservedObject var authManager: AuthManager
