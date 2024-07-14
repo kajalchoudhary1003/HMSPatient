@@ -16,9 +16,9 @@ struct OtpView: View {
     }
 
     var body: some View {
-        VStack {
-            Spacer().frame(height: 50) // Top spacer with fixed height
-
+        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/) {
+            
+            Spacer ()
             Text("Enter the OTP")
                 .font(.headline)
                 .foregroundColor(.gray)
@@ -72,7 +72,9 @@ struct OtpView: View {
                     }
                 }) {
                     Text("Resend code")
-                        .foregroundColor(.blue)
+                        .font(.subheadline)
+                        .foregroundColor(.black)
+                        .underline()
                         .padding()
                 }
                 .alert(isPresented: $showAlert) {
@@ -105,12 +107,12 @@ struct OtpView: View {
                     showAlert = true
                 }
             }) {
-                Text("Continue")
+                Text("Sign In")
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.blue)
-                    .cornerRadius(8)
+                    .background(Color(hex:"0E6B60"))
+                    .cornerRadius(10)
             }
             .padding(.horizontal, 30)
             .padding(.bottom, 30)
