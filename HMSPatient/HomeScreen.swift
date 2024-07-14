@@ -81,7 +81,7 @@ struct HomeTab: View {
                             // Profile Button Action
                         }) {
                             Image(systemName: "person.circle.fill")
-                                .foregroundColor(Color(hex: "006666"))
+                                .foregroundColor(Color(hex: "0E6B60"))
                         }
                     }
                 }

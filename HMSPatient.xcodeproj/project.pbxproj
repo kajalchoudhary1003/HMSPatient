@@ -24,8 +24,8 @@
 		81ACDCB22C3FA7400097CAB6 /* Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAA2C3FA7400097CAB6 /* Summary.swift */; };
 		81ACDCB32C3FA7400097CAB6 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAC2C3FA7400097CAB6 /* Blur.swift */; };
 		81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */; };
+		E906D1362C43D3D900620531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E906D1352C43D3D900620531 /* GoogleService-Info.plist */; };
 		E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */; };
-		E94E68CB2C37F42500ED9F1C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E94E68CA2C37F42500ED9F1C /* GoogleService-Info.plist */; };
 		E94E68CE2C37F4CA00ED9F1C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CD2C37F4CA00ED9F1C /* FirebaseAuth */; };
 		E94E68D02C37F4CA00ED9F1C /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CF2C37F4CA00ED9F1C /* FirebaseDatabase */; };
 		E94E68D22C37F4CA00ED9F1C /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68D12C37F4CA00ED9F1C /* FirebaseDatabaseSwift */; };
@@ -59,8 +59,8 @@
 		81ACDCAA2C3FA7400097CAB6 /* Summary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Summary.swift; sourceTree = "<group>"; };
 		81ACDCAC2C3FA7400097CAB6 /* Blur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
 		81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		E906D1352C43D3D900620531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication_Logic.swift; sourceTree = "<group>"; };
-		E94E68CA2C37F42500ED9F1C /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		E94E68D52C37F55A00ED9F1C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E94E68D72C37F5DC00ED9F1C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E9EB70D92C3DBC440086F6E5 /* Data Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data Model.swift"; sourceTree = "<group>"; };
@@ -107,7 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				E94E68D72C37F5DC00ED9F1C /* Info.plist */,
-				E94E68CA2C37F42500ED9F1C /* GoogleService-Info.plist */,
+				E906D1352C43D3D900620531 /* GoogleService-Info.plist */,
 				E94E68D52C37F55A00ED9F1C /* AppDelegate.swift */,
 				62530F652C33E6DF001B496B /* HMSPatientApp.swift */,
 				EA95BFFD2C371FB100582FDC /* HomeScreen.swift */,
@@ -263,8 +263,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				62530F6D2C33E6E2001B496B /* Preview Assets.xcassets in Resources */,
-				E94E68CB2C37F42500ED9F1C /* GoogleService-Info.plist in Resources */,
 				62530F6A2C33E6E2001B496B /* Assets.xcassets in Resources */,
+				E906D1362C43D3D900620531 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,7 +452,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "team02.HMS-Patienttttt";
+				PRODUCT_BUNDLE_IDENTIFIER = "team02.HMS-PatientApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -488,7 +488,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "team02.HMS-Patienttttt";
+				PRODUCT_BUNDLE_IDENTIFIER = "team02.HMS-PatientApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
