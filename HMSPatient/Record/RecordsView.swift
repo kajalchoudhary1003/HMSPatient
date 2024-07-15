@@ -68,11 +68,13 @@ struct RecordsView: View {
                             }
                             .onDelete(perform: confirmDeleteRecords)
                         }
+                        .background(Color(hex:"ECEEEE"))
                         .padding()
                     }
-                    .background(Color(UIColor.systemGray6))
                 }
             }
+            
+            .background(Color(hex:"ECEEEE"))
             .searchable(text: $searchText, prompt: "Search")
             .navigationTitle("Records")
             .navigationBarItems(trailing: Button(action: {
@@ -88,6 +90,8 @@ struct RecordsView: View {
                 handleFiles(result: result)
             }
         }
+        .background(Color(hex:"ECEEEE"))
+
     }
 
     private func handleFiles(result: Result<[URL], Error>) {

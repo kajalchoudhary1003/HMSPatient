@@ -20,6 +20,7 @@ struct HomeView: View {
                 .tag(1)
         }
     }
+       
 }
 
 struct HomeTab: View {
@@ -66,7 +67,7 @@ struct HomeTab: View {
                 }
                 }
                 .searchable(text: $searchText)
-                .background(Color(.systemGray6))
+                .background(Color(hex:"ECEEEE"))
                 .navigationBarTitle("Hi, User") // Set navigationTitle outside GeometryReader
                 .toolbar {
                     ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -86,7 +87,8 @@ struct HomeTab: View {
                         }
                     }
                 }
-        }.navigationBarHidden(true)
+        }
+        .navigationBarHidden(true)
     }
 }
 
