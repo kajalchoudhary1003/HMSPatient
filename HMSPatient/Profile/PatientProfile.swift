@@ -21,9 +21,11 @@ struct PatientProfileView: View {
     @State private var isAddingEmergencyPhone = false
     @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
     @State private var showingActionSheet = false
-    @State private var navigateToHome = false
     @State private var isEditing = false // Added state variable for edit mode
+    
+    @Environment(\.presentationMode) var presentationMode
     private let dataController = DataController()
+    
 
     var isSaveDisabled: Bool {
         !isFormValid || (isAddingEmergencyPhone && !isEmergencyPhoneValid)
@@ -43,9 +45,6 @@ struct PatientProfileView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Profile")
-                    .font(.largeTitle)
-                    .bold()
                 Spacer()
                 Button(isEditing ? "Done" : "Edit") {
                     // Toggle edit mode
@@ -89,7 +88,7 @@ struct PatientProfileView: View {
                         .overlay(
                             Text("\(firstName.count)/25")
                                 .font(.caption)
-                                .foregroundColor(firstName.count > 25 ? .red : .gray)
+                                .foregroundColor(firstName.count > 25 ? Color(UIColor.systemRed) : .gray)
                                 .padding(.trailing, 8),
                             alignment: .trailing
                         )
@@ -106,7 +105,7 @@ struct PatientProfileView: View {
                         .overlay(
                             Text("\(lastName.count)/25")
                                 .font(.caption)
-                                .foregroundColor(lastName.count > 25 ? .red : .gray)
+                                .foregroundColor(lastName.count > 25 ? Color(UIColor.systemRed) : .gray)
                                 .padding(.trailing, 8),
                             alignment: .trailing
                         )
@@ -149,14 +148,14 @@ struct PatientProfileView: View {
                             .overlay(
                                 Text("\(emergencyPhone.count)/10")
                                     .font(.caption)
-                                    .foregroundColor(emergencyPhone.count > 10 ? .red : .gray)
+                                    .foregroundColor(emergencyPhone.count > 10 ? Color(UIColor.systemRed) : .gray)
                                     .padding(.trailing, 8),
                                 alignment: .trailing
                             )
                             .disabled(!isEditing) // Disable editing when not in edit mode
                         if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
                             Text("Phone number should be 10 digits")
-                                .foregroundColor(.red)
+                                .foregroundColor(Color(UIColor.systemRed))
                                 .font(.caption)
                         }
                     } else {
@@ -173,6 +172,7 @@ struct PatientProfileView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
             .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
                 ImagePicker(image: self.$inputImage, sourceType: self.$sourceType)
             }
@@ -190,17 +190,16 @@ struct PatientProfileView: View {
                 ])
             }
         }
+        .background(Color(hex:"ECEEEE"))
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                NavigationLink(destination: HomeView(), isActive: $navigateToHome) {
                     Button(action: {
                         saveUserData()
                     }) {
                         Text("Done")
                     }
                     .disabled(isSaveDisabled)
-                }
             }
         }
     }
@@ -223,7 +222,7 @@ struct PatientProfileView: View {
 
         dataController.saveUser(userId: userId, user: user) { success in
             if success {
-                navigateToHome = true
+                presentationMode.wrappedValue.dismiss()
             } else {
                 // Handle error (show an alert, etc.)
             }

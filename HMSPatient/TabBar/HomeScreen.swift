@@ -25,6 +25,7 @@ struct HomeView: View {
 
 struct HomeTab: View {
     @State private var searchText = ""
+    @State private var showingProfile = false
     
     var body: some View {
         NavigationView {
@@ -33,9 +34,18 @@ struct HomeTab: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
                             VStack(alignment: .leading, spacing: 7) {
-                                Text("My Appointments")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
+                                HStack{
+                                    Text("My Appointments")
+                                        .font(.title2)
+                                        .fontWeight(.bold)
+                                    
+                                    Spacer()
+                                    
+                                    NavigationLink(destination: MyAppointmentsView()) {
+                                        Text("See All")
+                                        
+                                    }
+                                }
                                 AppointmentCard()
                             }
                             .padding(.horizontal)
@@ -79,11 +89,13 @@ struct HomeTab: View {
                             Image(systemName: "cross.circle.fill")
                                 .foregroundColor(Color(UIColor.systemRed))
                         }
-                        Button(action: {
-                            // Profile Button Action
+                        Button(action: {                            showingProfile = true
                         }) {
                             Image(systemName: "person.circle.fill")
                                 .foregroundColor(Color(hex: "0E6B60"))
+                        }
+                        .sheet(isPresented: $showingProfile) {
+                            PatientProfileView()
                         }
                     }
                 }
@@ -180,7 +192,7 @@ struct OfferCard: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.white)
                 .cornerRadius(10)
-        }
+        }.padding(.horizontal,5)
     }
 }
 

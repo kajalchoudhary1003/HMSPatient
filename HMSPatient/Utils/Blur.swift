@@ -17,10 +17,16 @@ struct Backdrop: UIViewRepresentable {
 struct Blur: View {
     var radius: CGFloat = 7
     var opaque: Bool = false
+    var tintColor: Color = .white
+    var tintOpacity: Double = 0.5 // Adjust this value to control the intensity of the whitish tint
     
     var body: some View {
-        Backdrop()
-            .blur(radius: radius, opaque: opaque)
+        ZStack {
+            Backdrop()
+                .blur(radius: radius, opaque: opaque)
+            
+            tintColor.opacity(tintOpacity)
+        }
     }
 }
 

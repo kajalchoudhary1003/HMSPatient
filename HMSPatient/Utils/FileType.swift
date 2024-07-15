@@ -62,7 +62,7 @@ struct RecordCard: View {
                             Button(action: stopAudio) {
                                 Image(systemName: "stop.circle")
                                     .font(.title)
-                                    .foregroundColor(.red)
+                                    .foregroundColor(Color(UIColor.systemRed))
                             }
                         }
                     }
@@ -73,7 +73,6 @@ struct RecordCard: View {
         .padding()
         .background(Color.white)
         .cornerRadius(10)
-        .shadow(radius: 1)
     }
     
     func playAudio() {

@@ -142,7 +142,7 @@ struct BookAppointment: View {
                                 .frame(maxWidth: .infinity, alignment: .center)
                                 .foregroundColor(.white)
                                 .padding()
-                                .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "006666"))
+                                .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "0E6B60"))
                                 .cornerRadius(10)
                         }
                         .padding(.vertical)

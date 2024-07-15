@@ -31,7 +31,7 @@ struct OtpView: View {
                         .multilineTextAlignment(.center)
                         .frame(width: 50, height: 50)
                         .overlay(
-                            RoundedRectangle(cornerRadius: 8)
+                            RoundedRectangle(cornerRadius: 10)
                                 .stroke(Color.gray, lineWidth: 1)
                         )
                         .focused($focusedField, equals: index)
@@ -104,9 +104,10 @@ struct OtpView: View {
                     .background(Color(hex:"0E6B60"))
                     .cornerRadius(10)
             }
-            .padding(.horizontal, 30)
+            .padding(.horizontal, 10)
             .padding(.bottom, 30)
         }
+        .background(Color(hex:"ECEEEE"))
         .navigationDestination(isPresented: $navigateToSetupProfileView) {
             ProfileSetupView()
         }

@@ -25,18 +25,20 @@ struct Authentication: View {
                         Text("infyMed")
                             .font(.largeTitle)
                             .bold()
-                            .foregroundColor(Color(hex: "006666"))
+                            .foregroundColor(Color(hex: "0E6B60"))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 10)
                     
                     Spacer() // Pushes VStack content to the top
                 }
-                VStack(alignment: .trailing) {
+                GeometryReader { geometry in
                     Image("Doctor 3D")
                         .resizable()
                         .scaledToFit()
-                        .padding(.bottom, 220)
+                        .frame(width: geometry.size.width)  // Adjust as needed
+                        .position(x: geometry.size.width / 2, y: geometry.size.height * 0.36)  // Adjust as needed
+//
                 }
                 
                 // Login input section at the bottom
@@ -52,7 +54,7 @@ struct Authentication: View {
                         
                         Text("Please confirm your country code and enter your phone number")
                             .font(.subheadline)
-                            .foregroundColor(Color(hex: "006666"))
+                            .foregroundColor(Color(hex: "0E6B60"))
                             .padding(5)
                             .padding(.bottom, 5)
                             .padding(.horizontal, 5)
@@ -102,7 +104,7 @@ struct Authentication: View {
                                         .overlay(
                                             Text("\(mobileNumber.count)/10")
                                                 .font(.caption)
-                                                .foregroundColor(mobileNumber.count > 10 ? .red : .gray)
+                                                .foregroundColor(mobileNumber.count > 10 ? Color(UIColor.systemRed) : .gray)
                                                 .padding(.trailing, 8),
                                             alignment: .trailing
                                         )
@@ -143,10 +145,8 @@ struct Authentication: View {
                             }) {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color(hex: "006666"))
+                                        .fill(Color(hex: "0E6B60"))
                                     Text("Continue")
-                                        .font(.headline)
-                                        .fontWeight(.bold)
                                         .foregroundColor(Color.white)
                                         .padding()
                                         .frame(maxWidth: .infinity)
@@ -165,6 +165,7 @@ struct Authentication: View {
                     .cornerRadius(22)
                 }
             }
+            .background(Color(hex:"ECEEEE"))
             .padding(.bottom, 10)
             .navigationDestination(isPresented: $isOtpViewActive) {
                  OtpView(authManager: authManager, phoneNumber: "\(countryCode)\(mobileNumber)", navigateToHome: $navigateToHome)
