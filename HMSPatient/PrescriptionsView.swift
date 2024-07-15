@@ -20,6 +20,7 @@ struct PrescriptionListView: View {
                 }
                 .listStyle(PlainListStyle())
                 .navigationTitle("My Prescriptions")
+                .navigationBarTitleDisplayMode(.large)
                 .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
             }
         }

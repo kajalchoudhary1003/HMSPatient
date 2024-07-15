@@ -14,8 +14,9 @@ struct BookAppointment: View {
     @State private var isLoadingDoctors = false
     @State private var generatedTimeSlots: [TimeSlot] = []
     var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
-    
-    
+    @StateObject private var eventKitManager = EventKitManager()
+    @State private var appointmentBooked = false
+
     var body: some View {
         ScrollView {
             VStack(alignment: .center, spacing: 16) {
@@ -38,7 +39,7 @@ struct BookAppointment: View {
                     .cornerRadius(10)
 
                     if selectedCategoryIndex != 0 {
-                        NavigationLink(destination: DoctorPickerView(doctors: $filteredDoctors, selectedDoctorIndex: $selectedDoctorIndex, isLoading: $isLoadingDoctors)) {
+                        NavigationLink(destination: DoctorPickerView(doctors: filteredDoctors, selectedDoctorIndex: $selectedDoctorIndex)) {
                             HStack {
                                 Text(selectedDoctorLabel)
                                 Spacer()
@@ -98,49 +99,54 @@ struct BookAppointment: View {
                             Text("Premium Slots")
                                 .font(.headline)
                         }
-                        .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#AE75AC")))
+                        .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#BC79B8")))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                     .background(Color.white)
                     .cornerRadius(10)
 
-Button(action: {
-    guard let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1],
-          let selectedTimeSlot = selectedTimeSlot,
-          let currentUserId = Auth.auth().currentUser?.uid else {
-        print("Missing required information for booking appointment")
-        return
-    }
-    
-    let appointment = Appointment(
-        patientID: currentUserId,
-        doctorID: selectedDoctor.id,
-        date: currentDate,
-        timeSlotID: selectedTimeSlot.id
-    )
-    
-    DataController.shared.saveAppointment(appointment: appointment) { success in
-        if success {
-            // Handle successful appointment booking
-            print("Appointment booked successfully")
-            // You might want to show an alert or navigate to a confirmation screen here
-        } else {
-            // Handle error in booking appointment
-            print("Failed to book appointment")
-            // You might want to show an error alert here
-        }
-    }
-}) {
-    Text("Book").fontWeight(.bold)
-        .frame(maxWidth: .infinity, alignment: .center)
-        .foregroundColor(.white)
-        .padding().padding(.vertical, 4)
-        .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "006666"))
-        .cornerRadius(10)
-}
-.padding(.vertical)
-
+                    NavigationLink(destination: AppointmentSummaryView(
+                        selectedDoctor: filteredDoctors[safe: selectedDoctorIndex ?? -1],
+                        selectedTimeSlot: selectedTimeSlot,
+                        appointmentDate: currentDate
+                    ), isActive: $appointmentBooked) {
+                        Button(action: {
+                            guard let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1],
+                                  let selectedTimeSlot = selectedTimeSlot,
+                                  let currentUserId = Auth.auth().currentUser?.uid else {
+                                print("Missing required information for booking appointment")
+                                return
+                            }
+                            
+                            let appointment = Appointment(
+                                patientID: currentUserId,
+                                doctorID: selectedDoctor.id,
+                                date: currentDate,
+                                timeSlotID: selectedTimeSlot.id
+                            )
+                            
+                            DataController.shared.saveAppointment(appointment: appointment) { success in
+                                if success {
+                                    // Handle successful appointment booking
+                                    print("Appointment booked successfully")
+                                    self.appointmentBooked = true
+                                } else {
+                                    // Handle error in booking appointment
+                                    print("Failed to book appointment")
+                                    // You might want to show an error alert here
+                                }
+                            }
+                        }) {
+                            Text("Book").fontWeight(.bold)
+                                .frame(maxWidth: .infinity, alignment: .center)
+                                .foregroundColor(.white)
+                                .padding()
+                                .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "006666"))
+                                .cornerRadius(10)
+                        }
+                        .padding(.vertical)
+                    }
                 }
             }
             .padding()
@@ -195,10 +201,10 @@ struct TimeSlotView: View {
 
     var body: some View {
         if timeSlots.isEmpty {
-                    Text("No time slots available")
-                        .font(.headline)
-                        .foregroundColor(.gray)
-                        .padding()
+            Text("No time slots available")
+                .font(.headline)
+                .foregroundColor(.gray)
+                .padding()
         } else {
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(timeSlots.filter { timeSlot in
@@ -218,7 +224,7 @@ struct TimeSlotView: View {
                             .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
                             .padding()
                             .frame(maxWidth: .infinity, minHeight: 50)
-                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex:"8C309D") : Color(hex: "006666")) : Color.white) : Color.gray.opacity(0.3))
+                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : Color(hex: "0E6B60")) : Color.white) : Color.gray.opacity(0.3))
                             .cornerRadius(10)
                     }
                     .disabled(!timeSlot.isAvailable)
@@ -252,122 +258,5 @@ private func fetchWeeks(from baseDate: Date) -> [[Date]] {
 struct BookAppointment_Previews: PreviewProvider {
     static var previews: some View {
         BookAppointment()
-    }
-}
-
-struct DoctorPickerView: View {
-    @Binding var doctors: [Doctor]
-    @Binding var selectedDoctorIndex: Int?
-    @Binding var isLoading: Bool
-    @Environment(\.presentationMode) var presentationMode
-    @State private var searchText = ""
-
-    func removePrefix(from name: String) -> String {
-        if name.hasPrefix("Dr. ") {
-            return String(name.dropFirst(4))
-        }
-        return name
-    }
-
-    var filteredDoctors: [Doctor] {
-        if searchText.isEmpty {
-            return doctors
-        } else {
-            return doctors.filter { removePrefix(from: $0.name).lowercased().contains(searchText.lowercased()) }
-        }
-    }
-
-    var groupedDoctors: [String: [Doctor]] {
-        Dictionary(grouping: filteredDoctors) { String(removePrefix(from: $0.name).prefix(1)).uppercased() }
-    }
-
-    var sortedKeys: [String] {
-        groupedDoctors.keys.sorted()
-    }
-
-    var body: some View {
-        VStack {
-            if isLoading {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle())
-                    .scaleEffect(2.0)
-                    .padding()
-            } else {
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 16) {
-                        ForEach(sortedKeys, id: \.self) { key in
-                            Section(header: Text(key)) {
-                                ForEach(groupedDoctors[key]!, id: \.id) { doctor in
-                                    Button(action: {
-                                        if let index = doctors.firstIndex(where: { $0.id == doctor.id }) {
-                                            print("Selected doctor: \(doctor.name), Index: \(index)")
-                                            selectedDoctorIndex = index
-                                            presentationMode.wrappedValue.dismiss()
-                                        } else {
-                                            print("Doctor not found in doctors array.")
-                                        }
-                                    }) {
-                                        DoctorCardView(doctor: doctor)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 10)
-                                                    .stroke(selectedDoctorIndex == doctors.firstIndex(where: { $0.id == doctor.id }) ? Color(hex: "006666") : Color.clear, lineWidth: 2)
-                                            )
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .padding()
-                }
-                .background(Color(hex: "ECEEEE"))
-                .navigationTitle("Select Doctor")
-                .searchable(text: $searchText, prompt: "Search Doctor")
-                .onAppear {
-                    print("DoctorPickerView appeared with \(doctors.count) doctors.")
-                }
-            }
-        }
-    }
-}
-
-struct DoctorCardView: View {
-    var doctor: Doctor
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(doctor.name)
-                .font(.title2)
-                .foregroundColor(.black)
-
-            if doctor.name != "Select Doctor" {
-                Text("Age: \(calculateAge(from: doctor.dob))")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-
-                HStack {
-                    Text("Experience: \(doctor.experience) years")
-                        .font(.footnote)
-                        .foregroundColor(.gray)
-
-                    Spacer()
-
-                    Text(String(format: "Fees: %@", doctor.fees))
-                        .font(.footnote)
-                        .foregroundColor(Color(hex: "006666"))
-                }
-            }
-        }
-        .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-        .onAppear {
-            print("DoctorCardView appeared for \(doctor.name)")
-        }
-    }
-
-    private func calculateAge(from dateOfBirth: Date) -> Int {
-        let calendar = Calendar.current
-        let ageComponents = calendar.dateComponents([.year], from: dateOfBirth, to: Date())
-        return ageComponents.year ?? 0
     }
 }

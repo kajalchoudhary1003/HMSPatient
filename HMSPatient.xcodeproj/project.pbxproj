@@ -18,6 +18,7 @@
 		62530F6A2C33E6E2001B496B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F692C33E6E2001B496B /* Assets.xcassets */; };
 		62530F6D2C33E6E2001B496B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */; };
 		802E5B232C40034E0039A184 /* PatientProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 802E5B222C40034E0039A184 /* PatientProfile.swift */; };
+		8132A4C22C4467E400FA8772 /* EventKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8132A4C12C4467E400FA8772 /* EventKitManager.swift */; };
 		81ACDCAF2C3FA7400097CAB6 /* BookAppointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */; };
 		81ACDCB02C3FA7400097CAB6 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */; };
 		81ACDCB12C3FA7400097CAB6 /* DoctorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */; };
@@ -54,6 +55,7 @@
 		62530F692C33E6E2001B496B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		802E5B222C40034E0039A184 /* PatientProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientProfile.swift; sourceTree = "<group>"; };
+		8132A4C12C4467E400FA8772 /* EventKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitManager.swift; sourceTree = "<group>"; };
 		81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookAppointment.swift; sourceTree = "<group>"; };
 		81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoctorPickerView.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 			children = (
 				81ACDCAC2C3FA7400097CAB6 /* Blur.swift */,
 				81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */,
+				8132A4C12C4467E400FA8772 /* EventKitManager.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				E94E68D62C37F55A00ED9F1C /* AppDelegate.swift in Sources */,
 				E906D1472C440C9800620531 /* LocationView.swift in Sources */,
 				E9EB70DC2C3DBCB40086F6E5 /* DataController.swift in Sources */,
+				8132A4C22C4467E400FA8772 /* EventKitManager.swift in Sources */,
 				81ACDCB32C3FA7400097CAB6 /* Blur.swift in Sources */,
 				24A780FA2C3F9B9C00C8F3B1 /* PrescriptionsView.swift in Sources */,
 				244E8C6D2C36B89400812262 /* OtpScreen.swift in Sources */,
@@ -440,6 +444,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HMSPatient/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "HMS Paitent";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This allows the app to modify the calendar.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to show the nearest hospitals even when the app is in the background.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show the nearest hospitals.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -476,6 +481,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HMSPatient/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "HMS Paitent";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This allows the app to modify the calendar.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to show the nearest hospitals even when the app is in the background.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show the nearest hospitals.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
