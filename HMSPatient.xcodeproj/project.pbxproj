@@ -120,6 +120,7 @@
 				81ACDCAE2C3FA7400097CAB6 /* Utils */,
 				E9EB70E72C3DC6A20086F6E5 /* GPS */,
 				E94E68C72C37F31300ED9F1C /* Profile */,
+				E9EB71002C3E918A0086F6E5 /* FileType.swift */,
 				E9EB70FD2C3E91640086F6E5 /* Record */,
 				E94E68C62C37F2F600ED9F1C /* Authentication */,
 				81ACDCAB2C3FA7400097CAB6 /* Book Appointment */,
@@ -190,7 +191,6 @@
 			isa = PBXGroup;
 			children = (
 				E9EB71022C3E91F00086F6E5 /* DocumentView.swift */,
-				E9EB71002C3E918A0086F6E5 /* FileType.swift */,
 				249FD5BA2C37EC4D008CC7F9 /* RecordsView.swift */,
 			);
 			path = Record;
