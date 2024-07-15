@@ -111,7 +111,6 @@
 			isa = PBXGroup;
 			children = (
 				E94E68D72C37F5DC00ED9F1C /* Info.plist */,
-				81B22DDC2C45B0A9005C45F4 /* Prescription */,
 				E906D1352C43D3D900620531 /* GoogleService-Info.plist */,
 				E94E68D52C37F55A00ED9F1C /* AppDelegate.swift */,
 				62530F652C33E6DF001B496B /* HMSPatientApp.swift */,
@@ -120,6 +119,7 @@
 				E94E68C62C37F2F600ED9F1C /* Authentication */,
 				81B22DDD2C45B0BB005C45F4 /* TabBar */,
 				81ACDCAB2C3FA7400097CAB6 /* Book Appointment */,
+				81B22DDC2C45B0A9005C45F4 /* Prescription */,
 				E94E68C72C37F31300ED9F1C /* Profile */,
 				81ACDCAE2C3FA7400097CAB6 /* Utils */,
 				62530F6B2C33E6E2001B496B /* Preview Content */,
