@@ -26,7 +26,6 @@
 		81ACDCB32C3FA7400097CAB6 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAC2C3FA7400097CAB6 /* Blur.swift */; };
 		81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */; };
 		E906D1362C43D3D900620531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E906D1352C43D3D900620531 /* GoogleService-Info.plist */; };
-		E906D1472C440C9800620531 /* LocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E906D1462C440C9800620531 /* LocationView.swift */; };
 		E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */; };
 		E94E68CE2C37F4CA00ED9F1C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CD2C37F4CA00ED9F1C /* FirebaseAuth */; };
 		E94E68D02C37F4CA00ED9F1C /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CF2C37F4CA00ED9F1C /* FirebaseDatabase */; };
@@ -63,10 +62,9 @@
 		81ACDCAC2C3FA7400097CAB6 /* Blur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
 		81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		E906D1352C43D3D900620531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E906D1462C440C9800620531 /* LocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationView.swift; sourceTree = "<group>"; };
 		E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication_Logic.swift; sourceTree = "<group>"; };
 		E94E68D52C37F55A00ED9F1C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		E94E68D72C37F5DC00ED9F1C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E94E68D72C37F5DC00ED9F1C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		E9EB70D92C3DBC440086F6E5 /* Data Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data Model.swift"; sourceTree = "<group>"; };
 		E9EB70DB2C3DBCB40086F6E5 /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		E9EB70E52C3DC69C0086F6E5 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -183,7 +181,6 @@
 		E9EB70E72C3DC6A20086F6E5 /* GPS */ = {
 			isa = PBXGroup;
 			children = (
-				E906D1462C440C9800620531 /* LocationView.swift */,
 				E9EB70E52C3DC69C0086F6E5 /* LocationManager.swift */,
 			);
 			path = GPS;
@@ -234,7 +231,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1600;
+				LastUpgradeCheck = 1540;
 				TargetAttributes = {
 					62530F612C33E6DF001B496B = {
 						CreatedOnToolsVersion = 15.4;
@@ -282,7 +279,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E94E68D62C37F55A00ED9F1C /* AppDelegate.swift in Sources */,
-				E906D1472C440C9800620531 /* LocationView.swift in Sources */,
 				E9EB70DC2C3DBCB40086F6E5 /* DataController.swift in Sources */,
 				8132A4C22C4467E400FA8772 /* EventKitManager.swift in Sources */,
 				81ACDCB32C3FA7400097CAB6 /* Blur.swift in Sources */,
@@ -294,6 +290,7 @@
 				249FD5BB2C37EC4D008CC7F9 /* RecordsView.swift in Sources */,
 				E9EB71032C3E91F00086F6E5 /* DocumentView.swift in Sources */,
 				24A780FC2C3FA8B000C8F3B1 /* PrescriptionDetailView.swift in Sources */,
+				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				802E5B232C40034E0039A184 /* PatientProfile.swift in Sources */,
 				E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */,
@@ -439,11 +436,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"HMSPatient/Preview Content\"";
-				DEVELOPMENT_TEAM = 45FSZ24S5Y;
+				DEVELOPMENT_TEAM = 79QVMTMTHS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HMSPatient/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "iNFYMED Paitent";
+				INFOPLIST_KEY_CFBundleDisplayName = "HMS Paitent";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This allows the app to modify the calendar.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to show the nearest hospitals even when the app is in the background.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show the nearest hospitals.";
@@ -476,11 +473,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"HMSPatient/Preview Content\"";
-				DEVELOPMENT_TEAM = 45FSZ24S5Y;
+				DEVELOPMENT_TEAM = 79QVMTMTHS;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HMSPatient/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "iNFYMED Paitent";
+				INFOPLIST_KEY_CFBundleDisplayName = "HMS Paitent";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This allows the app to modify the calendar.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to show the nearest hospitals even when the app is in the background.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show the nearest hospitals.";
