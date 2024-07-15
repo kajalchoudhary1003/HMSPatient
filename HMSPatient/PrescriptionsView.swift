@@ -23,6 +23,7 @@ struct PrescriptionListView: View {
                 .navigationBarTitleDisplayMode(.large)
                 .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
             }
+            .background(Color(hex:"ECEEEE"))
         }
         
     

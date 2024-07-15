@@ -1,13 +1,14 @@
 import SwiftUI
 
 struct OtpView: View {
-    @State private var otpFields = ["1", "2", "3", "4", "5", "6"]
+    @State private var otpFields = Array(repeating: "", count: 6)
     @State private var showAlert = false
     @State private var alertMessage = ""
     @ObservedObject var authManager: AuthManager
     @FocusState private var focusedField: Int?
     @Binding var navigateToHome: Bool
     @State private var phoneNumber: String
+    @State private var navigateToSetupProfileView = false
 
     init(authManager: AuthManager, phoneNumber: String, navigateToHome: Binding<Bool>) {
         self.authManager = authManager
@@ -16,49 +17,40 @@ struct OtpView: View {
     }
 
     var body: some View {
-        VStack(alignment: /*@START_MENU_TOKEN@*/.center/*@END_MENU_TOKEN@*/) {
-            
-            Spacer ()
+        VStack(alignment: .center) {
+            Spacer()
             Text("Enter the OTP")
                 .font(.headline)
                 .foregroundColor(.gray)
-                .padding(.bottom, 30) // Bottom padding for title
+                .padding(.bottom, 30)
 
-            HStack(spacing: 10) { // OTP input fields
+            HStack(spacing: 10) {
                 ForEach(0..<6) { index in
-                    TextField("", text: Binding(
-                        get: { otpFields[index] },
-                        set: { newValue in
-                            if newValue.count <= 1 && newValue.allSatisfy({ $0.isNumber }) {
-                                otpFields[index] = newValue
-                                if newValue.count == 1 {
-                                    if index < 5 {
-                                        focusedField = index + 1
-                                    } else {
-                                        focusedField = nil
-                                    }
-                                }
-                            } else if newValue.isEmpty {
-                                otpFields[index] = ""
-                                if index > 0 {
-                                    focusedField = index - 1
-                                }
+                    TextField("", text: $otpFields[index])
+                        .keyboardType(.numberPad)
+                        .multilineTextAlignment(.center)
+                        .frame(width: 50, height: 50)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
+                        .focused($focusedField, equals: index)
+                        .onChange(of: otpFields[index]) { newValue in
+                            if newValue.count > 1 {
+                                otpFields[index] = String(newValue.prefix(1))
+                            }
+                            if !newValue.isEmpty && index < 5 {
+                                focusedField = index + 1
+                            }
+                            if newValue.isEmpty && index > 0 {
+                                focusedField = index - 1
                             }
                         }
-                    ))
-                    .keyboardType(.numberPad)
-                    .multilineTextAlignment(.center)
-                    .frame(width: 50, height: 50)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray, lineWidth: 1)
-                    )
-                    .focused($focusedField, equals: index)
                 }
             }
-            .padding(.bottom, 30) // Bottom padding for OTP fields
+            .padding(.bottom, 30)
 
-            HStack { // Resend code button
+            HStack {
                 Spacer()
                 Button(action: {
                     authManager.resendCode(phoneNumber: phoneNumber) { success in
@@ -84,16 +76,14 @@ struct OtpView: View {
 
             Spacer()
 
-            // Continue button
             Button(action: {
                 let otp = otpFields.joined()
                 if otp.count == 6 {
                     authManager.verifyCode(verificationCode: otp) { success in
                         if success {
-                            // Navigate based on isNewUser flag
                             if authManager.isNewUser {
                                 navigateToHome = false
-                                navigateToSetupProfile()
+                                navigateToSetupProfileView = true
                             } else {
                                 navigateToHome = true
                             }
@@ -120,12 +110,6 @@ struct OtpView: View {
         .navigationDestination(isPresented: $navigateToSetupProfileView) {
             ProfileSetupView()
         }
-    }
-
-    @State private var navigateToSetupProfileView = false
-
-    private func navigateToSetupProfile() {
-        navigateToSetupProfileView = true
     }
 }
 
