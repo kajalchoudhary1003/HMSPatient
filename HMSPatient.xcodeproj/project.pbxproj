@@ -440,7 +440,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HMSPatient/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "HMS Paitent";
+				INFOPLIST_KEY_CFBundleDisplayName = "iNFYMED Paitent";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This allows the app to modify the calendar.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to show the nearest hospitals even when the app is in the background.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show the nearest hospitals.";
@@ -477,7 +477,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HMSPatient/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "HMS Paitent";
+				INFOPLIST_KEY_CFBundleDisplayName = "iNFYMED Paitent";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This allows the app to modify the calendar.";
 				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "We need your location to show the nearest hospitals even when the app is in the background.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to show the nearest hospitals.";
