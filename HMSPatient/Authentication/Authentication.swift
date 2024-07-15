@@ -60,7 +60,7 @@ struct Authentication: View {
                         VStack(alignment: .leading) {
                             HStack {
                                 VStack(alignment: .leading) {
-                                    TextField("+1", text: $countryCode)
+                                    TextField("+91", text: $countryCode)
                                         .keyboardType(.numberPad)
                                         .multilineTextAlignment(.center)
                                         .frame(width: 50)
