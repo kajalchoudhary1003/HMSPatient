@@ -23,7 +23,7 @@ struct Authentication: View {
                         .padding(.top, 50)
                         .padding(.bottom, 5)
 
-                    Text("Mediflex")
+                    Text("infyMed")
                         .font(.title)
                         .bold()
                         .foregroundColor(Color(red: 0.0, green: 0.49, blue: 0.45))
