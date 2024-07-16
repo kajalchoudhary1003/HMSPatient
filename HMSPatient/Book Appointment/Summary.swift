@@ -174,11 +174,61 @@ struct AppointmentSummaryView: View {
 }
 
 struct SuccessAnimationView: View {
+    @State private var showTick = false
+    @State private var showConfetti = false
+    
     var body: some View {
-        // Replace this with your actual animation view
-        Text("✅ Payment Successful Animation")
-            .font(.largeTitle)
-            .foregroundColor(.green)
+        ZStack {
+            if showTick {
+                Image("tickMark") // Use the name of your tick mark image asset
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .transition(.scale)
+            }
+            
+            if showConfetti {
+                ForEach(0..<20) { index in
+                    ConfettiView()
+                        .offset(x: CGFloat.random(in: -150...150), y: CGFloat.random(in: -300...300))
+                }
+                .transition(.opacity)
+            }
+        }
+        .onAppear {
+            withAnimation(.easeIn(duration: 1)) {
+                showTick = true
+            }
+            withAnimation(.easeInOut(duration: 1).delay(1)) {
+                showConfetti = true
+            }
+        }
+    }
+}
+
+struct ConfettiView: View {
+    @State private var isAnimating = false
+    
+    var body: some View {
+        Circle() // You can use other shapes or images for confetti
+            .fill(Color.random)
+            .frame(width: 10, height: 10)
+            .offset(y: isAnimating ? 500 : -500)
+            .onAppear {
+                withAnimation(.linear(duration: 2)) {
+                    isAnimating = true
+                }
+            }
+    }
+}
+
+extension Color {
+    static var random: Color {
+        return Color(
+            red: .random(in: 0...1),
+            green: .random(in: 0...1),
+            blue: .random(in: 0...1)
+        )
     }
 }
 
