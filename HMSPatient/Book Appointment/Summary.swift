@@ -1,5 +1,6 @@
 import SwiftUI
 import EventKit
+import FirebaseAuth
 
 struct AppointmentSummaryView: View {
     let selectedDoctor: Doctor?
@@ -7,6 +8,9 @@ struct AppointmentSummaryView: View {
     let appointmentDate: Date
     @StateObject private var eventKitManager = EventKitManager()
     @State private var showingEventAddedAlert = false
+    @State private var bookingErrorMessage: IdentifiableError?
+    @State private var showSuccessAnimation = false
+    @State private var animationFinished = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -42,25 +46,46 @@ struct AppointmentSummaryView: View {
                 
                 Spacer()
                 Button(action: {
-                    addEventToCalendar(doctor: doctor, timeSlot: timeSlot)
-                }) {
-                    HStack {
-                        Text("Pay: ")
-                            .fontWeight(.regular)
-                            .foregroundColor(.white)
-                        
-                        Text("\(doctor.fees)")
-                            .fontWeight(.bold)
-                            .foregroundColor(.white)
+                    guard let currentUserId = Auth.auth().currentUser?.uid else {
+                        bookingErrorMessage = IdentifiableError(message: "User not authenticated")
+                        return
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color(hex: "0E6B60"))
-                    .cornerRadius(10)
+                    
+                    let appointment = Appointment(
+                        patientID: currentUserId,
+                        doctorID: doctor.id,
+                        date: appointmentDate,
+                        timeSlotID: timeSlot.id
+                    )
+                    
+                    DataController.shared.saveAppointment(appointment: appointment) { success in
+                        if success {
+                            print("Appointment booked successfully")
+                            addEventToCalendar(doctor: doctor, timeSlot: timeSlot)
+                            showSuccessAnimation = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                animationFinished = true
+                            }
+                        } else {
+                            bookingErrorMessage = IdentifiableError(message: "Failed to book appointment")
+                            print("Failed to book appointment")
+                        }
+                    }
+                }) {
+                    Text("Book & Pay: \(doctor.fees)")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(Color(hex: "0E6B60"))
+                        .cornerRadius(10)
                 }
                 .padding(.vertical)
                 .alert(isPresented: $showingEventAddedAlert) {
                     Alert(title: Text("Event Added"), message: Text("The appointment has been added to your calendar."), dismissButton: .default(Text("OK")))
+                }
+                .alert(item: $bookingErrorMessage) { error in
+                    Alert(title: Text("Booking Error"), message: Text(error.message), dismissButton: .default(Text("OK")))
                 }
             } else {
                 Text("No appointment details available")
@@ -71,9 +96,22 @@ struct AppointmentSummaryView: View {
                     .cornerRadius(10)
                     .shadow(radius: 3)
             }
+            
+            if showSuccessAnimation {
+                SuccessAnimationView()
+                    .onAppear {
+                        // Perform any cleanup after animation finishes if needed
+                    }
+            }
         }
         .padding()
         .navigationBarTitle("Summary", displayMode: .large)
+        .background(
+            NavigationLink(destination: HomeView(), isActive: $animationFinished) {
+                EmptyView()
+            }
+            .navigationBarHidden(true)
+        )
     }
     
     private func formatDate(_ date: Date) -> String {
@@ -129,23 +167,22 @@ struct AppointmentSummaryView: View {
                 showingEventAddedAlert = true
             } else {
                 print("Failed to add event to calendar")
-                // You might want to show an error alert here
+                bookingErrorMessage = IdentifiableError(message: "Failed to add event to calendar")
             }
         }
     }
 }
 
-extension Int {
-    func currencyFormatted() -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale.current
-        return formatter.string(from: NSNumber(value: self)) ?? "$0.00"
+struct SuccessAnimationView: View {
+    var body: some View {
+        // Replace this with your actual animation view
+        Text("✅ Payment Successful Animation")
+            .font(.largeTitle)
+            .foregroundColor(.green)
     }
 }
 
-struct AppointmentSummaryView_Previews: PreviewProvider {
-    static var previews: some View {
-        AppointmentSummaryView(selectedDoctor: nil, selectedTimeSlot: nil, appointmentDate: Date())
-    }
+struct IdentifiableError: Identifiable {
+    let id = UUID()
+    let message: String
 }

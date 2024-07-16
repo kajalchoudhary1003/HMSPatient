@@ -13,9 +13,10 @@ struct BookAppointment: View {
     @State private var filteredDoctors: [Doctor] = []
     @State private var isLoadingDoctors = false
     @State private var generatedTimeSlots: [TimeSlot] = []
-    var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
     @StateObject private var eventKitManager = EventKitManager()
     @State private var appointmentBooked = false
+
+    var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
 
     var body: some View {
         ScrollView {
@@ -23,10 +24,7 @@ struct BookAppointment: View {
                 VStack(alignment: .trailing) {
                     HStack {
                         Text("Speciality")
-                            .font(.headline)
-
                         Spacer()
-
                         Picker("Speciality", selection: $selectedCategoryIndex.onChange(categoryChanged)) {
                             ForEach(0..<categories.count, id: \.self) { index in
                                 Text(categories[index]?.title ?? "Select").tag(index as Int?)
@@ -106,46 +104,21 @@ struct BookAppointment: View {
                     .background(Color.white)
                     .cornerRadius(10)
 
-                    NavigationLink(destination: AppointmentSummaryView(
-                        selectedDoctor: filteredDoctors[safe: selectedDoctorIndex ?? -1],
-                        selectedTimeSlot: selectedTimeSlot,
-                        appointmentDate: currentDate
-                    ), isActive: $appointmentBooked) {
-                        Button(action: {
-                            guard let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1],
-                                  let selectedTimeSlot = selectedTimeSlot,
-                                  let currentUserId = Auth.auth().currentUser?.uid else {
-                                print("Missing required information for booking appointment")
-                                return
-                            }
-                            
-                            let appointment = Appointment(
-                                patientID: currentUserId,
-                                doctorID: selectedDoctor.id,
-                                date: currentDate,
-                                timeSlotID: selectedTimeSlot.id
-                            )
-                            
-                            DataController.shared.saveAppointment(appointment: appointment) { success in
-                                if success {
-                                    // Handle successful appointment booking
-                                    print("Appointment booked successfully")
-                                    self.appointmentBooked = true
-                                } else {
-                                    // Handle error in booking appointment
-                                    print("Failed to book appointment")
-                                    // You might want to show an error alert here
-                                }
-                            }
-                        }) {
-                            Text("Book").fontWeight(.bold)
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "0E6B60"))
-                                .cornerRadius(10)
-                        }
-                        .padding(.vertical)
+                    NavigationLink(destination:
+                        AppointmentSummaryView(
+                            selectedDoctor: filteredDoctors[safe: selectedDoctorIndex ?? -1],
+                            selectedTimeSlot: selectedTimeSlot,
+                            appointmentDate: currentDate
+                        )
+                    ) {
+                        Text("Proceed to Summary")
+                            .fontWeight(.bold)
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "0E6B60"))
+                            .cornerRadius(10)
+                            .padding(.vertical)
                     }
                 }
             }
@@ -196,6 +169,7 @@ struct TimeSlotView: View {
 
     let columns = [
         GridItem(.flexible()),
+        GridItem(.flexible()),
         GridItem(.flexible())
     ]
 
@@ -223,7 +197,7 @@ struct TimeSlotView: View {
                             .font(.body)
                             .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
                             .padding()
-                            .frame(maxWidth: .infinity, minHeight: 50)
+                            .frame(maxWidth: .infinity, minHeight: 48)
                             .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : Color(hex: "0E6B60")) : Color.white) : Color.gray.opacity(0.3))
                             .cornerRadius(10)
                     }
