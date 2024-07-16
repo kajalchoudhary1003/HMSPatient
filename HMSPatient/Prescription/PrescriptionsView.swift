@@ -78,7 +78,3 @@ struct PrescriptionListView_Previews: PreviewProvider {
         PrescriptionListView()
     }
 }
-
-#Preview {
-    PrescriptionListView()
-}

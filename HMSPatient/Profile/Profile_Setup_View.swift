@@ -76,7 +76,7 @@ struct ProfileSetupView: View {
                         .overlay(
                             Text("\(firstName.count)/25")
                                 .font(.caption)
-                                .foregroundColor(firstName.count > 25 ? .red : .gray)
+                                .foregroundColor(firstName.count > 25 ? Color(UIColor.systemRed) : .gray)
                                 .padding(.trailing, 8),
                             alignment: .trailing
                         )
@@ -92,7 +92,7 @@ struct ProfileSetupView: View {
                         .overlay(
                             Text("\(lastName.count)/25")
                                 .font(.caption)
-                                .foregroundColor(lastName.count > 25 ? .red : .gray)
+                                .foregroundColor(lastName.count > 25 ? Color(UIColor.systemRed) : .gray)
                                 .padding(.trailing, 8),
                             alignment: .trailing
                         )
@@ -131,13 +131,13 @@ struct ProfileSetupView: View {
                             .overlay(
                                 Text("\(emergencyPhone.count)/10")
                                     .font(.caption)
-                                    .foregroundColor(emergencyPhone.count > 10 ? .red : .gray)
+                                    .foregroundColor(emergencyPhone.count > 10 ? Color(UIColor.systemRed) : .gray)
                                     .padding(.trailing, 8),
                                 alignment: .trailing
                             )
                         if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
                             Text("Phone number should be 10 digits")
-                                .foregroundColor(.red)
+                                .foregroundColor(Color(UIColor.systemRed))
                                 .font(.caption)
                         }
                     } else {

@@ -20,61 +20,64 @@ struct RecordsView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
-                if isProcessing {
-                    VStack {
-                        ProgressView()
-                            .progressViewStyle(CircularProgressViewStyle())
-                        Text(processingMessage)
-                            .padding()
-                    }
-                } else if isLoading {
-                    ProgressView("Fetching documents...")
-                        .progressViewStyle(CircularProgressViewStyle())
-                        .onAppear {
-                            fetchRecords()
+            ZStack {
+                Color(hex: "ECEEEE")
+                    .ignoresSafeArea()
+                
+                VStack {
+                    if isProcessing {
+                        VStack {
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle())
+                            Text(processingMessage)
+                                .padding()
                         }
-                } else if records.isEmpty {
-                    VStack {
-                        Image(systemName: "doc.text.magnifyingglass")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 100, height: 100)
-                            .foregroundColor(.gray)
-                        Text("No Documents Available")
-                            .font(.title)
-                            .foregroundColor(.gray)
-                            .padding(.top, 8)
-                        Text("Please upload documents to manage them here.")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                            .padding(.top, 4)
-                    }
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 16) {
-                            ForEach(records.filter {
-                                searchText.isEmpty ? true : $0.title.localizedCaseInsensitiveContains(searchText)
-                            }) { record in
-                                NavigationLink(destination: DocumentView(record: record)) {
-                                    RecordCard(record: record, isExpanded: expandedId == record.id) {
-                                        if expandedId == record.id {
-                                            expandedId = nil
-                                        } else {
-                                            expandedId = record.id
+                    } else if isLoading {
+                        ProgressView("Fetching documents...")
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .onAppear {
+                                fetchRecords()
+                            }
+                    } else if records.isEmpty {
+                        VStack {
+                            Image(systemName: "doc.text.magnifyingglass")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 100, height: 100)
+                                .foregroundColor(.gray)
+                            Text("No Documents Available")
+                                .font(.title)
+                                .foregroundColor(.gray)
+                                .padding(.top, 8)
+                            Text("Please upload documents to manage them here.")
+                                .font(.subheadline)
+                                .foregroundColor(.gray)
+                                .padding(.top, 4)
+                        }
+                    } else {
+                        ScrollView {
+                            LazyVStack(spacing: 16) {
+                                ForEach(records.filter {
+                                    searchText.isEmpty ? true : $0.title.localizedCaseInsensitiveContains(searchText)
+                                }) { record in
+                                    NavigationLink(destination: DocumentView(record: record)) {
+                                        RecordCard(record: record, isExpanded: expandedId == record.id) {
+                                            if expandedId == record.id {
+                                                expandedId = nil
+                                            } else {
+                                                expandedId = record.id
+                                            }
                                         }
                                     }
                                 }
+                                .onDelete(perform: confirmDeleteRecords)
                             }
-                            .onDelete(perform: confirmDeleteRecords)
+                            .padding()
                         }
-                        .background(Color(hex:"ECEEEE"))
-                        .padding()
                     }
                 }
             }
-            
-            .background(Color(hex:"ECEEEE"))
+            .background(Color(hex: "ECEEEE"))
             .searchable(text: $searchText, prompt: "Search")
             .navigationTitle("Records")
             .navigationBarItems(trailing: Button(action: {
@@ -90,8 +93,8 @@ struct RecordsView: View {
                 handleFiles(result: result)
             }
         }
-        .background(Color(hex:"ECEEEE"))
-
+        .background(Color(hex: "ECEEEE"))
+        .ignoresSafeArea()
     }
 
     private func handleFiles(result: Result<[URL], Error>) {
