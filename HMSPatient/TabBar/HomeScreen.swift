@@ -1,4 +1,5 @@
 import SwiftUI
+import FirebaseAuth
 
 struct HomeView: View {
     @State private var selectedTab = 0
@@ -20,13 +21,15 @@ struct HomeView: View {
                 .tag(1)
         }
     }
-       
 }
 
 struct HomeTab: View {
     @State private var searchText = ""
     @State private var showingProfile = false
-    
+    @State private var profileImage: Image? = nil
+    @State private var userFirstName: String = "User"
+    private let dataController = DataController()
+
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -43,13 +46,12 @@ struct HomeTab: View {
                                     
                                     NavigationLink(destination: MyAppointmentsView()) {
                                         Text("See All")
-                                        
                                     }
                                 }
                                 AppointmentCard()
                             }
                             .padding(.horizontal)
-                            .padding(.top,7)
+                            .padding(.top, 7)
                             VStack(alignment: .leading, spacing: 7) {
                                 Text("Features")
                                     .font(.title2)
@@ -75,32 +77,53 @@ struct HomeTab: View {
                         .frame(width: geometry.size.width) // Ensure ScrollView does not exceed the screen width
                     }
                 }
-                }
-                .searchable(text: $searchText)
-                .background(Color(hex:"ECEEEE"))
-                .navigationBarTitle("Hi, User") // Set navigationTitle outside GeometryReader
-                .toolbar {
-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
-                        Button(action: {
-                            if let url = URL(string: "tel://112") {
-                                UIApplication.shared.open(url)
-                            }
-                        }) {
-                            Image(systemName: "cross.circle.fill")
-                                .foregroundColor(Color(UIColor.systemRed))
+            }
+            .searchable(text: $searchText)
+            .background(Color(hex:"ECEEEE"))
+            .navigationBarTitle("Hi, \(userFirstName)")
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        if let url = URL(string: "tel://112") {
+                            UIApplication.shared.open(url)
                         }
-                        Button(action: {                            showingProfile = true
-                        }) {
+                    }) {
+                        Image(systemName: "cross.circle.fill")
+                            .foregroundColor(Color(UIColor.systemRed))
+                    }
+                    Button(action: {
+                        showingProfile = true
+                    }) {
+                        if let profileImage = profileImage {
+                            profileImage
+                                .resizable()
+                                .scaledToFit()
+                                .clipShape(Circle())
+                                .frame(width: 30, height: 30)
+                        } else {
                             Image(systemName: "person.circle.fill")
                                 .foregroundColor(Color(hex: "0E6B60"))
                         }
-                        .sheet(isPresented: $showingProfile) {
-                            PatientProfileView()
-                        }
+                    }
+                    .sheet(isPresented: $showingProfile) {
+                        PatientProfileView()
                     }
                 }
+            }
         }
         .navigationBarHidden(true)
+        .onAppear {
+            fetchUserData()
+        }
+    }
+
+    func fetchUserData() {
+        dataController.fetchCurrentUserData { user, image in
+            if let user = user {
+                self.userFirstName = user.firstName
+            }
+            self.profileImage = image
+        }
     }
 }
 
@@ -113,7 +136,7 @@ struct AppointmentCard: View {
                 Text("Gynecologist")
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                    .padding(.bottom,5)
+                    .padding(.bottom, 5)
                 Text("10:15 - 10:35")
                     .font(.subheadline)
                     .foregroundColor(Color(hex: "0E6B60"))
@@ -192,7 +215,8 @@ struct OfferCard: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.white)
                 .cornerRadius(10)
-        }.padding(.horizontal,5)
+        }
+        .padding(.horizontal, 5)
     }
 }
 

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		244E8C6B2C36B89400812262 /* Profile_Setup_View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E8C682C36B89400812262 /* Profile_Setup_View.swift */; };
-		244E8C6C2C36B89400812262 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E8C692C36B89400812262 /* ImagePicker.swift */; };
 		244E8C6D2C36B89400812262 /* OtpScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 244E8C6A2C36B89400812262 /* OtpScreen.swift */; };
 		249FD5BB2C37EC4D008CC7F9 /* RecordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 249FD5BA2C37EC4D008CC7F9 /* RecordsView.swift */; };
 		24A780FA2C3F9B9C00C8F3B1 /* PrescriptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24A780F92C3F9B9C00C8F3B1 /* PrescriptionsView.swift */; };
@@ -44,7 +43,6 @@
 
 /* Begin PBXFileReference section */
 		244E8C682C36B89400812262 /* Profile_Setup_View.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile_Setup_View.swift; sourceTree = "<group>"; };
-		244E8C692C36B89400812262 /* ImagePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
 		244E8C6A2C36B89400812262 /* OtpScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OtpScreen.swift; sourceTree = "<group>"; };
 		249FD5BA2C37EC4D008CC7F9 /* RecordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordsView.swift; sourceTree = "<group>"; };
 		24A780F92C3F9B9C00C8F3B1 /* PrescriptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrescriptionsView.swift; sourceTree = "<group>"; };
@@ -191,7 +189,6 @@
 		E94E68C72C37F31300ED9F1C /* Profile */ = {
 			isa = PBXGroup;
 			children = (
-				244E8C692C36B89400812262 /* ImagePicker.swift */,
 				244E8C682C36B89400812262 /* Profile_Setup_View.swift */,
 				802E5B222C40034E0039A184 /* PatientProfile.swift */,
 			);
@@ -310,7 +307,6 @@
 				81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */,
 				EA95BFFE2C371FB100582FDC /* HomeScreen.swift in Sources */,
 				81ACDCAF2C3FA7400097CAB6 /* BookAppointment.swift in Sources */,
-				244E8C6C2C36B89400812262 /* ImagePicker.swift in Sources */,
 				244E8C6B2C36B89400812262 /* Profile_Setup_View.swift in Sources */,
 				62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */,
 				E9EB70DA2C3DBC440086F6E5 /* Data Model.swift in Sources */,
