@@ -1,10 +1,3 @@
-//
-//  PatientProfileView.swift
-//  HMSPatient
-//
-//  Created by Vaibhav on 11/07/24.
-//
-
 import SwiftUI
 import FirebaseAuth
 
@@ -16,16 +9,11 @@ struct PatientProfileView: View {
     @State private var bloodGroup: String = "Select"
     @State private var emergencyPhone: String = ""
     @State private var profileImage: Image? = nil
-    @State private var showingImagePicker = false
-    @State private var inputImage: UIImage?
     @State private var isAddingEmergencyPhone = false
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    @State private var showingActionSheet = false
     @State private var isEditing = false // Added state variable for edit mode
     
     @Environment(\.presentationMode) var presentationMode
     private let dataController = DataController()
-    
 
     var isSaveDisabled: Bool {
         !isFormValid || (isAddingEmergencyPhone && !isEmergencyPhoneValid)
@@ -49,6 +37,9 @@ struct PatientProfileView: View {
                 Button(isEditing ? "Done" : "Edit") {
                     // Toggle edit mode
                     isEditing.toggle()
+                    if !isEditing {
+                        saveUserData()
+                    }
                 }
             }
             .padding([.leading, .trailing, .top])
@@ -61,17 +52,15 @@ struct PatientProfileView: View {
                         .clipShape(Circle())
                         .frame(width: 100, height: 100)
                 } else {
-                    Image(systemName: "person.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(Circle())
-                        .frame(width: 150, height: 150)
+                    ZStack {
+                        Circle()
+                            .fill(Color.gray)
+                            .frame(width: 100, height: 100)
+                        Text(getInitials(firstName: firstName, lastName: lastName))
+                            .foregroundColor(.white)
+                            .font(.largeTitle)
+                    }
                 }
-
-                Button("Edit") {
-                    showingActionSheet = true
-                }
-                .padding()
             }
 
             Form {
@@ -89,7 +78,8 @@ struct PatientProfileView: View {
                             Text("\(firstName.count)/25")
                                 .font(.caption)
                                 .foregroundColor(firstName.count > 25 ? Color(UIColor.systemRed) : .gray)
-                                .padding(.trailing, 8),
+                                .padding(.trailing, 8)
+                                .opacity(isEditing ? 1 : 0),
                             alignment: .trailing
                         )
                         .disabled(!isEditing) // Disable editing when not in edit mode
@@ -106,7 +96,8 @@ struct PatientProfileView: View {
                             Text("\(lastName.count)/25")
                                 .font(.caption)
                                 .foregroundColor(lastName.count > 25 ? Color(UIColor.systemRed) : .gray)
-                                .padding(.trailing, 8),
+                                .padding(.trailing, 8)
+                                .opacity(isEditing ? 1 : 0),
                             alignment: .trailing
                         )
                         .disabled(!isEditing) // Disable editing when not in edit mode
@@ -173,40 +164,24 @@ struct PatientProfileView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
-                ImagePicker(image: self.$inputImage, sourceType: self.$sourceType)
-            }
-            .actionSheet(isPresented: $showingActionSheet) {
-                ActionSheet(title: Text("Select Image"), message: Text("Choose a method"), buttons: [
-                    .default(Text("Camera")) {
-                        self.sourceType = .camera
-                        self.showingImagePicker = true
-                    },
-                    .default(Text("Photo Library")) {
-                        self.sourceType = .photoLibrary
-                        self.showingImagePicker = true
-                    },
-                    .cancel()
-                ])
-            }
         }
         .background(Color(hex:"ECEEEE"))
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        saveUserData()
-                    }) {
-                        Text("Done")
+        .onAppear {
+            dataController.fetchCurrentUserData { user, image in
+                if let user = user {
+                    self.firstName = user.firstName
+                    self.lastName = user.lastName
+                    if let dob = ISO8601DateFormatter().date(from: user.dateOfBirth) {
+                        self.dateOfBirth = dob
                     }
-                    .disabled(isSaveDisabled)
+                    self.gender = user.gender
+                    self.bloodGroup = user.bloodGroup
+                    self.emergencyPhone = user.emergencyPhone
+                }
+                self.profileImage = image
             }
         }
-    }
-
-    func loadImage() {
-        guard let inputImage = inputImage else { return }
-        profileImage = Image(uiImage: inputImage)
     }
 
     func saveUserData() {
@@ -221,12 +196,16 @@ struct PatientProfileView: View {
         )
 
         dataController.saveUser(userId: userId, user: user) { success in
-            if success {
-                presentationMode.wrappedValue.dismiss()
-            } else {
+            if !success {
                 // Handle error (show an alert, etc.)
             }
         }
+    }
+
+    func getInitials(firstName: String, lastName: String) -> String {
+        let firstInitial = firstName.first.map { String($0) } ?? ""
+        let lastInitial = lastName.first.map { String($0) } ?? ""
+        return firstInitial + lastInitial
     }
 
     var ageRange: ClosedRange<Date> {
@@ -237,12 +216,6 @@ struct PatientProfileView: View {
         return minAge...maxAge
     }
 }
-//
-//extension Date {
-//    func ISO8601Format() -> String {
-//        let formatter = ISO8601DateFormatter()
-//        return formatter.string(from: self)
-//    }
 
 #Preview {
     PatientProfileView()

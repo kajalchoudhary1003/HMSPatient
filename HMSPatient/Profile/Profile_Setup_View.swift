@@ -9,11 +9,7 @@ struct ProfileSetupView: View {
     @State private var bloodGroup: String = "Select"
     @State private var emergencyPhone: String = ""
     @State private var profileImage: Image? = nil
-    @State private var showingImagePicker = false
-    @State private var inputImage: UIImage?
     @State private var isAddingEmergencyPhone = false
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    @State private var showingActionSheet = false
     @State private var navigateToHome = false
     private let dataController = DataController()
 
@@ -41,6 +37,7 @@ struct ProfileSetupView: View {
                 Spacer()
             }
             .padding([.leading, .trailing, .top])
+            
             VStack {
                 if let profileImage = profileImage {
                     profileImage
@@ -49,17 +46,9 @@ struct ProfileSetupView: View {
                         .clipShape(Circle())
                         .frame(width: 100, height: 100)
                 } else {
-                    Image(systemName: "person.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(Circle())
+                    InitialsCircleView(initials: getInitials(from: firstName, and: lastName))
                         .frame(width: 150, height: 150)
                 }
-
-                Button("Edit") {
-                    showingActionSheet = true
-                }
-                .padding()
             }
 
             Form {
@@ -68,9 +57,10 @@ struct ProfileSetupView: View {
                         .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
                             firstName = firstName.trimmingCharacters(in: .whitespacesAndNewlines)
                         }
-                        .onChange(of: firstName) { newValue in
-                            if newValue.count > 25 {
-                                firstName = String(newValue.prefix(25))
+                        .onChange(of: firstName) { _ in
+                            updateProfileImage()
+                            if firstName.count > 25 {
+                                firstName = String(firstName.prefix(25))
                             }
                         }
                         .overlay(
@@ -84,9 +74,10 @@ struct ProfileSetupView: View {
                         .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
                             lastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
                         }
-                        .onChange(of: lastName) { newValue in
-                            if newValue.count > 25 {
-                                lastName = String(newValue.prefix(25))
+                        .onChange(of: lastName) { _ in
+                            updateProfileImage()
+                            if lastName.count > 25 {
+                                lastName = String(lastName.prefix(25))
                             }
                         }
                         .overlay(
@@ -153,22 +144,6 @@ struct ProfileSetupView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
-                ImagePicker(image: self.$inputImage, sourceType: self.$sourceType)
-            }
-            .actionSheet(isPresented: $showingActionSheet) {
-                ActionSheet(title: Text("Select Image"), message: Text("Choose a method"), buttons: [
-                    .default(Text("Camera")) {
-                        self.sourceType = .camera
-                        self.showingImagePicker = true
-                    },
-                    .default(Text("Photo Library")) {
-                        self.sourceType = .photoLibrary
-                        self.showingImagePicker = true
-                    },
-                    .cancel()
-                ])
-            }
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -183,11 +158,19 @@ struct ProfileSetupView: View {
                 }
             }
         }
+        .onAppear {
+            updateProfileImage()
+        }
     }
 
-    func loadImage() {
-        guard let inputImage = inputImage else { return }
-        profileImage = Image(uiImage: inputImage)
+    func updateProfileImage() {
+        profileImage = nil // Reset the profile image
+    }
+
+    func getInitials(from firstName: String, and lastName: String) -> String {
+        let firstInitial = firstName.first?.uppercased() ?? ""
+        let lastInitial = lastName.first?.uppercased() ?? ""
+        return "\(firstInitial)\(lastInitial)"
     }
 
     func saveUserData() {
@@ -223,6 +206,18 @@ extension Date {
     func ISO8601Format() -> String {
         let formatter = ISO8601DateFormatter()
         return formatter.string(from: self)
+    }
+}
+
+struct InitialsCircleView: View {
+    var initials: String
+
+    var body: some View {
+        Text(initials)
+            .font(.largeTitle)
+            .foregroundColor(.white)
+            .frame(width: 150, height: 150)
+            .background(Circle().fill(Color(hex: "0E6B60")))
     }
 }
 
