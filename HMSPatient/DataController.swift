@@ -222,4 +222,37 @@ class DataController {
             }
         }
     }
+    
+    // New Methods for fetching user data and profile image
+    func fetchUser(userId: String, completion: @escaping (User?) -> Void) {
+        database.child("patient_users").child(userId).observeSingleEvent(of: .value) { snapshot in
+            guard let userDict = snapshot.value as? [String: Any] else {
+                completion(nil)
+                return
+            }
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: userDict, options: [])
+                let user = try JSONDecoder().decode(User.self, from: jsonData)
+                completion(user)
+            } catch {
+                print("Error decoding user data: \(error.localizedDescription)")
+                completion(nil)
+            }
+        }
+    }
+
+    func fetchProfileImage(userId: String, completion: @escaping (Result<URL, Error>) -> Void) {
+        let profileImageRef = storage.child("users/\(userId)/profile_image.jpg")
+        profileImageRef.downloadURL { url, error in
+            if let error = error {
+                completion(.failure(error))
+            } else if let url = url {
+                completion(.success(url))
+            }
+        }
+    }
+
+    func saveUserProfileImageURL(userId: String, url: String) {
+        database.child("patient_users").child(userId).child("profileImageURL").setValue(url)
+    }
 }

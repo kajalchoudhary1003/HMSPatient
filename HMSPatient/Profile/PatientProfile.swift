@@ -1,12 +1,6 @@
-//
-//  PatientProfileView.swift
-//  HMSPatient
-//
-//  Created by Vaibhav on 11/07/24.
-//
-
 import SwiftUI
 import FirebaseAuth
+import FirebaseStorage
 
 struct PatientProfileView: View {
     @State private var firstName: String = ""
@@ -25,7 +19,6 @@ struct PatientProfileView: View {
     
     @Environment(\.presentationMode) var presentationMode
     private let dataController = DataController()
-    
 
     var isSaveDisabled: Bool {
         !isFormValid || (isAddingEmergencyPhone && !isEmergencyPhoneValid)
@@ -49,6 +42,9 @@ struct PatientProfileView: View {
                 Button(isEditing ? "Done" : "Edit") {
                     // Toggle edit mode
                     isEditing.toggle()
+                    if !isEditing {
+                        saveUserData()
+                    }
                 }
             }
             .padding([.leading, .trailing, .top])
@@ -68,10 +64,12 @@ struct PatientProfileView: View {
                         .frame(width: 150, height: 150)
                 }
 
-                Button("Edit") {
-                    showingActionSheet = true
+                if isEditing {
+                    Button("Edit") {
+                        showingActionSheet = true
+                    }
+                    .padding()
                 }
-                .padding()
             }
 
             Form {
@@ -89,7 +87,8 @@ struct PatientProfileView: View {
                             Text("\(firstName.count)/25")
                                 .font(.caption)
                                 .foregroundColor(firstName.count > 25 ? Color(UIColor.systemRed) : .gray)
-                                .padding(.trailing, 8),
+                                .padding(.trailing, 8)
+                                .opacity(isEditing ? 1 : 0),
                             alignment: .trailing
                         )
                         .disabled(!isEditing) // Disable editing when not in edit mode
@@ -106,7 +105,8 @@ struct PatientProfileView: View {
                             Text("\(lastName.count)/25")
                                 .font(.caption)
                                 .foregroundColor(lastName.count > 25 ? Color(UIColor.systemRed) : .gray)
-                                .padding(.trailing, 8),
+                                .padding(.trailing, 8)
+                                .opacity(isEditing ? 1 : 0),
                             alignment: .trailing
                         )
                         .disabled(!isEditing) // Disable editing when not in edit mode
@@ -192,21 +192,15 @@ struct PatientProfileView: View {
         }
         .background(Color(hex:"ECEEEE"))
         .navigationBarBackButtonHidden(true)
-        .toolbar {
-            ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        saveUserData()
-                    }) {
-                        Text("Done")
-                    }
-                    .disabled(isSaveDisabled)
-            }
+        .onAppear {
+            loadUserData()
         }
     }
 
     func loadImage() {
         guard let inputImage = inputImage else { return }
         profileImage = Image(uiImage: inputImage)
+        saveProfileImage(inputImage)
     }
 
     func saveUserData() {
@@ -221,10 +215,54 @@ struct PatientProfileView: View {
         )
 
         dataController.saveUser(userId: userId, user: user) { success in
-            if success {
-                presentationMode.wrappedValue.dismiss()
-            } else {
+            if !success {
                 // Handle error (show an alert, etc.)
+            }
+        }
+    }
+
+    func saveProfileImage(_ image: UIImage) {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        let imageData = image.jpegData(compressionQuality: 0.8)
+        let storageRef = Storage.storage().reference().child("users/\(userId)/profile_image.jpg")
+        storageRef.putData(imageData!, metadata: nil) { metadata, error in
+            if let error = error {
+                print("Error uploading profile image: \(error.localizedDescription)")
+                return
+            }
+            storageRef.downloadURL { url, error in
+                if let error = error {
+                    print("Error getting download URL: \(error.localizedDescription)")
+                    return
+                }
+                guard let url = url else { return }
+                self.dataController.saveUserProfileImageURL(userId: userId, url: url.absoluteString)
+            }
+        }
+    }
+
+    func loadUserData() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        dataController.fetchUser(userId: userId) { user in
+            guard let user = user else { return }
+            self.firstName = user.firstName
+            self.lastName = user.lastName
+            if let dob = ISO8601DateFormatter().date(from: user.dateOfBirth) {
+                self.dateOfBirth = dob
+            }
+            self.gender = user.gender
+            self.bloodGroup = user.bloodGroup
+            self.emergencyPhone = user.emergencyPhone
+            
+            dataController.fetchProfileImage(userId: userId) { result in
+                switch result {
+                case .success(let url):
+                    if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                        self.profileImage = Image(uiImage: uiImage)
+                    }
+                case .failure(let error):
+                    print("Error fetching profile image: \(error.localizedDescription)")
+                }
             }
         }
     }
@@ -237,12 +275,6 @@ struct PatientProfileView: View {
         return minAge...maxAge
     }
 }
-//
-//extension Date {
-//    func ISO8601Format() -> String {
-//        let formatter = ISO8601DateFormatter()
-//        return formatter.string(from: self)
-//    }
 
 #Preview {
     PatientProfileView()
