@@ -111,7 +111,7 @@ struct BookAppointment: View {
                             appointmentDate: currentDate
                         )
                     ) {
-                        Text("Proceed to Summary")
+                        Text("Proceed")
                             .fontWeight(.bold)
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.white)
