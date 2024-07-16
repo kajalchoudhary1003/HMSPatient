@@ -1,6 +1,5 @@
 import SwiftUI
 import FirebaseAuth
-import FirebaseStorage
 
 struct PatientProfileView: View {
     @State private var firstName: String = ""
@@ -10,11 +9,7 @@ struct PatientProfileView: View {
     @State private var bloodGroup: String = "Select"
     @State private var emergencyPhone: String = ""
     @State private var profileImage: Image? = nil
-    @State private var showingImagePicker = false
-    @State private var inputImage: UIImage?
     @State private var isAddingEmergencyPhone = false
-    @State private var sourceType: UIImagePickerController.SourceType = .photoLibrary
-    @State private var showingActionSheet = false
     @State private var isEditing = false // Added state variable for edit mode
     
     @Environment(\.presentationMode) var presentationMode
@@ -57,18 +52,14 @@ struct PatientProfileView: View {
                         .clipShape(Circle())
                         .frame(width: 100, height: 100)
                 } else {
-                    Image(systemName: "person.circle")
-                        .resizable()
-                        .scaledToFit()
-                        .clipShape(Circle())
-                        .frame(width: 150, height: 150)
-                }
-
-                if isEditing {
-                    Button("Edit") {
-                        showingActionSheet = true
+                    ZStack {
+                        Circle()
+                            .fill(Color.gray)
+                            .frame(width: 100, height: 100)
+                        Text(getInitials(firstName: firstName, lastName: lastName))
+                            .foregroundColor(.white)
+                            .font(.largeTitle)
                     }
-                    .padding()
                 }
             }
 
@@ -173,34 +164,24 @@ struct PatientProfileView: View {
                 }
             }
             .scrollContentBackground(.hidden)
-            .sheet(isPresented: $showingImagePicker, onDismiss: loadImage) {
-                ImagePicker(image: self.$inputImage, sourceType: self.$sourceType)
-            }
-            .actionSheet(isPresented: $showingActionSheet) {
-                ActionSheet(title: Text("Select Image"), message: Text("Choose a method"), buttons: [
-                    .default(Text("Camera")) {
-                        self.sourceType = .camera
-                        self.showingImagePicker = true
-                    },
-                    .default(Text("Photo Library")) {
-                        self.sourceType = .photoLibrary
-                        self.showingImagePicker = true
-                    },
-                    .cancel()
-                ])
-            }
         }
         .background(Color(hex:"ECEEEE"))
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            loadUserData()
+            dataController.fetchCurrentUserData { user, image in
+                if let user = user {
+                    self.firstName = user.firstName
+                    self.lastName = user.lastName
+                    if let dob = ISO8601DateFormatter().date(from: user.dateOfBirth) {
+                        self.dateOfBirth = dob
+                    }
+                    self.gender = user.gender
+                    self.bloodGroup = user.bloodGroup
+                    self.emergencyPhone = user.emergencyPhone
+                }
+                self.profileImage = image
+            }
         }
-    }
-
-    func loadImage() {
-        guard let inputImage = inputImage else { return }
-        profileImage = Image(uiImage: inputImage)
-        saveProfileImage(inputImage)
     }
 
     func saveUserData() {
@@ -221,50 +202,10 @@ struct PatientProfileView: View {
         }
     }
 
-    func saveProfileImage(_ image: UIImage) {
-        guard let userId = Auth.auth().currentUser?.uid else { return }
-        let imageData = image.jpegData(compressionQuality: 0.8)
-        let storageRef = Storage.storage().reference().child("users/\(userId)/profile_image.jpg")
-        storageRef.putData(imageData!, metadata: nil) { metadata, error in
-            if let error = error {
-                print("Error uploading profile image: \(error.localizedDescription)")
-                return
-            }
-            storageRef.downloadURL { url, error in
-                if let error = error {
-                    print("Error getting download URL: \(error.localizedDescription)")
-                    return
-                }
-                guard let url = url else { return }
-                self.dataController.saveUserProfileImageURL(userId: userId, url: url.absoluteString)
-            }
-        }
-    }
-
-    func loadUserData() {
-        guard let userId = Auth.auth().currentUser?.uid else { return }
-        dataController.fetchUser(userId: userId) { user in
-            guard let user = user else { return }
-            self.firstName = user.firstName
-            self.lastName = user.lastName
-            if let dob = ISO8601DateFormatter().date(from: user.dateOfBirth) {
-                self.dateOfBirth = dob
-            }
-            self.gender = user.gender
-            self.bloodGroup = user.bloodGroup
-            self.emergencyPhone = user.emergencyPhone
-            
-            dataController.fetchProfileImage(userId: userId) { result in
-                switch result {
-                case .success(let url):
-                    if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
-                        self.profileImage = Image(uiImage: uiImage)
-                    }
-                case .failure(let error):
-                    print("Error fetching profile image: \(error.localizedDescription)")
-                }
-            }
-        }
+    func getInitials(firstName: String, lastName: String) -> String {
+        let firstInitial = firstName.first.map { String($0) } ?? ""
+        let lastInitial = lastName.first.map { String($0) } ?? ""
+        return firstInitial + lastInitial
     }
 
     var ageRange: ClosedRange<Date> {

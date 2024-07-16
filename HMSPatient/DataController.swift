@@ -1,8 +1,10 @@
+import Zip
+import UIKit
 import Foundation
+import SwiftUICore
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
-import Zip
 
 class DataController {
     private var database = Database.database().reference()
@@ -254,5 +256,31 @@ class DataController {
 
     func saveUserProfileImageURL(userId: String, url: String) {
         database.child("patient_users").child(userId).child("profileImageURL").setValue(url)
+    }
+
+    // Method for fetching current user data and profile image
+    func fetchCurrentUserData(completion: @escaping (User?, Image?) -> Void) {
+        guard let userId = Auth.auth().currentUser?.uid else {
+            completion(nil, nil)
+            return
+        }
+        fetchUser(userId: userId) { user in
+            guard let user = user else {
+                completion(nil, nil)
+                return
+            }
+            self.fetchProfileImage(userId: userId) { result in
+                switch result {
+                case .success(let url):
+                    if let data = try? Data(contentsOf: url), let uiImage = UIImage(data: data) {
+                        completion(user, Image(uiImage: uiImage))
+                    } else {
+                        completion(user, nil)
+                    }
+                case .failure:
+                    completion(user, nil)
+                }
+            }
+        }
     }
 }
