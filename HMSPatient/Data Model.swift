@@ -61,56 +61,50 @@ struct TimeSlot: Codable,Hashable, Identifiable, Equatable {
 }
 
 
-import Foundation
-
 struct Appointment: Hashable, Codable {
     var id: String?
     var patientID: String?
     var doctorID: String?
     var date: Date
-    var timeSlotsID: String? // Corrected property name
+    var timeSlotsID: String?
+    var shortDescription: String?
     
     enum CodingKeys: String, CodingKey {
-        case id, patientID, doctorID, date, timeSlotsID // Removed '?' from timeSlotsID
+        case id, patientID, doctorID, date, timeSlotsID, shortDescription
     }
     
-    init(patientID: String, doctorID: String, date: Date, timeSlotsID: String? = nil, id: String? = nil) { // Added default value for timeSlotsID
+    init(id: String? = nil, patientID: String? = nil, doctorID: String? = nil, date: Date, timeSlotsID: String? = nil, shortDescription: String? = nil) {
         self.id = id
         self.patientID = patientID
         self.doctorID = doctorID
         self.date = date
-        self.timeSlotsID = timeSlotsID // Corrected assignment
+        self.timeSlotsID = timeSlotsID
+        self.shortDescription = shortDescription
     }
     
-    // Decoder initializer
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeIfPresent(String.self, forKey: .id)
-        self.patientID = try container.decode(String.self, forKey: .patientID)
-        self.doctorID = try container.decode(String.self, forKey: .doctorID)
-        self.date = try container.decode(Date.self, forKey: .date)
-        self.timeSlotsID = try container.decodeIfPresent(String.self, forKey: .timeSlotsID) // Corrected decoding
+        self.patientID = try container.decodeIfPresent(String.self, forKey: .patientID)
+        self.doctorID = try container.decodeIfPresent(String.self, forKey: .doctorID)
+        let timeInterval = try container.decode(TimeInterval.self, forKey: .date)
+        self.date = Date(timeIntervalSince1970: timeInterval)
+        self.timeSlotsID = try container.decodeIfPresent(String.self, forKey: .timeSlotsID)
+        self.shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(patientID, forKey: .patientID)
+        try container.encodeIfPresent(doctorID, forKey: .doctorID)
+        try container.encode(date.timeIntervalSince1970, forKey: .date)
+        try container.encodeIfPresent(timeSlotsID, forKey: .timeSlotsID)
+        try container.encodeIfPresent(shortDescription, forKey: .shortDescription)
     }
 }
 
-struct Offers: Codable,Hashable {
-    var id:String?
-    var image:String
-    var hyperlink:String
-    
-    init(id: String? = nil, image: String, hyperlink: String) {
-        self.id = id
-        self.image = image
-        self.hyperlink = hyperlink
-    }
-    
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decodeIfPresent(String.self, forKey: .id)
-        self.image = try container.decode(String.self, forKey: .image)
-        self.hyperlink = try container.decode(String.self, forKey: .hyperlink)
-    }
-}
+
 
 struct Doctor: Codable, Identifiable, Equatable {
     var id: String
@@ -124,7 +118,6 @@ struct Doctor: Codable, Identifiable, Equatable {
     var experience: Int
     var starts: Date
     var ends: Date
-
     var interval: String {
         return designation.interval
     }
@@ -249,6 +242,24 @@ enum DoctorDesignation: String, Codable, CaseIterable {
     }
 }
 
+struct Offers: Codable,Hashable {
+    var id:String?
+    var image:String
+    var hyperlink:String
+    
+    init(id: String? = nil, image: String, hyperlink: String) {
+        self.id = id
+        self.image = image
+        self.hyperlink = hyperlink
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIfPresent(String.self, forKey: .id)
+        self.image = try container.decode(String.self, forKey: .image)
+        self.hyperlink = try container.decode(String.self, forKey: .hyperlink)
+    }
+}
 
 
 
