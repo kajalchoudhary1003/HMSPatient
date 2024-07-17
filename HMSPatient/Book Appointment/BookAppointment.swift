@@ -116,10 +116,19 @@ struct BookAppointment: View {
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.white)
                             .padding()
-                            .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "0E6B60"))
+                            .background(Group {
+                                if selectedTimeSlot == nil {
+                                    Color.gray
+                                } else if isPremiumSlotsEnabled {
+                                    Color(hex: "#AE75AC")
+                                } else {
+                                    Color(hex: "0E6B60")
+                                }
+                            })
                             .cornerRadius(10)
                             .padding(.vertical)
                     }
+                    .disabled(selectedTimeSlot == nil)// Disable the button if no time slot is selected
                 }
             }
             .padding()

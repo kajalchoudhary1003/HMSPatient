@@ -152,9 +152,8 @@ struct AppointmentCard: View {
                     .foregroundColor(Color(hex: "0E6B60"))
             }
             Spacer()
-            VStack(alignment: .trailing) {
+            VStack(alignment: .center) {
                 Text("WED")
-                    .padding(.trailing, 6)
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundColor(Color(hex: "0E6B60"))
