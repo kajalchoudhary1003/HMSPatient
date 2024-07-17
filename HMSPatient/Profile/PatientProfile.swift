@@ -10,7 +10,7 @@ struct PatientProfileView: View {
     @State private var emergencyPhone: String = ""
     @State private var profileImage: Image? = nil
     @State private var isAddingEmergencyPhone = false
-    @State private var isEditing = false // Added state variable for edit mode
+    @State private var isEditing = false
     
     @Environment(\.presentationMode) var presentationMode
     private let dataController = DataController()
@@ -35,7 +35,6 @@ struct PatientProfileView: View {
             HStack {
                 Spacer()
                 Button(isEditing ? "Done" : "Edit") {
-                    // Toggle edit mode
                     isEditing.toggle()
                     if !isEditing {
                         saveUserData()
@@ -82,7 +81,8 @@ struct PatientProfileView: View {
                                 .opacity(isEditing ? 1 : 0),
                             alignment: .trailing
                         )
-                        .disabled(!isEditing) // Disable editing when not in edit mode
+                        .disabled(!isEditing)
+                    
                     TextField("Last name", text: $lastName)
                         .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
                             lastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -100,72 +100,76 @@ struct PatientProfileView: View {
                                 .opacity(isEditing ? 1 : 0),
                             alignment: .trailing
                         )
-                        .disabled(!isEditing) // Disable editing when not in edit mode
+                        .disabled(!isEditing)
                 }
 
                 Section(header: Text("Details")) {
                     DatePicker("Date Of Birth", selection: $dateOfBirth, in: ageRange, displayedComponents: .date)
-                        .disabled(!isEditing) // Disable editing when not in edit mode
+                        .disabled(!isEditing)
                     Picker("Gender", selection: $gender) {
                         ForEach(["Select", "Male", "Female", "Other"], id: \.self) {
                             Text($0)
                         }
                     }
-                    .disabled(!isEditing) // Disable editing when not in edit mode
+                    .disabled(!isEditing)
                     Picker("Blood Group", selection: $bloodGroup) {
                         ForEach(["Select", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], id: \.self) {
                             Text($0)
                         }
                     }
-                    .disabled(!isEditing) // Disable editing when not in edit mode
+                    .disabled(!isEditing)
                 }
 
-                Section {
-                    if isAddingEmergencyPhone {
-                        TextField("Emergency Contact", text: $emergencyPhone)
-                            .keyboardType(.phonePad)
-                            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
-                                emergencyPhone = emergencyPhone.trimmingCharacters(in: .whitespacesAndNewlines)
-                            }
-                            .onChange(of: emergencyPhone) { newValue in
-                                let filtered = newValue.filter { "0123456789".contains($0) }
-                                if emergencyPhone != filtered {
-                                    emergencyPhone = filtered
+                Section(header: Text("Emergency Phone")) {
+                    if isEditing {
+                        if isAddingEmergencyPhone || !emergencyPhone.isEmpty {
+                            TextField("Emergency Contact", text: $emergencyPhone)
+                                .keyboardType(.phonePad)
+                                .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
+                                    emergencyPhone = emergencyPhone.trimmingCharacters(in: .whitespacesAndNewlines)
                                 }
-                                if emergencyPhone.count > 10 {
-                                    emergencyPhone = String(emergencyPhone.prefix(10))
+                                .onChange(of: emergencyPhone) { newValue in
+                                    let filtered = newValue.filter { "0123456789".contains($0) }
+                                    if emergencyPhone != filtered {
+                                        emergencyPhone = filtered
+                                    }
+                                    if emergencyPhone.count > 10 {
+                                        emergencyPhone = String(emergencyPhone.prefix(10))
+                                    }
                                 }
-                            }
-                            .overlay(
-                                Text("\(emergencyPhone.count)/10")
+                                .overlay(
+                                    Text("\(emergencyPhone.count)/10")
+                                        .font(.caption)
+                                        .foregroundColor(emergencyPhone.count > 10 ? Color(UIColor.systemRed) : .gray)
+                                        .padding(.trailing, 8),
+                                    alignment: .trailing
+                                )
+                            if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
+                                Text("Phone number should be 10 digits")
+                                    .foregroundColor(Color(UIColor.systemRed))
                                     .font(.caption)
-                                    .foregroundColor(emergencyPhone.count > 10 ? Color(UIColor.systemRed) : .gray)
-                                    .padding(.trailing, 8),
-                                alignment: .trailing
-                            )
-                            .disabled(!isEditing) // Disable editing when not in edit mode
-                        if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
-                            Text("Phone number should be 10 digits")
-                                .foregroundColor(Color(UIColor.systemRed))
-                                .font(.caption)
-                        }
-                    } else {
-                        Button(action: {
-                            isAddingEmergencyPhone.toggle()
-                        }) {
-                            HStack {
-                                Image(systemName: "plus.circle.fill")
-                                    .foregroundColor(.green)
-                                Text("Add emergency phone")
+                            }
+                        } else {
+                            Button(action: {
+                                isAddingEmergencyPhone.toggle()
+                            }) {
+                                HStack {
+                                    Image(systemName: "plus.circle.fill")
+                                        .foregroundColor(.green)
+                                    Text("Add emergency phone")
+                                }
                             }
                         }
-                        .disabled(!isEditing) // Disable editing when not in edit mode
+                    } else if !emergencyPhone.isEmpty {
+                        HStack {
+                            Text("\(emergencyPhone)")
+                        }
                     }
                 }
             }
             .scrollContentBackground(.hidden)
         }
-        .background(Color(hex:"ECEEEE"))
+        .background(Color(hex: "ECEEEE"))
         .navigationBarBackButtonHidden(true)
         .onAppear {
             dataController.fetchCurrentUserData { user, image in

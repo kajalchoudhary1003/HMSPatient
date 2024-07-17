@@ -1,7 +1,6 @@
 import Zip
-import UIKit
 import Foundation
-import SwiftUICore
+import SwiftUI
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
