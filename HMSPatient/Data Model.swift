@@ -93,6 +93,24 @@ struct Appointment: Hashable, Codable {
     }
 }
 
+struct Offers: Codable,Hashable {
+    var id:String?
+    var image:String
+    var hyperlink:String
+    
+    init(id: String? = nil, image: String, hyperlink: String) {
+        self.id = id
+        self.image = image
+        self.hyperlink = hyperlink
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIfPresent(String.self, forKey: .id)
+        self.image = try container.decode(String.self, forKey: .image)
+        self.hyperlink = try container.decode(String.self, forKey: .hyperlink)
+    }
+}
 
 struct Doctor: Codable, Identifiable, Equatable {
     var id: String
@@ -230,3 +248,7 @@ enum DoctorDesignation: String, Codable, CaseIterable {
         return [nil] + DoctorDesignation.allCases
     }
 }
+
+
+
+
