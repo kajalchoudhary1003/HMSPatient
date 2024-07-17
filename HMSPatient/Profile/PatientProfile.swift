@@ -10,10 +10,7 @@ struct PatientProfileView: View {
     @State private var emergencyPhone: String = ""
     @State private var profileImage: Image? = nil
     @State private var isAddingEmergencyPhone = false
-    @State private var isEditing = false
-    @State private var showErrorAlert = false
-    @State private var errorMessage = ""
-    @State private var navigateToAuth = false
+    @State private var isEditing = false // Added state variable for edit mode
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
     
     @Environment(\.presentationMode) var presentationMode
@@ -39,6 +36,7 @@ struct PatientProfileView: View {
             HStack {
                 Spacer()
                 Button(isEditing ? "Done" : "Edit") {
+                    // Toggle edit mode
                     isEditing.toggle()
                     if !isEditing {
                         saveUserData()
@@ -85,8 +83,7 @@ struct PatientProfileView: View {
                                 .opacity(isEditing ? 1 : 0),
                             alignment: .trailing
                         )
-                        .disabled(!isEditing)
-                    
+                        .disabled(!isEditing) // Disable editing when not in edit mode
                     TextField("Last name", text: $lastName)
                         .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
                             lastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -104,59 +101,50 @@ struct PatientProfileView: View {
                                 .opacity(isEditing ? 1 : 0),
                             alignment: .trailing
                         )
-                        .disabled(!isEditing)
+                        .disabled(!isEditing) // Disable editing when not in edit mode
                 }
 
                 Section(header: Text("Details")) {
                     DatePicker("Date Of Birth", selection: $dateOfBirth, in: ageRange, displayedComponents: .date)
-                        .disabled(!isEditing)
+                        .disabled(!isEditing) // Disable editing when not in edit mode
                     Picker("Gender", selection: $gender) {
                         ForEach(["Select", "Male", "Female", "Other"], id: \.self) {
                             Text($0)
                         }
                     }
-                    .disabled(!isEditing)
+                    .disabled(!isEditing) // Disable editing when not in edit mode
                     Picker("Blood Group", selection: $bloodGroup) {
                         ForEach(["Select", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], id: \.self) {
                             Text($0)
                         }
                     }
-                    .disabled(!isEditing)
+                    .disabled(!isEditing) // Disable editing when not in edit mode
                 }
 
-                Section(header: Text("Emergency Phone")) {
-                    if isEditing {
-                        if isAddingEmergencyPhone || !emergencyPhone.isEmpty {
-                            TextField("Emergency Contact", text: $emergencyPhone)
-                                .keyboardType(.phonePad)
-                                .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
-                                    emergencyPhone = emergencyPhone.trimmingCharacters(in: .whitespacesAndNewlines)
+                Section {
+                    if isAddingEmergencyPhone {
+                        TextField("Emergency Contact", text: $emergencyPhone)
+                            .keyboardType(.phonePad)
+                            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
+                                emergencyPhone = emergencyPhone.trimmingCharacters(in: .whitespacesAndNewlines)
+                            }
+                            .onChange(of: emergencyPhone) { newValue in
+                                let filtered = newValue.filter { "0123456789".contains($0) }
+                                if emergencyPhone != filtered {
+                                    emergencyPhone = filtered
                                 }
-                                .onChange(of: emergencyPhone) { newValue in
-                                    let filtered = newValue.filter { "0123456789".contains($0) }
-                                    if emergencyPhone != filtered {
-                                        emergencyPhone = filtered
-                                    }
-                                    if emergencyPhone.count > 10 {
-                                        emergencyPhone = String(emergencyPhone.prefix(10))
-                                    }
+                                if emergencyPhone.count > 10 {
+                                    emergencyPhone = String(emergencyPhone.prefix(10))
                                 }
-                                .overlay(
-                                    Text("\(emergencyPhone.count)/10")
-                                        .font(.caption)
-                                        .foregroundColor(emergencyPhone.count > 10 ? Color(UIColor.systemRed) : .gray)
-                                        .padding(.trailing, 8),
-                                    alignment: .trailing
-                                )
-                            if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
-                                Text("Phone number should be 10 digits")
-                                    .foregroundColor(Color(UIColor.systemRed))
+                            }
+                            .overlay(
+                                Text("\(emergencyPhone.count)/10")
                                     .font(.caption)
                                     .foregroundColor(emergencyPhone.count > 10 ? Color(UIColor.systemRed) : .gray)
                                     .padding(.trailing, 8),
                                 alignment: .trailing
                             )
-                            .disabled(!isEditing)
+                            .disabled(!isEditing) // Disable editing when not in edit mode
                         if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
                             Text("Phone number should be 10 digits")
                                 .foregroundColor(Color(UIColor.systemRed))
@@ -172,35 +160,32 @@ struct PatientProfileView: View {
                                 Text("Add emergency phone")
                             }
                         }
-                        .disabled(!isEditing)
+                        .disabled(!isEditing) // Disable editing when not in edit mode
                     }
                 }
                 
                 VStack {
-                    Button(action: {
-                        logout()
-                    }) {
-                        Text("Log out")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(-2)
-                            .foregroundColor(.red)
-                            .font(.title)
-                            .background(.white)
-                            .cornerRadius(10)
-                    }
-                    .padding(.horizontal)
-                    .padding(.leading, 16)
-                    .padding(.trailing, 16)
-                }
+                                   Button(action: {
+                                       logout()
+                                   }) {
+                                       Text("Log out")
+                                           .fontWeight(.semibold)
+                                           .frame(maxWidth: .infinity)
+                                           .padding(-2)
+                                           .foregroundColor(.red)
+                                           .font(.title)
+                                           .background(.white)
+                                           .cornerRadius(10)
+                                   }
+                                   .padding(.horizontal)
+                                   .padding(.leading, 16)
+                                   .padding(.trailing, 16)
+                               }
             }
             .scrollContentBackground(.hidden)
         }
-        .background(Color.customBackground)
+        .background(Color(hex:"ECEEEE"))
         .navigationBarBackButtonHidden(true)
-        .alert(isPresented: $showErrorAlert) {
-            Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
-        }
         .onAppear {
             dataController.fetchCurrentUserData { user, image in
                 if let user = user {
@@ -216,32 +201,29 @@ struct PatientProfileView: View {
                 self.profileImage = image
             }
         }
-        .navigationDestination(isPresented: $navigateToAuth) {
-            Authentication()
-        }
     }
     
     
     func logout() {
-        do {
-            try Auth.auth().signOut()
-            isLoggedIn = false
-            navigateToScreen(screen: Authentication())
-        } catch let signOutError as NSError {
-            print("Error signing out: %@", signOutError)
+           do {
+               try Auth.auth().signOut()
+               isLoggedIn = false
+               navigateToScreen(screen: Authentication())
+           } catch let signOutError as NSError {
+               print("Error signing out: %@", signOutError)
+           }
+       }
+       
+       
+       // Function to navigate to different screens
+        func navigateToScreen<Screen: View>(screen: Screen) {
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                if let window = windowScene.windows.first {
+                    window.rootViewController = UIHostingController(rootView: screen)
+                    window.makeKeyAndVisible()
+                }
+            }
         }
-    }
-    
-    
-    // Function to navigate to different screens
-     func navigateToScreen<Screen: View>(screen: Screen) {
-         if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-             if let window = windowScene.windows.first {
-                 window.rootViewController = UIHostingController(rootView: screen)
-                 window.makeKeyAndVisible()
-             }
-         }
-     }
 
     func saveUserData() {
         guard let userId = Auth.auth().currentUser?.uid else { return }
@@ -270,12 +252,11 @@ struct PatientProfileView: View {
     var ageRange: ClosedRange<Date> {
         let calendar = Calendar.current
         let now = Date()
-        let minAge = calendar.date(byAdding: .year, value: -130, to: now)!
+        let minAge = calendar.date(byAdding: .year, value: -100, to: now)!
         let maxAge = calendar.date(byAdding: .year, value: -13, to: now)!
         return minAge...maxAge
     }
 }
-
 
 #Preview {
     PatientProfileView()
