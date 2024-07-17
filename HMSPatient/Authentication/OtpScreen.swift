@@ -32,7 +32,8 @@ struct OtpView: View {
                         .frame(width: 50, height: 50)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.gray, lineWidth: 1)
+                                .stroke(Color.gray, lineWidth: 2)
+                                .fill(.white)
                         )
                         .focused($focusedField, equals: index)
                         .onChange(of: otpFields[index]) { newValue in
@@ -101,7 +102,7 @@ struct OtpView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color(hex:"0E6B60"))
+                    .background(Color.customPrimary)
                     .cornerRadius(10)
             }
             .padding(.horizontal, 10)

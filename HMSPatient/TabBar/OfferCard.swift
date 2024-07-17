@@ -14,7 +14,7 @@ struct OfferCards: View {
             OfferCard(imageName: "2", url: "https://www.example.com/offer2")
         }
         .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-        .frame(width:320,height: 133,alignment: .center)
+        .frame(width:300,height: 133,alignment: .center)
         .font(.title)
     }
 }
