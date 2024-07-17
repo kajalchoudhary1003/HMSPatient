@@ -110,7 +110,6 @@ extension Collection {
 extension Doctor {
     func generateTimeSlots() -> [TimeSlot] {
         let intervalMinutes = 15
-
         var currentTime = self.starts
         var slots: [TimeSlot] = []
         while currentTime < self.ends {

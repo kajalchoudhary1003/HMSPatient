@@ -207,7 +207,8 @@ class DataController {
             "patientID": userId,
             "doctorID": appointment.doctorID ?? "",
             "date": appointment.date.timeIntervalSince1970,
-            "timeSlotID": appointment.timeSlotsID
+            "timeSlotID": appointment.timeSlotsID,
+            "description":appointment.shortDescription
         ]
         
         let appointmentId = appointment.id ?? UUID().uuidString
