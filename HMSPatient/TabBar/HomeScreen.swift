@@ -9,10 +9,7 @@ struct HomeView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            NavigationView {
                 HomeTab(searchViewModel: searchViewModel, showingActionSheet: $showingActionSheet)
-                    .navigationTitle("Hi, User")
-            }
             .tabItem {
                 Image(systemName: "house.fill")
                 Text("Home")
@@ -41,50 +38,52 @@ struct HomeTab: View {
     @State private var navigateToBookAppointment = false
     
     var body: some View {
-        GeometryReader { geometry in
-            ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
-                    if searchViewModel.isSearching {
-                        searchResultsView
-                    } else {
-                        regularContent
+        NavigationView{
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        if searchViewModel.isSearching {
+                            searchResultsView
+                        } else {
+                            regularContent
+                        }
                     }
-                }
-                .frame(width: geometry.size.width)
-            }
-        }
-        .searchable(text: $searchViewModel.searchText, prompt: "Search doctors, diseases, or specialties")
-        .background(Color.customBackground)
-        .navigationTitle("Hi, \(userFirstName)")
-        .background(Color(hex: "ECEEEE"))
-        .toolbar {
-            ToolbarItemGroup(placement: .navigationBarTrailing) {
-                Button(action: {
-                    if let url = URL(string: "tel://112") {
-                        UIApplication.shared.open(url)
-                    }
-                }) {
-                    Image(systemName: "cross.circle.fill")
-                        .foregroundColor(Color(UIColor.systemRed))
-                }
-                Button(action: {
-                    showingProfile = true
-                }) {
-                    Image(systemName: "person.circle.fill")
-                        .foregroundColor(Color(hex: "0E6B60"))
+                    .frame(width: geometry.size.width)
                 }
             }
-        }
-        .sheet(isPresented: $showingProfile) {
-            PatientProfileView()
-        }
-        .onAppear {
-            fetchUserData()
-        }
+            .searchable(text: $searchViewModel.searchText, prompt: "Search doctors, illness, etc...")
+            .background(Color.customBackground)
+            .navigationTitle("Hi, \(userFirstName)")
+            .background(Color(hex: "ECEEEE"))
+            .toolbar {
+                ToolbarItemGroup(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        if let url = URL(string: "tel://112") {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Image(systemName: "cross.circle.fill")
+                            .foregroundColor(Color(UIColor.systemRed))
+                    }
+                    Button(action: {
+                        showingProfile = true
+                    }) {
+                        Image(systemName: "person.circle.fill")
+                            .foregroundColor(Color(hex: "0E6B60"))
+                    }
+                }
+            }
+            .sheet(isPresented: $showingProfile) {
+                PatientProfileView()
+            }
+            .onAppear {
+                fetchUserData()
+            }
+        }.navigationBarHidden(true)
     }
     
     var searchResultsView: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("Search Results")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -97,7 +96,7 @@ struct HomeTab: View {
                         navigateToBookAppointment = true
                     }
             }
-        }
+        }.padding()
     }
     
     var regularContent: some View {
