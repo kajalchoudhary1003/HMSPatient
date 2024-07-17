@@ -20,6 +20,9 @@ extension Color {
         let b = Double(rgb & 0xFF) / 255.0
         self.init(red: r, green: g, blue: b)
     }
+    static let customBackground = Color(hex: "ECEEEE")
+       static let customPrimary = Color(hex: "0E6B60")
+       static let customPremium = Color(hex: "BC79B8")
 }
 
 extension View {

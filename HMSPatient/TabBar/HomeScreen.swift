@@ -81,7 +81,7 @@ struct HomeTab: View {
                 }
             }
             .searchable(text: $searchText)
-            .background(Color(hex:"ECEEEE"))
+            .background(Color.customBackground)
             .navigationBarTitle("Hi, \(userFirstName)")
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -112,7 +112,7 @@ struct HomeTab: View {
                                 .frame(width: 30, height: 30)
                         } else {
                             Image(systemName: "person.circle.fill")
-                                .foregroundColor(Color(hex: "0E6B60"))
+                                .foregroundColor(.customPrimary)
                         }
                     }
                     .sheet(isPresented: $showingProfile) {
@@ -149,14 +149,14 @@ struct AppointmentCard: View {
                     .padding(.bottom, 5)
                 Text("10:15 - 10:35")
                     .font(.subheadline)
-                    .foregroundColor(Color(hex: "0E6B60"))
+                    .foregroundColor(.customPrimary)
             }
             Spacer()
             VStack(alignment: .center) {
                 Text("WED")
                     .font(.subheadline)
                     .fontWeight(.bold)
-                    .foregroundColor(Color(hex: "0E6B60"))
+                    .foregroundColor(.customPrimary)
                 Text("28")
                     .font(.largeTitle)
                     .fontWeight(.regular)
@@ -182,7 +182,7 @@ struct FeatureCard: View {
                     .foregroundColor(.white)
                     .padding(8)
                     .frame(width: 40, height: 40)
-                    .background(Circle().fill(Color(hex: "0E6B60")))
+                    .background(Circle().fill(Color.customPrimary))
             }
             Spacer()
             Text(title)
@@ -220,7 +220,7 @@ struct OfferCard: View {
         }) {
             Text(offerText)
                 .padding()
-                .foregroundColor(Color(hex: "0E6B60"))
+                .foregroundColor(.customPrimary)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.white)
                 .cornerRadius(10)

@@ -1,5 +1,18 @@
 import SwiftUI
 
+struct CustomSegmentedControlAppearance: UIViewRepresentable {
+    var selectedColor: UIColor
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        UISegmentedControl.appearance().selectedSegmentTintColor = selectedColor
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {}
+}
+
 struct MyAppointmentsView: View {
     @State private var selectedSegment = 0
 
@@ -10,7 +23,6 @@ struct MyAppointmentsView: View {
                     Text("Past").tag(1)
                 }
                 .pickerStyle(SegmentedPickerStyle())
-                .foregroundColor(Color(hex: "0E6B60"))
                 .padding()
 
                 List {
@@ -28,7 +40,12 @@ struct MyAppointmentsView: View {
                 .navigationTitle("My Appointments")
                 .navigationBarTitleDisplayMode(.large)
             }
-            .background(Color(hex: "ECEEEE"))
+            .background(
+                Color.customBackground)
+            .overlay(
+                       CustomSegmentedControlAppearance(selectedColor: UIColor(Color.customPrimary))
+                           .frame(width: 0, height: 0)
+                   )
     }
 
     func filteredAppointments(filter: String) -> [String] {

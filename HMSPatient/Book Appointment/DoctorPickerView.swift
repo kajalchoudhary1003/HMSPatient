@@ -47,7 +47,7 @@ struct DoctorPickerView: View {
                                 DoctorCardView(doctor: doctor)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 10)
-                                            .stroke(selectedDoctorIndex == doctors.firstIndex(where: { $0.id == doctor.id }) ? Color(hex: "0E6B60") : Color.clear, lineWidth: 2)
+                                            .stroke(selectedDoctorIndex == doctors.firstIndex(where: { $0.id == doctor.id }) ? .customPrimary : Color.clear, lineWidth: 2)
                                     )
                             }
                         }
@@ -56,7 +56,7 @@ struct DoctorPickerView: View {
             }
             .padding()
         }
-        .background(Color(hex: "ECEEEE"))
+        .background(Color.customBackground)
         .navigationTitle("Select Doctor")
         .searchable(text: $searchText, prompt: "Search Doctor")
         .onAppear {
@@ -88,7 +88,7 @@ struct DoctorCardView: View {
 
                     Text(String(format: "Fees: %@", doctor.fees))
                         .font(.footnote)
-                        .foregroundColor(Color(hex: "0E6B60"))
+                        .foregroundColor(.customPrimary)
                 }
             }
         }

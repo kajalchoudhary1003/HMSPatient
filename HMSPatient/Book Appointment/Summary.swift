@@ -30,14 +30,14 @@ struct AppointmentSummaryView: View {
                                             .padding(.bottom, 5)
                                         Text("\(formatTimeSlot(timeSlot))")
                                             .font(.subheadline)
-                                            .foregroundColor(Color(hex: "0E6B60"))
+                                            .foregroundColor(.customPrimary)
                                     }
                                     Spacer()
                                     VStack(alignment: .center) {
                                         Text(formatDayOfWeek(appointmentDate))
                                             .font(.subheadline)
                                             .fontWeight(.bold)
-                                            .foregroundColor(Color(hex: "0E6B60"))
+                                            .foregroundColor(.customPrimary)
                                         Text(formatDayOfMonth(appointmentDate))
                                             .font(.largeTitle)
                                             .fontWeight(.regular)
@@ -109,7 +109,7 @@ struct AppointmentSummaryView: View {
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.white)
                             .padding()
-                            .background(Color(hex: "0E6B60"))
+                            .background(Color.customPrimary)
                             .cornerRadius(10)
                     }
                     .padding(.vertical)
@@ -141,7 +141,7 @@ struct AppointmentSummaryView: View {
                 SuccessAnimationView()
                     .edgesIgnoringSafeArea(.all)
             }
-        }.background(Color(hex:"ECEEEE"))
+        }.background(Color.customBackground)
     }
     
     private func formatDate(_ date: Date) -> String {
@@ -240,7 +240,7 @@ struct SuccessAnimationView: View {
                 Text("Appointment Booked!")
                     .font(.title)
                     .fontWeight(.bold)
-                    .foregroundColor(Color(hex: "0E6B60"))
+                    .foregroundColor(.customPrimary)
                     .padding(.top)
                     .opacity(showTick ? 1 : 0)
             }

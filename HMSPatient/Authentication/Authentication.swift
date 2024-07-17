@@ -25,7 +25,7 @@ struct Authentication: View {
                         Text("infyMed")
                             .font(.largeTitle)
                             .bold()
-                            .foregroundColor(Color(hex: "0E6B60"))
+                            .foregroundColor(.customPrimary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 10)
@@ -54,7 +54,7 @@ struct Authentication: View {
                         
                         Text("Please confirm your country code and enter your phone number")
                             .font(.subheadline)
-                            .foregroundColor(Color(hex: "0E6B60"))
+                            .foregroundColor(.customPrimary)
                             .padding(5)
                             .padding(.bottom, 5)
                             .padding(.horizontal, 5)
@@ -121,7 +121,7 @@ struct Authentication: View {
                             .padding(.bottom, 20)
                             
                             Text(validationMessage)
-                                .foregroundColor(isValidPhoneNumber(mobileNumber) ? Color(hex: "0E6B60") : Color(UIColor.systemRed))
+                                .foregroundColor(isValidPhoneNumber(mobileNumber) ? .customPrimary : Color(UIColor.systemRed))
                                 .font(.caption)
                                 .padding(5)
                             
@@ -145,7 +145,7 @@ struct Authentication: View {
                             }) {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color(hex: "0E6B60"))
+                                        .fill(Color.customPrimary)
                                     Text("Continue")
                                         .foregroundColor(Color.white)
                                         .padding()
@@ -165,7 +165,7 @@ struct Authentication: View {
                     .cornerRadius(22)
                 }
             }
-            .background(Color(hex:"ECEEEE"))
+            .background(Color.customBackground)
             .padding(.bottom, 10)
             .navigationDestination(isPresented: $isOtpViewActive) {
                  OtpView(authManager: authManager, phoneNumber: "\(countryCode)\(mobileNumber)", navigateToHome: $navigateToHome)

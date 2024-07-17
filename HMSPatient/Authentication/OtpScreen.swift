@@ -107,7 +107,7 @@ struct OtpView: View {
             .padding(.horizontal, 10)
             .padding(.bottom, 30)
         }
-        .background(Color(hex:"ECEEEE"))
+        .background(Color.customBackground)
         .navigationDestination(isPresented: $navigateToSetupProfileView) {
             ProfileSetupView()
         }
