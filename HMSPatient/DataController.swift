@@ -4,6 +4,8 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
+import Zip
+import SwiftUI
 
 class DataController {
     private var database = Database.database().reference()
@@ -205,7 +207,7 @@ class DataController {
             "patientID": userId,
             "doctorID": appointment.doctorID ?? "",
             "date": appointment.date.timeIntervalSince1970,
-            "timeSlotID": appointment.timeSlotID
+            "timeSlotID": appointment.timeSlotsID
         ]
         
         let appointmentId = appointment.id ?? UUID().uuidString
@@ -282,4 +284,32 @@ class DataController {
             }
         }
     }
+    func searchDoctors(query: String, completion: @escaping ([Doctor]) -> Void) {
+        fetchDoctors { allDoctors in
+            let filteredDoctors = allDoctors.filter { $0.matches(searchQuery: query) }
+            completion(filteredDoctors)
+        }
+    }
+//    func fetchAllAppointments(completion: @escaping ([Appointment]) -> Void) {
+//        let appointmentsRef = database.child("appointments")
+//        
+//        appointmentsRef.observeSingleEvent(of: .value) { snapshot in
+//            var appointments: [Appointment] = []
+//            
+//            for child in snapshot.children {
+//                if let snapshot = child as? DataSnapshot,
+//                   let dict = snapshot.value as? [String: Any],
+//                   let appointment = Appointment(from: dict) {
+//                    appointments.append(appointment)
+//                } else {
+//                    print("Error decoding appointment")
+//                }
+//            }
+//            
+//            completion(appointments)
+//        }
+//    }
+
+
+
 }

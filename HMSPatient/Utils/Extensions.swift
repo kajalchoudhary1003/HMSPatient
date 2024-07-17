@@ -110,12 +110,12 @@ extension Collection {
 extension Doctor {
     func generateTimeSlots() -> [TimeSlot] {
         let intervalMinutes = 15
-        
+
         var currentTime = self.starts
         var slots: [TimeSlot] = []
         while currentTime < self.ends {
             let slotEndTime = min(currentTime.addingTimeInterval(TimeInterval(intervalMinutes * 60)), self.ends)
-            let newSlot = TimeSlot(startTime: currentTime.timeIntervalSince1970, endTime: slotEndTime.timeIntervalSince1970)
+            let newSlot = TimeSlot(startTime: currentTime, endTime: slotEndTime,isPremium: false,isAvailable: true)
             slots.append(newSlot)
             print("Added slot from \(currentTime.formattedString("HH:mm")) to \(slotEndTime.formattedString("HH:mm"))")
             currentTime = slotEndTime
@@ -128,4 +128,10 @@ extension Doctor {
         print("Total slots generated: \(slots.count)")
         return slots
     }
-}  
+    func matches(searchQuery: String) -> Bool {
+            let query = searchQuery.lowercased()
+            return name.lowercased().contains(query) ||
+                   designation.title.lowercased().contains(query) ||
+                   designation.relatedDiseases.contains { $0.lowercased().contains(query) }
+        }
+}

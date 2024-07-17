@@ -1,18 +1,23 @@
 import SwiftUI
 import FirebaseAuth
+import Combine
 
 struct HomeView: View {
     @State private var selectedTab = 0
     @State private var showingActionSheet = false
+    @StateObject private var searchViewModel = SearchViewModel()
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeTab(showingActionSheet: $showingActionSheet)
-                .tabItem {
-                    Image(systemName: "house.fill")
-                    Text("Home")
-                }
-                .tag(0)
+            NavigationView {
+                HomeTab(searchViewModel: searchViewModel, showingActionSheet: $showingActionSheet)
+                    .navigationTitle("Hi, User")
+            }
+            .tabItem {
+                Image(systemName: "house.fill")
+                Text("Home")
+            }
+            .tag(0)
             
             RecordsView()
                 .tabItem {
@@ -25,109 +30,120 @@ struct HomeView: View {
 }
 
 struct HomeTab: View {
-    @State private var searchText = ""
+    @ObservedObject var searchViewModel: SearchViewModel
     @State private var showingProfile = false
     @State private var profileImage: Image? = nil
     @State private var userFirstName: String = "User"
     private let dataController = DataController()
     @Binding var showingActionSheet: Bool
 
+    @State private var selectedDoctor: Doctor?
+    @State private var navigateToBookAppointment = false
+    
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
-                VStack(spacing: 5) {
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 20) {
-                            VStack(alignment: .leading, spacing: 7) {
-                                HStack{
-                                    Text("My Appointments")
-                                        .font(.title2)
-                                        .fontWeight(.bold)
-                                    
-                                    Spacer()
-                                    
-                                    NavigationLink(destination: MyAppointmentsView()) {
-                                        Text("See All")
-                                    }
-                                }
-                                AppointmentCard()
-                            }
-                            .padding(.horizontal)
-                            .padding(.top, 7)
-                            VStack(alignment: .leading, spacing: 7) {
-                                Text("Features")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                HStack {
-                                    NavigationLink(destination: BookAppointment()){
-                                        FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
-                                    }
-                                    NavigationLink(destination: PrescriptionListView()) {
-                                        FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-                            VStack(alignment: .leading, spacing: 7) {
-                                Text("For You")
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                OfferCards()
-                            }
-                            .padding(.horizontal)
-                        }
-                        .frame(width: geometry.size.width) // Ensure ScrollView does not exceed the screen width
+        GeometryReader { geometry in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    if searchViewModel.isSearching {
+                        searchResultsView
+                    } else {
+                        regularContent
                     }
                 }
+                .frame(width: geometry.size.width)
             }
-            .searchable(text: $searchText)
-            .background(Color.customBackground)
-            .navigationBarTitle("Hi, \(userFirstName)")
-            .toolbar {
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(action: {
-                                            showingActionSheet = true
-                                        }) {
-                                            Image(systemName: "cross.circle.fill")
-                                                .foregroundColor(Color(UIColor.systemRed))
-                                        }
-                                        .actionSheet(isPresented: $showingActionSheet) {
-                                            ActionSheet(title: Text("Call Ambulance"), buttons: [
-                                                .destructive(Text("Call 112")) {
-                                                    if let url = URL(string: "tel://112") {
-                                                        UIApplication.shared.open(url)
-                                                    }
-                                                },
-                                                .cancel()
-                                            ])
-                                        }
-                    Button(action: {
-                        showingProfile = true
-                    }) {
-                        if let profileImage = profileImage {
-                            profileImage
-                                .resizable()
-                                .scaledToFit()
-                                .clipShape(Circle())
-                                .frame(width: 30, height: 30)
-                        } else {
-                            Image(systemName: "person.circle.fill")
-                                .foregroundColor(.customPrimary)
-                        }
+        }
+        .searchable(text: $searchViewModel.searchText, prompt: "Search doctors, diseases, or specialties")
+        .background(Color.customBackground)
+        .navigationTitle("Hi, \(userFirstName)")
+        .background(Color(hex: "ECEEEE"))
+        .toolbar {
+            ToolbarItemGroup(placement: .navigationBarTrailing) {
+                Button(action: {
+                    if let url = URL(string: "tel://112") {
+                        UIApplication.shared.open(url)
                     }
-                    .sheet(isPresented: $showingProfile) {
-                        PatientProfileView()
-                    }
+                }) {
+                    Image(systemName: "cross.circle.fill")
+                        .foregroundColor(Color(UIColor.systemRed))
+                }
+                Button(action: {
+                    showingProfile = true
+                }) {
+                    Image(systemName: "person.circle.fill")
+                        .foregroundColor(Color(hex: "0E6B60"))
                 }
             }
         }
-        .navigationBarHidden(true)
+        .sheet(isPresented: $showingProfile) {
+            PatientProfileView()
+        }
         .onAppear {
             fetchUserData()
         }
     }
-
-    func fetchUserData() {
+    
+    var searchResultsView: some View {
+        VStack(alignment: .leading) {
+            Text("Search Results")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.horizontal)
+            
+            ForEach(searchViewModel.searchResults) { doctor in
+                DoctorRowView(doctor: doctor)
+                    .onTapGesture {
+                        selectedDoctor = doctor
+                        navigateToBookAppointment = true
+                    }
+            }
+        }
+    }
+    
+    var regularContent: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 7) {
+                HStack {
+                    Text("My Appointments")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                    
+                    Spacer()
+                    
+                    NavigationLink(destination: MyAppointmentsView()) {
+                        Text("See All")
+                    }
+                }
+                AppointmentCard()
+            }
+            .padding(.horizontal)
+            
+            VStack(alignment: .leading, spacing: 7) {
+                Text("Features")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                HStack {
+                    NavigationLink(destination: BookAppointment()) {
+                        FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
+                    }
+                    NavigationLink(destination: PrescriptionListView()) {
+                        FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
+                    }
+                }
+            }
+            .padding(.horizontal)
+            
+            VStack(alignment: .leading, spacing: 7) {
+                Text("For You")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                OfferCards()
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    private func fetchUserData() {
         dataController.fetchCurrentUserData { user, image in
             if let user = user {
                 self.userFirstName = user.firstName
@@ -136,6 +152,7 @@ struct HomeTab: View {
         }
     }
 }
+
 
 struct AppointmentCard: View {
     var body: some View {
@@ -196,36 +213,6 @@ struct FeatureCard: View {
         .padding()
         .background(Color.white)
         .cornerRadius(10)
-    }
-}
-
-struct OfferCards: View {
-    var body: some View {
-        TabView {
-            OfferCard(offerText: "% Off Offer: 1")
-            OfferCard(offerText: "% Off Offer: 2")
-        }
-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-        .frame(height: 100)
-        .font(.title)
-    }
-}
-
-struct OfferCard: View {
-    var offerText: String
-
-    var body: some View {
-        Button(action: {
-            print("Tapped on offer: \(offerText)")
-        }) {
-            Text(offerText)
-                .padding()
-                .foregroundColor(.customPrimary)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(Color.white)
-                .cornerRadius(10)
-        }
-        .padding(.horizontal, 5)
     }
 }
 
