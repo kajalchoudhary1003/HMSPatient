@@ -101,7 +101,7 @@ struct OtpView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color(hex:"0E6B60"))
+                    .background(Color.customPrimary)
                     .cornerRadius(10)
             }
             .padding(.horizontal, 10)
