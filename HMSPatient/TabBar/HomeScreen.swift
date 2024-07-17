@@ -3,10 +3,11 @@ import FirebaseAuth
 
 struct HomeView: View {
     @State private var selectedTab = 0
+    @State private var showingActionSheet = false
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeTab()
+            HomeTab(showingActionSheet: $showingActionSheet)
                 .tabItem {
                     Image(systemName: "house.fill")
                     Text("Home")
@@ -29,6 +30,7 @@ struct HomeTab: View {
     @State private var profileImage: Image? = nil
     @State private var userFirstName: String = "User"
     private let dataController = DataController()
+    @Binding var showingActionSheet: Bool
 
     var body: some View {
         NavigationView {
@@ -84,13 +86,21 @@ struct HomeTab: View {
             .toolbar {
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
                     Button(action: {
-                        if let url = URL(string: "tel://112") {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        Image(systemName: "cross.circle.fill")
-                            .foregroundColor(Color(UIColor.systemRed))
-                    }
+                                            showingActionSheet = true
+                                        }) {
+                                            Image(systemName: "cross.circle.fill")
+                                                .foregroundColor(Color(UIColor.systemRed))
+                                        }
+                                        .actionSheet(isPresented: $showingActionSheet) {
+                                            ActionSheet(title: Text("Call Ambulance"), buttons: [
+                                                .destructive(Text("Call 112")) {
+                                                    if let url = URL(string: "tel://112") {
+                                                        UIApplication.shared.open(url)
+                                                    }
+                                                },
+                                                .cancel()
+                                            ])
+                                        }
                     Button(action: {
                         showingProfile = true
                     }) {

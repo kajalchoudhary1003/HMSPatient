@@ -86,6 +86,7 @@ struct PatientProfileView: View {
                             alignment: .trailing
                         )
                         .disabled(!isEditing)
+                    
                     TextField("Last name", text: $lastName)
                         .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
                             lastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -123,24 +124,33 @@ struct PatientProfileView: View {
                     .disabled(!isEditing)
                 }
 
-                Section {
-                    if isAddingEmergencyPhone {
-                        TextField("Emergency Contact", text: $emergencyPhone)
-                            .keyboardType(.phonePad)
-                            .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
-                                emergencyPhone = emergencyPhone.trimmingCharacters(in: .whitespacesAndNewlines)
-                            }
-                            .onChange(of: emergencyPhone) { newValue in
-                                let filtered = newValue.filter { "0123456789".contains($0) }
-                                if emergencyPhone != filtered {
-                                    emergencyPhone = filtered
+                Section(header: Text("Emergency Phone")) {
+                    if isEditing {
+                        if isAddingEmergencyPhone || !emergencyPhone.isEmpty {
+                            TextField("Emergency Contact", text: $emergencyPhone)
+                                .keyboardType(.phonePad)
+                                .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
+                                    emergencyPhone = emergencyPhone.trimmingCharacters(in: .whitespacesAndNewlines)
                                 }
-                                if emergencyPhone.count > 10 {
-                                    emergencyPhone = String(emergencyPhone.prefix(10))
+                                .onChange(of: emergencyPhone) { newValue in
+                                    let filtered = newValue.filter { "0123456789".contains($0) }
+                                    if emergencyPhone != filtered {
+                                        emergencyPhone = filtered
+                                    }
+                                    if emergencyPhone.count > 10 {
+                                        emergencyPhone = String(emergencyPhone.prefix(10))
+                                    }
                                 }
-                            }
-                            .overlay(
-                                Text("\(emergencyPhone.count)/10")
+                                .overlay(
+                                    Text("\(emergencyPhone.count)/10")
+                                        .font(.caption)
+                                        .foregroundColor(emergencyPhone.count > 10 ? Color(UIColor.systemRed) : .gray)
+                                        .padding(.trailing, 8),
+                                    alignment: .trailing
+                                )
+                            if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
+                                Text("Phone number should be 10 digits")
+                                    .foregroundColor(Color(UIColor.systemRed))
                                     .font(.caption)
                                     .foregroundColor(emergencyPhone.count > 10 ? Color(UIColor.systemRed) : .gray)
                                     .padding(.trailing, 8),
@@ -186,7 +196,7 @@ struct PatientProfileView: View {
             }
             .scrollContentBackground(.hidden)
         }
-        .background(Color(hex:"ECEEEE"))
+        .background(Color(hex: "ECEEEE"))
         .navigationBarBackButtonHidden(true)
         .alert(isPresented: $showErrorAlert) {
             Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))

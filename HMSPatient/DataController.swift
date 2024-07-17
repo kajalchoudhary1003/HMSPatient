@@ -1,5 +1,4 @@
 import Zip
-import UIKit
 import Foundation
 import SwiftUI
 import FirebaseAuth
