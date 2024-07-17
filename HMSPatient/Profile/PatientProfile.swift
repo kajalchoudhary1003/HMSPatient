@@ -169,7 +169,7 @@ struct PatientProfileView: View {
             }
             .scrollContentBackground(.hidden)
         }
-        .background(Color(hex: "ECEEEE"))
+        .background(Color.customBackground)
         .navigationBarBackButtonHidden(true)
         .onAppear {
             dataController.fetchCurrentUserData { user, image in

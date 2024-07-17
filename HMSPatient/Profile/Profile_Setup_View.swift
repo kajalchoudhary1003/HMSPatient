@@ -217,7 +217,7 @@ struct InitialsCircleView: View {
             .font(.largeTitle)
             .foregroundColor(.white)
             .frame(width: 150, height: 150)
-            .background(Circle().fill(Color(hex: "0E6B60")))
+            .background(Circle().fill(Color.customPrimary))
     }
 }
 

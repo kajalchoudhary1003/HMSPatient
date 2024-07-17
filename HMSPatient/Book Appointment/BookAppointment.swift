@@ -116,13 +116,14 @@ struct BookAppointment: View {
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.white)
                             .padding()
-                            .background(Group {
+                            .background(
+                                Group {
                                 if selectedTimeSlot == nil {
-                                    Color.gray
+                                    Color(UIColor.systemGray)
                                 } else if isPremiumSlotsEnabled {
-                                    Color(hex: "#AE75AC")
+                                    Color.customPremium
                                 } else {
-                                    Color(hex: "0E6B60")
+                                    Color.customPrimary
                                 }
                             })
                             .cornerRadius(10)
@@ -139,7 +140,7 @@ struct BookAppointment: View {
                 weeks = fetchWeeks(from: currentDate)
             }
         }
-        .background(Color(hex: "ECEEEE"))
+        .background(Color.customBackground)
     }
 
     private func categoryChanged(_ index: Int) {
@@ -207,7 +208,7 @@ struct TimeSlotView: View {
                             .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
                             .padding()
                             .frame(maxWidth: .infinity, minHeight: 48)
-                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : Color(hex: "0E6B60")) : Color.white) : Color.gray.opacity(0.3))
+                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : .customPrimary) : Color.white) : Color.gray.opacity(0.3))
                             .cornerRadius(10)
                     }
                     .disabled(!timeSlot.isAvailable)

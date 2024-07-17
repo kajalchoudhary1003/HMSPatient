@@ -21,8 +21,7 @@ struct RecordsView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color(hex: "ECEEEE")
-                    .ignoresSafeArea()
+                Color.customBackground
                 
                 VStack {
                     if isProcessing {
@@ -77,7 +76,7 @@ struct RecordsView: View {
                     }
                 }
             }
-            .background(Color(hex: "ECEEEE"))
+            .background(Color.customBackground)
             .searchable(text: $searchText, prompt: "Search")
             .navigationTitle("Records")
             .navigationBarItems(trailing: Button(action: {
@@ -93,8 +92,7 @@ struct RecordsView: View {
                 handleFiles(result: result)
             }
         }
-        .background(Color(hex: "ECEEEE"))
-        .ignoresSafeArea()
+        .background(Color.customBackground)
     }
 
     private func handleFiles(result: Result<[URL], Error>) {
