@@ -205,14 +205,16 @@ struct PatientProfileView: View {
     
     
     func logout() {
-           do {
-               try Auth.auth().signOut()
-               isLoggedIn = false
-               navigateToScreen(screen: Authentication())
-           } catch let signOutError as NSError {
-               print("Error signing out: %@", signOutError)
-           }
-       }
+        do {
+            try Auth.auth().signOut()
+            isLoggedIn = false
+            UserDefaults.standard.set(false, forKey: "isLoggedIn") // Clear login state
+            navigateToScreen(screen: Authentication())
+        } catch let signOutError as NSError {
+            print("Error signing out: %@", signOutError)
+        }
+    }
+
        
        
        // Function to navigate to different screens

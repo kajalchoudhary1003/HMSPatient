@@ -82,9 +82,10 @@ struct OtpView: View {
                     authManager.verifyCode(verificationCode: otp) { success in
                         if success {
                             if authManager.isNewUser {
-                                navigateToHome = false
+                                print("New user detected")
                                 navigateToSetupProfileView = true
                             } else {
+                                print("Existing user detected")
                                 navigateToHome = true
                             }
                         } else {
@@ -101,7 +102,7 @@ struct OtpView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color(hex:"0E6B60"))
+                    .background(Color(hex: "0E6B60"))
                     .cornerRadius(10)
             }
             .padding(.horizontal, 10)
@@ -110,6 +111,9 @@ struct OtpView: View {
         .background(Color.customBackground)
         .navigationDestination(isPresented: $navigateToSetupProfileView) {
             ProfileSetupView()
+        }
+        .alert(isPresented: $showAlert) {
+            Alert(title: Text("Alert"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
         }
     }
 }

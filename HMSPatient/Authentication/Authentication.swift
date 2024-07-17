@@ -7,13 +7,13 @@ struct Authentication: View {
     @StateObject private var authManager = AuthManager()
     @State private var errorMessage = ""
     @State private var showErrorAlert = false
-    @State private var navigateToHome = false
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
     @State private var validationMessage = " "
-    
+
     var isFormValid: Bool {
         isValidPhoneNumber(mobileNumber)
     }
-    
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -30,20 +30,18 @@ struct Authentication: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 10)
                     
-                    Spacer() // Pushes VStack content to the top
+                    Spacer()
                 }
                 GeometryReader { geometry in
                     Image("Doctor 3D")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: geometry.size.width)  // Adjust as needed
-                        .position(x: geometry.size.width / 2, y: geometry.size.height * 0.36)  // Adjust as needed
-//
+                        .frame(width: geometry.size.width)
+                        .position(x: geometry.size.width / 2, y: geometry.size.height * 0.36)
                 }
-                
-                // Login input section at the bottom
+
                 VStack {
-                    Spacer() // Pushes login section to the bottom
+                    Spacer()
                     
                     VStack(alignment: .leading) {
                         Text("Enter your credentials")
@@ -127,21 +125,21 @@ struct Authentication: View {
                             
                             Button(action: {
                                 let phoneNumber = "\(countryCode)\(mobileNumber)"
-                                                        if isFormValid {
-                                                            authManager.sendCode(phoneNumber: phoneNumber) { success in
-                                                                if success {
-                                                                    DispatchQueue.main.async {
-                                                                        isOtpViewActive = true
-                                                                    }
-                                                                } else {
-                                                                    errorMessage = "Failed to send OTP. Please try again."
-                                                                    showErrorAlert = true
-                                                                }
-                                                            }
-                                                        } else {
-                                                            errorMessage = "Please enter valid details."
-                                                            showErrorAlert = true
-                                                        }
+                                if isFormValid {
+                                    authManager.sendCode(phoneNumber: phoneNumber) { success in
+                                        if success {
+                                            DispatchQueue.main.async {
+                                                isOtpViewActive = true
+                                            }
+                                        } else {
+                                            errorMessage = "Failed to send OTP. Please try again."
+                                            showErrorAlert = true
+                                        }
+                                    }
+                                } else {
+                                    errorMessage = "Please enter valid details."
+                                    showErrorAlert = true
+                                }
                             }) {
                                 ZStack {
                                     RoundedRectangle(cornerRadius: 10)
@@ -168,33 +166,27 @@ struct Authentication: View {
             .background(Color.customBackground)
             .padding(.bottom, 10)
             .navigationDestination(isPresented: $isOtpViewActive) {
-                 OtpView(authManager: authManager, phoneNumber: "\(countryCode)\(mobileNumber)", navigateToHome: $navigateToHome)
-             }
-             .navigationDestination(isPresented: $navigateToHome) {
-                 HomeView()
-             }
-             .alert(isPresented: $showErrorAlert) {
-                 Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
-             }
-         }
-         .onAppear {
-             // Check if the user is new and navigate accordingly
-             if !authManager.isNewUser {
-                 isOtpViewActive = false
-             }
-         }
-     }
-    
-    // Validation functions
-    func isValidCountryCode(_ code: String) -> Bool {
-        let countryCodeRegEx = "^\\+[0-9]{1,3}$"
-        let countryCodeTest = NSPredicate(format: "SELF MATCHES %@", countryCodeRegEx)
-        return countryCodeTest.evaluate(with: code)
+                OtpView(authManager: authManager, phoneNumber: "\(countryCode)\(mobileNumber)", navigateToHome: $isLoggedIn)
+                    .environmentObject(authManager)
+            }
+            .navigationDestination(isPresented: $isLoggedIn) {
+                HomeView() // Ensure HomeView() is the correct destination here
+            }
+            .alert(isPresented: $showErrorAlert) {
+                Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))
+            }
+            .onAppear {
+                authManager.checkLoginState()
+                if authManager.isLoggedIn {
+                    isLoggedIn = true
+                }
+            }
+        }
     }
     
-    func isValidPhoneNumber(_ number: String) -> Bool {
-        let phoneRegEx = "^[0-9]{10}$"
-        let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneRegEx)
-        return phoneTest.evaluate(with: number)
+    private func isValidPhoneNumber(_ phoneNumber: String) -> Bool {
+        let phoneNumberRegex = "^[0-9]{10}$"
+        let phoneTest = NSPredicate(format: "SELF MATCHES %@", phoneNumberRegex)
+        return phoneTest.evaluate(with: phoneNumber)
     }
 }

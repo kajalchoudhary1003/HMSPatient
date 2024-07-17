@@ -1,48 +1,59 @@
-import SwiftUI
-import FirebaseAuth
+import Combine
+import Firebase
 
 class AuthManager: ObservableObject {
-    @Published var isLoggedIn = false
-    @Published var verificationID: String = ""
-    @AppStorage("isNewUser") var isNewUser: Bool = true // Flag to check if the user is new
-    private let dataController = DataController()
-    
-    /// Sends a verification code to the provided phone number.
+    @Published var isLoggedIn: Bool = false
+    @Published var isNewUser: Bool = false
+
+    private var verificationID: String?
+
     func sendCode(phoneNumber: String, completion: @escaping (Bool) -> Void) {
-        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { (verificationID, error) in
+        PhoneAuthProvider.provider().verifyPhoneNumber(phoneNumber, uiDelegate: nil) { verificationID, error in
             if let error = error {
-                print("Error in sending code: \(error.localizedDescription)")
+                print("Error sending verification code: \(error.localizedDescription)")
                 completion(false)
             } else {
-                self.verificationID = verificationID ?? ""
+                self.verificationID = verificationID
                 completion(true)
             }
         }
     }
-    
-    /// Verifies the received verification code.
+
+    func resendCode(phoneNumber: String, completion: @escaping (Bool) -> Void) {
+        sendCode(phoneNumber: phoneNumber, completion: completion)
+    }
+
     func verifyCode(verificationCode: String, completion: @escaping (Bool) -> Void) {
+        guard let verificationID = verificationID else {
+            completion(false)
+            return
+        }
         let credential = PhoneAuthProvider.provider().credential(withVerificationID: verificationID, verificationCode: verificationCode)
-        Auth.auth().signIn(with: credential) { (authResult, error) in
+        Auth.auth().signIn(with: credential) { authResult, error in
             if let error = error {
-                print("Error in verifying code: \(error.localizedDescription)")
+                print("Error verifying code: \(error.localizedDescription)")
                 completion(false)
-            } else if let user = authResult?.user {
-                self.checkIfNewUser(userId: user.uid, completion: completion)
+            } else if let authResult = authResult {
+                self.isLoggedIn = true
+                self.isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
+                completion(true)
+            } else {
+                completion(false)
             }
         }
     }
-    
-    /// Checks if the user is new or returning.
-    private func checkIfNewUser(userId: String, completion: @escaping (Bool) -> Void) {
-        dataController.checkIfUserExists(userId: userId) { exists in
-            self.isNewUser = !exists
-            completion(true)
-        }
+
+    func checkLoginState() {
+        isLoggedIn = Auth.auth().currentUser != nil
     }
-    
-    /// Resends the verification code to the provided phone number.
-    func resendCode(phoneNumber: String, completion: @escaping (Bool) -> Void) {
-        sendCode(phoneNumber: phoneNumber, completion: completion)
+
+    func signOut(completion: @escaping (Bool) -> Void) {
+        do {
+            try Auth.auth().signOut()
+            isLoggedIn = false
+            completion(true)
+        } catch {
+            completion(false)
+        }
     }
 }
