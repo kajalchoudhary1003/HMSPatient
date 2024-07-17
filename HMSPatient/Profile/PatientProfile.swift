@@ -196,7 +196,7 @@ struct PatientProfileView: View {
             }
             .scrollContentBackground(.hidden)
         }
-        .background(Color(hex: "ECEEEE"))
+        .background(Color.customBackground)
         .navigationBarBackButtonHidden(true)
         .alert(isPresented: $showErrorAlert) {
             Alert(title: Text("Error"), message: Text(errorMessage), dismissButton: .default(Text("OK")))

@@ -116,10 +116,20 @@ struct BookAppointment: View {
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.white)
                             .padding()
-                            .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "0E6B60"))
+                            .background(
+                                Group {
+                                if selectedTimeSlot == nil {
+                                    Color(UIColor.systemGray)
+                                } else if isPremiumSlotsEnabled {
+                                    Color.customPremium
+                                } else {
+                                    Color.customPrimary
+                                }
+                            })
                             .cornerRadius(10)
                             .padding(.vertical)
                     }
+                    .disabled(selectedTimeSlot == nil)// Disable the button if no time slot is selected
                 }
             }
             .padding()
@@ -130,7 +140,7 @@ struct BookAppointment: View {
                 weeks = fetchWeeks(from: currentDate)
             }
         }
-        .background(Color(hex: "ECEEEE"))
+        .background(Color.customBackground)
     }
 
     private func categoryChanged(_ index: Int) {
@@ -198,7 +208,7 @@ struct TimeSlotView: View {
                             .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
                             .padding()
                             .frame(maxWidth: .infinity, minHeight: 48)
-                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : Color(hex: "0E6B60")) : Color.white) : Color.gray.opacity(0.3))
+                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : .customPrimary) : Color.white) : Color.gray.opacity(0.3))
                             .cornerRadius(10)
                     }
                     .disabled(!timeSlot.isAvailable)

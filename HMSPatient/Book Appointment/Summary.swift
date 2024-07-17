@@ -11,44 +11,69 @@ struct AppointmentSummaryView: View {
     @State private var bookingErrorMessage: IdentifiableError?
     @State private var showSuccessAnimation = false
     @State private var animationFinished = false
+    @State private var descriptionText = ""
 
     var body: some View {
         ZStack {
             VStack(alignment: .leading, spacing: 16) {
                 if let doctor = selectedDoctor, let timeSlot = selectedTimeSlot {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Appointment:")
-                            .font(.headline)
-                        Text("Doctor:")
-                            .font(.headline)
-                        Text("\(doctor.firstName) \(doctor.lastName)")
-                            .font(.body)
-                        
-                        Text("Speciality: \(doctor.designation)")
-                            .font(.subheadline)
-                            .foregroundColor(.gray)
-                        
-                        Text("Experience: \(doctor.experience) years")
-                            .font(.footnote)
-                            .foregroundColor(.gray)
-                        
-                        HStack {
-                            Text("Date:")
-                                .font(.headline)
-                            Text(formatDate(appointmentDate))
-                                .font(.body)
-                            
-                            Spacer()
-                            
-                            Text("Time Slot:")
-                                .font(.headline)
-                            Text(formatTimeSlot(timeSlot))
-                                .font(.body)
+                        Section(header: Text("Appointment Details").font(.headline)) {
+                            HStack {
+                                
+                                    VStack(alignment: .leading) {
+                                        Text("Dr. \(doctor.firstName) \(doctor.lastName)")
+                                            .font(.title)
+                                        Text(doctor.designation.rawValue)
+                                            .font(.subheadline)
+                                            .foregroundColor(.gray)
+                                            .padding(.bottom, 5)
+                                        Text("\(formatTimeSlot(timeSlot))")
+                                            .font(.subheadline)
+                                            .foregroundColor(.customPrimary)
+                                    }
+                                    Spacer()
+                                    VStack(alignment: .center) {
+                                        Text(formatDayOfWeek(appointmentDate))
+                                            .font(.subheadline)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(.customPrimary)
+                                        Text(formatDayOfMonth(appointmentDate))
+                                            .font(.largeTitle)
+                                            .fontWeight(.regular)
+                                    }
+                            }
+                            .padding()
+                            .padding(.horizontal,10)
+                            .background(Color.white)
+                            .cornerRadius(10)
                         }
                     }
-                    .padding()
-                    .background(Color.white)
-                    .cornerRadius(10)
+                    .padding(.bottom)
+                    
+                    VStack(alignment: .leading) {
+                        Section(header: Text("Write Description").font(.headline)) {
+                            ZStack(alignment: .topLeading) {
+                                TextEditor(text: $descriptionText)
+                                    .frame(height: 150)
+                                    .padding(6)
+                                    .background(Color.white)
+                                    .cornerRadius(10)
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color(UIColor.systemGray), lineWidth: 1)
+                                    )
+                                
+                                if descriptionText.isEmpty {
+                                    Text("Describe your problem...")
+                                        .foregroundColor(Color(UIColor.placeholderText))
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 14)
+                                        .allowsHitTesting(false)
+                                }
+                            }
+                        }
+                    }
                     
                     Spacer()
                     
@@ -84,7 +109,7 @@ struct AppointmentSummaryView: View {
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.white)
                             .padding()
-                            .background(Color(hex: "0E6B60"))
+                            .background(Color.customPrimary)
                             .cornerRadius(10)
                     }
                     .padding(.vertical)
@@ -116,7 +141,7 @@ struct AppointmentSummaryView: View {
                 SuccessAnimationView()
                     .edgesIgnoringSafeArea(.all)
             }
-        }.background(Color(hex:"ECEEEE"))
+        }.background(Color.customBackground)
     }
     
     private func formatDate(_ date: Date) -> String {
@@ -130,6 +155,18 @@ struct AppointmentSummaryView: View {
         let formatter = DateFormatter()
         formatter.timeStyle = .short
         return "\(formatter.string(from: timeSlot.startTime)) - \(formatter.string(from: timeSlot.endTime))"
+    }
+
+    private func formatDayOfWeek(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+        return formatter.string(from: date).uppercased()
+    }
+
+    private func formatDayOfMonth(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "d"
+        return formatter.string(from: date)
     }
     
     private func calculateAge(from birthDate: Date) -> Int {
@@ -185,6 +222,11 @@ struct SuccessAnimationView: View {
     var body: some View {
         ZStack {
             Blur()
+            
+            if showConfetti {
+                            ConfettiContainer()
+                        }
+            
             VStack {
                 if showTick {
                     Image(systemName: "checkmark.circle.fill")
@@ -198,24 +240,30 @@ struct SuccessAnimationView: View {
                 Text("Appointment Booked!")
                     .font(.title)
                     .fontWeight(.bold)
-                    .foregroundColor(Color(hex: "0E6B60"))
+                    .foregroundColor(.customPrimary)
                     .padding(.top)
                     .opacity(showTick ? 1 : 0)
             }
             
-            if showConfetti {
-                ForEach(0..<20) { index in
-                    ConfettiView()
-                        .offset(x: CGFloat.random(in: -150...150), y: CGFloat.random(in: -300...300))
-                }
-            }
         }
         .onAppear {
             withAnimation(.easeIn(duration: 0.5)) {
                 showTick = true
             }
-            withAnimation(.easeInOut(duration: 1).delay(0.5)) {
+            withAnimation(.easeOut(duration: 1).delay(0.5)) {
                 showConfetti = true
+            }
+        }
+    }
+}
+
+struct ConfettiContainer: View {
+    let confettiCount = 50
+    
+    var body: some View {
+        GeometryReader { geometry in
+            ForEach(0..<confettiCount, id: \.self) { _ in
+                ConfettiView(size: geometry.size)
             }
         }
     }
@@ -223,16 +271,41 @@ struct SuccessAnimationView: View {
 
 struct ConfettiView: View {
     @State private var isAnimating = false
+    let size: CGSize
+    
+    private let randomX: CGFloat
+    private let randomY: CGFloat
+    private let randomScale: CGFloat
+    private let randomRotation: Double
+    private let randomDuration: Double
+    private let randomDelay: Double
+    
+    init(size: CGSize) {
+        self.size = size
+        randomX = CGFloat.random(in: -size.width...size.width)
+        randomY = CGFloat.random(in: -size.height...size.height)
+        randomScale = CGFloat.random(in: 0.5...1.5)
+        randomRotation = Double.random(in: 0...360)
+        randomDuration = Double.random(in: 1.5...3)
+        randomDelay = Double.random(in: 0...0.5)
+    }
     
     var body: some View {
-        Circle()// You can use other shapes or images for confetti
+        Circle()
             .fill(Color.random)
             .frame(width: 10, height: 10)
-            .offset(y: isAnimating ? 500 : -500)
+            .scaleEffect(isAnimating ? randomScale : 0.01)
+            .offset(x: isAnimating ? randomX : 0, y: isAnimating ? randomY : 0)
+            .rotationEffect(.degrees(isAnimating ? randomRotation : 0))
+            .opacity(isAnimating ? 0 : 1)
+            .animation(
+                Animation.easeOut(duration: randomDuration)
+                    .delay(randomDelay)
+                    .repeatForever(autoreverses: false),
+                value: isAnimating
+            )
             .onAppear {
-                withAnimation(.linear(duration: 2)) {
-                    isAnimating = true
-                }
+                isAnimating = true
             }
     }
 }
