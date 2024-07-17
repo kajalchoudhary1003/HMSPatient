@@ -100,9 +100,5 @@ struct DoctorCardView: View {
         }
     }
 
-    private func calculateAge(from dateOfBirth: Date) -> Int {
-        let calendar = Calendar.current
-        let ageComponents = calendar.dateComponents([.year], from: dateOfBirth, to: Date())
-        return ageComponents.year ?? 0
-    }
+    
 }

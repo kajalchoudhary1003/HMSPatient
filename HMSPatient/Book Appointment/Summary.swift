@@ -87,7 +87,7 @@ struct AppointmentSummaryView: View {
                             patientID: currentUserId,
                             doctorID: doctor.id,
                             date: appointmentDate,
-                            timeSlotID: timeSlot.id
+                            timeSlotsID: timeSlot.id
                         )
                         
                         DataController.shared.saveAppointment(appointment: appointment) { success in
