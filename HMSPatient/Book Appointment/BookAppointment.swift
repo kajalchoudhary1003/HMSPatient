@@ -140,6 +140,7 @@ struct BookAppointment: View {
             .padding()
             .cornerRadius(10)
             .navigationTitle("Book Appointment")
+           
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
                 weeks = fetchWeeks(from: currentDate)

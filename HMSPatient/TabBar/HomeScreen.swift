@@ -128,7 +128,7 @@ struct HomeTab: View {
                 HStack {
                     NavigationLink(destination: BookAppointment()) {
                         FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
-                    }.dynamicTypeSize(.large ... .xxxLarge)
+                    }
                     NavigationLink(destination: PrescriptionListView()) {
                         FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
                     }.dynamicTypeSize(.large ... .xxxLarge)
