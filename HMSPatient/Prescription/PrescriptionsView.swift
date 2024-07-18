@@ -12,20 +12,20 @@ struct PrescriptionListView: View {
     ]
     
     var body: some View {
-            VStack {
-                List(filteredPrescriptions, id: \.id) { prescription in
-                    NavigationLink(destination: PrescriptionDetailView(date: prescription.date, details: prescription.details)) {
-                        PrescriptionRow(doctorName: prescription.doctorName, date: prescription.date, details: prescription.details.first ?? "")
-                    }
+        VStack {
+            List(filteredPrescriptions, id: \.id) { prescription in
+                NavigationLink(destination: PrescriptionDetailView(date: prescription.date, details: prescription.details)) {
+                    PrescriptionRow(doctorName: prescription.doctorName, date: prescription.date, details: prescription.details.first ?? "")
                 }
-                .listStyle(PlainListStyle())
-                .navigationTitle("My Prescriptions")
-                .navigationBarTitleDisplayMode(.large)
-                .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
             }
-            .background(Color.customBackground)
+            .listStyle(PlainListStyle())
+            .navigationTitle("My Prescriptions")
+            .navigationBarTitleDisplayMode(.large)
+            .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
         }
-        
+        .background(Color.customBackground)
+        .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size to the main view
+    }
     
     // Computed property for filtered prescriptions
     var filteredPrescriptions: [Prescription] {
@@ -51,16 +51,18 @@ struct PrescriptionRow: View {
             HStack {
                 Text(doctorName)
                     .font(.headline)
+                    .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                 Spacer()
                 Text(date)
                     .font(.subheadline)
                     .foregroundColor(.gray)
-                
+                    .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
             }
             Divider()
             Text(details)
                 .font(.subheadline)
                 .foregroundColor(.gray)
+                .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
         }
         .padding(.vertical, 5)
     }

@@ -42,6 +42,7 @@ struct PatientProfileView: View {
                         saveUserData()
                     }
                 }
+                .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
             }
             .padding([.leading, .trailing, .top])
             
@@ -60,12 +61,13 @@ struct PatientProfileView: View {
                         Text(getInitials(firstName: firstName, lastName: lastName))
                             .foregroundColor(.white)
                             .font(.largeTitle)
+                            .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                     }
                 }
             }
 
             Form {
-                Section(header: Text("Personal Information")) {
+                Section(header: Text("Personal Information").dynamicTypeSize(.large ... .xxxLarge)) {
                     TextField("First name", text: $firstName)
                         .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
                             firstName = firstName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -84,6 +86,7 @@ struct PatientProfileView: View {
                             alignment: .trailing
                         )
                         .disabled(!isEditing) // Disable editing when not in edit mode
+                        .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                     TextField("Last name", text: $lastName)
                         .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidEndEditingNotification)) { _ in
                             lastName = lastName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -102,20 +105,24 @@ struct PatientProfileView: View {
                             alignment: .trailing
                         )
                         .disabled(!isEditing) // Disable editing when not in edit mode
+                        .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                 }
 
-                Section(header: Text("Details")) {
+                Section(header: Text("Details").dynamicTypeSize(.large ... .xxxLarge)) {
                     DatePicker("Date Of Birth", selection: $dateOfBirth, in: ageRange, displayedComponents: .date)
                         .disabled(!isEditing) // Disable editing when not in edit mode
+                        .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                     Picker("Gender", selection: $gender) {
                         ForEach(["Select", "Male", "Female", "Other"], id: \.self) {
                             Text($0)
+                                .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                         }
                     }
                     .disabled(!isEditing) // Disable editing when not in edit mode
                     Picker("Blood Group", selection: $bloodGroup) {
                         ForEach(["Select", "A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"], id: \.self) {
                             Text($0)
+                                .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                         }
                     }
                     .disabled(!isEditing) // Disable editing when not in edit mode
@@ -145,10 +152,12 @@ struct PatientProfileView: View {
                                 alignment: .trailing
                             )
                             .disabled(!isEditing) // Disable editing when not in edit mode
+                            .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                         if !isEmergencyPhoneValid && !emergencyPhone.isEmpty {
                             Text("Phone number should be 10 digits")
                                 .foregroundColor(Color(UIColor.systemRed))
                                 .font(.caption)
+                                .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                         }
                     } else {
                         Button(action: {
@@ -158,6 +167,7 @@ struct PatientProfileView: View {
                                 Image(systemName: "plus.circle.fill")
                                     .foregroundColor(.green)
                                 Text("Add emergency phone")
+                                    .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                             }
                         }
                         .disabled(!isEditing) // Disable editing when not in edit mode
@@ -165,22 +175,23 @@ struct PatientProfileView: View {
                 }
                 
                 VStack {
-                                   Button(action: {
-                                       logout()
-                                   }) {
-                                       Text("Log out")
-                                           .fontWeight(.semibold)
-                                           .frame(maxWidth: .infinity)
-                                           .padding(-2)
-                                           .foregroundColor(.red)
-                                           .font(.title)
-                                           .background(.white)
-                                           .cornerRadius(10)
-                                   }
-                                   .padding(.horizontal)
-                                   .padding(.leading, 16)
-                                   .padding(.trailing, 16)
-                               }
+                    Button(action: {
+                        logout()
+                    }) {
+                        Text("Log out")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity)
+                            .padding(-2)
+                            .foregroundColor(.red)
+                            .font(.title)
+                            .background(.white)
+                            .cornerRadius(10)
+                            .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
+                    }
+                    .padding(.horizontal)
+                    .padding(.leading, 16)
+                    .padding(.trailing, 16)
+                }
             }
             .scrollContentBackground(.hidden)
         }
@@ -203,7 +214,6 @@ struct PatientProfileView: View {
         }
     }
     
-    
     func logout() {
         do {
             try Auth.auth().signOut()
@@ -215,17 +225,15 @@ struct PatientProfileView: View {
         }
     }
 
-       
-       
-       // Function to navigate to different screens
-        func navigateToScreen<Screen: View>(screen: Screen) {
-            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                if let window = windowScene.windows.first {
-                    window.rootViewController = UIHostingController(rootView: screen)
-                    window.makeKeyAndVisible()
-                }
+    // Function to navigate to different screens
+    func navigateToScreen<Screen: View>(screen: Screen) {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            if let window = windowScene.windows.first {
+                window.rootViewController = UIHostingController(rootView: screen)
+                window.makeKeyAndVisible()
             }
         }
+    }
 
     func saveUserData() {
         guard let userId = Auth.auth().currentUser?.uid else { return }

@@ -9,12 +9,12 @@ struct HomeView: View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-                HomeTab(searchViewModel: searchViewModel, showingActionSheet: $showingActionSheet)
-            .tabItem {
-                Image(systemName: "house.fill")
-                Text("Home")
-            }
-            .tag(0)
+            HomeTab(searchViewModel: searchViewModel, showingActionSheet: $showingActionSheet)
+                .tabItem {
+                    Image(systemName: "house.fill")
+                    Text("Home")
+                }
+                .tag(0)
             
             RecordsView()
                 .tabItem {
@@ -38,7 +38,7 @@ struct HomeTab: View {
     @State private var navigateToBookAppointment = false
     
     var body: some View {
-        NavigationView{
+        NavigationView {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
@@ -87,6 +87,7 @@ struct HomeTab: View {
             Text("Search Results")
                 .font(.title2)
                 .fontWeight(.bold)
+                .dynamicTypeSize(.large ... .xxxLarge)
                 .padding(.horizontal)
             
             ForEach(searchViewModel.searchResults) { doctor in
@@ -106,11 +107,13 @@ struct HomeTab: View {
                     Text("My Appointments")
                         .font(.title2)
                         .fontWeight(.bold)
+                        .dynamicTypeSize(.large ... .xxxLarge)
                     
                     Spacer()
                     
                     NavigationLink(destination: MyAppointmentsView()) {
                         Text("See All")
+                            .dynamicTypeSize(.large ... .xxxLarge)
                     }
                 }
                 AppointmentCard()
@@ -121,13 +124,14 @@ struct HomeTab: View {
                 Text("Features")
                     .font(.title2)
                     .fontWeight(.bold)
+                    .dynamicTypeSize(.large ... .xxxLarge)
                 HStack {
                     NavigationLink(destination: BookAppointment()) {
                         FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
-                    }
+                    }.dynamicTypeSize(.large ... .xxxLarge)
                     NavigationLink(destination: PrescriptionListView()) {
                         FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
-                    }
+                    }.dynamicTypeSize(.large ... .xxxLarge)
                 }
             }
             .padding(.horizontal)
@@ -136,6 +140,7 @@ struct HomeTab: View {
                 Text("For You")
                     .font(.title2)
                     .fontWeight(.bold)
+                    .dynamicTypeSize(.large ... .xxxLarge)
                 OfferCards()
             }
             .padding(.horizontal)
@@ -158,14 +163,17 @@ struct AppointmentCard: View {
         HStack {
             VStack(alignment: .leading) {
                 Text("Dr. Renu Luthra")
-                    .font(.title)
+                    .font(.title3)
+                    .dynamicTypeSize(.large ... .xxxLarge)
                 Text("Gynecologist")
                     .font(.subheadline)
                     .foregroundColor(.gray)
                     .padding(.bottom, 5)
+                    .dynamicTypeSize(.large ... .xxxLarge)
                 Text("10:15 - 10:35")
                     .font(.subheadline)
                     .foregroundColor(.customPrimary)
+                    .dynamicTypeSize(.large ... .xxxLarge)
             }
             Spacer()
             VStack(alignment: .center) {
@@ -173,9 +181,11 @@ struct AppointmentCard: View {
                     .font(.subheadline)
                     .fontWeight(.bold)
                     .foregroundColor(.customPrimary)
+                    .dynamicTypeSize(.large ... .xxxLarge)
                 Text("28")
                     .font(.largeTitle)
                     .fontWeight(.regular)
+                    .dynamicTypeSize(.large ... .xxxLarge)
             }
         }
         .padding()
@@ -183,6 +193,8 @@ struct AppointmentCard: View {
         .cornerRadius(10)
     }
 }
+
+
 
 struct FeatureCard: View {
     var icon: String
@@ -193,7 +205,9 @@ struct FeatureCard: View {
             HStack {
                 Spacer()
                 Image(systemName: icon)
-                    .font(.title2)
+                    .resizable()
+                    .scaledToFit()
+                    .font(.title2) // Consistent font size for the icon
                     .fontWeight(.medium)
                     .foregroundColor(.white)
                     .padding(8)
@@ -202,18 +216,21 @@ struct FeatureCard: View {
             }
             Spacer()
             Text(title)
-                .font(.headline)
+                .font(.headline) // Adjust based on desired text size
                 .fontWeight(.regular)
                 .multilineTextAlignment(.leading)
                 .foregroundColor(.black)
+                .dynamicTypeSize(.large ... .xxxLarge) // Add dynamic type size here
+                .lineLimit(nil) // Allow text to wrap and resize as needed
         }
-        .frame(height: 130)
+        .frame(height: 130) // Adjust height as needed to accommodate resized text
         .frame(maxWidth: .infinity)
         .padding()
         .background(Color.white)
         .cornerRadius(10)
     }
 }
+
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {

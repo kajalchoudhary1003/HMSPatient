@@ -22,15 +22,18 @@ struct BookAppointment: View {
             VStack(alignment: .center, spacing: 16) {
                 VStack(alignment: .trailing) {
                     HStack {
-                        Text("Speciality")
-                        Spacer()
-                        Picker("Speciality", selection: $selectedCategoryIndex.onChange(categoryChanged)) {
-                            ForEach(0..<categories.count, id: \.self) { index in
-                                Text(categories[index]?.title ?? "Select").tag(index as Int?)
-                            }
-                        }
-                        .pickerStyle(.menu)
-                    }
+                                          Text("Speciality")
+                                              .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
+                                          Spacer()
+                                          Picker("Speciality", selection: $selectedCategoryIndex.onChange(categoryChanged)) {
+                                              ForEach(0..<categories.count, id: \.self) { index in
+                                                  Text(categories[index]?.title ?? "Select")
+                                                      .tag(index as Int?)
+                                                      .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
+                                              }
+                                          }
+                                          .pickerStyle(.menu)
+                                      }
                     .padding()
                     .background(Color.white)
                     .cornerRadius(10)
@@ -39,6 +42,7 @@ struct BookAppointment: View {
                         NavigationLink(destination: DoctorPickerView(doctors: filteredDoctors, selectedDoctorIndex: $selectedDoctorIndex)) {
                             HStack {
                                 Text(selectedDoctorLabel)
+                                    .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                                 Spacer()
                                 Image(systemName: "chevron.right")
                             }
@@ -95,6 +99,7 @@ struct BookAppointment: View {
                         Toggle(isOn: $isPremiumSlotsEnabled) {
                             Text("Premium Slots")
                                 .font(.headline)
+                                .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                         }
                         .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#BC79B8")))
                     }
@@ -127,6 +132,7 @@ struct BookAppointment: View {
                             })
                             .cornerRadius(10)
                             .padding(.vertical)
+                            .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                     }
                     .disabled(selectedTimeSlot == nil)// Disable the button if no time slot is selected
                 }
@@ -188,6 +194,7 @@ struct TimeSlotView: View {
                 .font(.headline)
                 .foregroundColor(.gray)
                 .padding()
+                .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
         } else {
             LazyVGrid(columns: columns, spacing: 12) {
                 ForEach(timeSlots.filter { timeSlot in
@@ -209,6 +216,7 @@ struct TimeSlotView: View {
                             .frame(maxWidth: .infinity, minHeight: 48)
                             .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : .customPrimary) : Color.white) : Color.gray.opacity(0.3))
                             .cornerRadius(10)
+                            .dynamicTypeSize(.large ... .xxxLarge) // Added dynamic type size
                     }
                     .disabled(!timeSlot.isAvailable)
                 }
