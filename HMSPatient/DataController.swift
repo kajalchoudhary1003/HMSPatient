@@ -4,8 +4,6 @@ import SwiftUI
 import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
-import Zip
-import SwiftUI
 
 class DataController {
     private var database = Database.database().reference()
@@ -91,6 +89,13 @@ class DataController {
             return
         }
         fetchDocuments(userId: userId, completion: completion)
+    }
+    
+    func fetchCurrentUserDocumentsInBackground(completion: @escaping ([Record]) -> Void) {
+        fetchCurrentUserDocuments { records in
+            // Process records if needed
+            completion(records)
+        }
     }
 
     private func downloadAndUnzipFile(documentURL: String, completion: @escaping (Result<URL, Error>) -> Void) {
@@ -291,26 +296,10 @@ class DataController {
             completion(filteredDoctors)
         }
     }
-//    func fetchAllAppointments(completion: @escaping ([Appointment]) -> Void) {
-//        let appointmentsRef = database.child("appointments")
-//        
-//        appointmentsRef.observeSingleEvent(of: .value) { snapshot in
-//            var appointments: [Appointment] = []
-//            
-//            for child in snapshot.children {
-//                if let snapshot = child as? DataSnapshot,
-//                   let dict = snapshot.value as? [String: Any],
-//                   let appointment = Appointment(from: dict) {
-//                    appointments.append(appointment)
-//                } else {
-//                    print("Error decoding appointment")
-//                }
-//            }
-//            
-//            completion(appointments)
-//        }
-//    }
-
-
-
+    func uploadPendingFiles(completion: @escaping (Bool) -> Void) {
+        // Implement logic to check for pending files and upload them
+        // This is a placeholder function, you need to maintain a list of pending files to upload
+        let success = true // Assume success for now
+        completion(success)
+    }
 }

@@ -1,8 +1,9 @@
 import UIKit
 import Firebase
+import BackgroundTasks
 
-//@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         
@@ -19,7 +20,73 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         application.registerForRemoteNotifications()
         
+        // Register background tasks
+        registerBackgroundTasks()
+        
         return true
+    }
+    
+    private func registerBackgroundTasks() {
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.example.app.fetchRecords", using: nil) { task in
+            self.handleFetchRecordsTask(task: task as! BGAppRefreshTask)
+        }
+        
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: "com.example.app.uploadFiles", using: nil) { task in
+            self.handleUploadFilesTask(task: task as! BGProcessingTask)
+        }
+    }
+    
+    private func handleFetchRecordsTask(task: BGAppRefreshTask) {
+        scheduleAppRefresh()
+        task.expirationHandler = {
+            task.setTaskCompleted(success: false)
+        }
+        
+        // Fetch records in the background
+        DataController.shared.fetchCurrentUserDocumentsInBackground { records in
+            // Save or process the records as needed
+            task.setTaskCompleted(success: true)
+        }
+    }
+    
+    private func handleUploadFilesTask(task: BGProcessingTask) {
+        scheduleProcessingTask()
+        task.expirationHandler = {
+            task.setTaskCompleted(success: false)
+        }
+        
+        // Upload files in the background
+        DataController.shared.uploadPendingFiles { success in
+            task.setTaskCompleted(success: success)
+        }
+    }
+    
+    private func scheduleAppRefresh() {
+        let request = BGAppRefreshTaskRequest(identifier: "com.example.app.fetchRecords")
+        request.earliestBeginDate = Date(timeIntervalSinceNow: 15 * 60) // Fetch every 15 minutes
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+        } catch {
+            print("Could not schedule app refresh: \(error)")
+        }
+    }
+    
+    private func scheduleProcessingTask() {
+        let request = BGProcessingTaskRequest(identifier: "com.example.app.uploadFiles")
+        request.requiresNetworkConnectivity = true // Need internet
+        request.requiresExternalPower = false // Can run without power
+        
+        do {
+            try BGTaskScheduler.shared.submit(request)
+        } catch {
+            print("Could not schedule processing task: \(error)")
+        }
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        scheduleAppRefresh()
+        scheduleProcessingTask()
     }
     
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
