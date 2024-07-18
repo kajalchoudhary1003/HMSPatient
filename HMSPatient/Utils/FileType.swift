@@ -11,7 +11,7 @@ enum FileType: String, Codable {
 
 struct Record: Identifiable, Codable {
     let id: UUID
-    var title: String
+    let title: String
     let date: String
     let fileURL: String // URL to the file in Firebase Storage
     let fileType: FileType // Add file type information
@@ -30,64 +30,28 @@ struct RecordCard: View {
     let isExpanded: Bool
     let onTap: () -> Void
     @State private var audioPlayer: AVAudioPlayer?
-    @State private var showingRenameAlert = false
-    @State private var showingShareSheet = false
-    @State private var newTitle = ""
-    @State private var showingDeleteConfirmation = false
+    @State private var showingFile = false
 
     var body: some View {
         VStack {
-            HStack {
-                Image(systemName: "doc.fill")
-                    .foregroundColor(.gray)
-                    .font(.largeTitle)
-                
-                VStack(alignment: .leading) {
-                    Text(record.title)
-                        .font(.headline)
-                    Text(record.date)
-                        .font(.subheadline)
+            Button(action: onTap) {
+                HStack {
+                    Image(systemName: "doc.fill")
                         .foregroundColor(.gray)
-                }
-                
-                Spacer()
-                
-                Button(action: {
-                    // Show context menu
-                }) {
-                    Image(systemName: "ellipsis")
+                        .font(.largeTitle)
+                    
+                    VStack(alignment: .leading) {
+                        Text(record.title)
+                            .font(.headline)
+                        Text(record.date)
+                            .font(.subheadline)
+                            .foregroundColor(.gray)
+                    }
+                    
+                    Spacer()
+                    
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
                         .foregroundColor(.gray)
-                        .padding()
-                        .background(Color.gray.opacity(0.2))
-                        .clipShape(Circle())
-                }
-                .contextMenu {
-                    Button(action: {
-                        newTitle = record.title
-                        showingRenameAlert = true
-                    }) {
-                        Text("Rename")
-                        Image(systemName: "pencil")
-                    }
-
-                    Button(action: {
-                        if let url = URL(string: record.fileURL) {
-                            let av = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-                            UIApplication.shared.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
-                        }
-                    }) {
-                        Text("Share")
-                        Image(systemName: "square.and.arrow.up")
-                    }
-
-                    Button(action: {
-                        showingDeleteConfirmation = true
-                    }) {
-                        Text("Delete")
-                            .foregroundColor(.red)
-                        Image(systemName: "trash")
-                            .foregroundColor(.red)
-                    }
                 }
             }
             .buttonStyle(PlainButtonStyle())
@@ -119,24 +83,6 @@ struct RecordCard: View {
         .padding()
         .background(Color.white)
         .cornerRadius(10)
-        .alert(isPresented: $showingRenameAlert) {
-            Alert(
-                title: Text("Rename Document"),
-                message: Text("Enter a new name for the document."),
-                primaryButton: .default(Text("Save"), action: renameDocument),
-                secondaryButton: .cancel()
-            )
-        }
-        .actionSheet(isPresented: $showingDeleteConfirmation) {
-            ActionSheet(
-                title: Text("Delete Document"),
-                message: Text("Are you sure you want to delete this document? This action cannot be undone."),
-                buttons: [
-                    .destructive(Text("Delete"), action: deleteDocument),
-                    .cancel()
-                ]
-            )
-        }
     }
     
     func playAudio() {
@@ -155,31 +101,6 @@ struct RecordCard: View {
     
     func stopAudio() {
         audioPlayer?.stop()
-    }
-    
-    func renameDocument() {
-        // Implement rename logic
-        // Update record title and save to Firebase
-        var newRecord = record
-        newRecord.title = newTitle
-        DataController.shared.saveRecord(record: newRecord) { success in
-            if success {
-                print("Successfully renamed document.")
-            } else {
-                print("Failed to rename document.")
-            }
-        }
-    }
-    
-    func deleteDocument() {
-        // Implement delete logic
-        DataController.shared.deleteDocument(userId: Auth.auth().currentUser?.uid ?? "", documentId: record.id.uuidString, documentURL: record.fileURL) { success in
-            if success {
-                print("Successfully deleted document.")
-            } else {
-                print("Failed to delete document.")
-            }
-        }
     }
 }
 
