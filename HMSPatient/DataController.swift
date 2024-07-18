@@ -35,7 +35,7 @@ class DataController {
             completion(snapshot.exists())
         }
     }
-
+    
     func uploadZippedFiles(userId: String, localFile: URL, completion: @escaping (Result<String, Error>) -> Void) {
         let fileName = "\(UUID().uuidString).zip"
         let storageRef = storage.child("users/\(userId)/zipped_files/\(fileName)")
@@ -55,12 +55,12 @@ class DataController {
             }
         }
     }
-
+    
     private func saveDocumentUID(userId: String, documentURL: String) {
         let documentUID = UUID().uuidString
         database.child("patient_users").child(userId).child("documents").child(documentUID).setValue(documentURL)
     }
-
+    
     func fetchDocuments(userId: String, completion: @escaping ([Record]) -> Void) {
         database.child("patient_users").child(userId).child("documents").observeSingleEvent(of: .value) { snapshot in
             var records: [Record] = []
@@ -86,7 +86,7 @@ class DataController {
             }
         }
     }
-
+    
     func fetchCurrentUserDocuments(completion: @escaping ([Record]) -> Void) {
         guard let userId = currentUser else {
             completion([])
@@ -101,7 +101,7 @@ class DataController {
             completion(records)
         }
     }
-
+    
     private func downloadAndUnzipFile(documentURL: String, completion: @escaping (Result<URL, Error>) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             let storageRef = Storage.storage().reference(forURL: documentURL)
@@ -134,7 +134,7 @@ class DataController {
             }
         }
     }
-
+    
     private func determineFileType(for url: URL) -> FileType {
         let ext = url.pathExtension.lowercased()
         switch ext {
@@ -148,7 +148,7 @@ class DataController {
             return .pdf
         }
     }
-
+    
     func saveRecord(record: Record, completion: @escaping (Bool) -> Void) {
         let recordDict: [String: Any] = [
             "title": record.title,
@@ -161,7 +161,7 @@ class DataController {
             completion(error == nil)
         }
     }
-
+    
     func deleteDocument(userId: String, documentId: String, documentURL: String, completion: @escaping (Bool) -> Void) {
         let documentRef = database.child("patient_users").child(userId).child("documents").child(documentId)
         let storageRef = Storage.storage().reference(forURL: documentURL)
@@ -205,7 +205,7 @@ class DataController {
             completion(doctors)
         }
     }
-
+    
     func saveAppointment(appointment: Appointment, completion: @escaping (Bool) -> Void) {
         guard let userId = currentUser else {
             completion(false)
@@ -244,7 +244,7 @@ class DataController {
            let cachedUser = try? JSONDecoder().decode(User.self, from: jsonData) {
             completion(cachedUser)
         }
-
+        
         // Fetch from Firebase
         database.child("patient_users").child(userId).observeSingleEvent(of: .value) { snapshot in
             guard let userDict = snapshot.value as? [String: Any] else {
@@ -263,7 +263,7 @@ class DataController {
             }
         }
     }
-
+    
     func fetchProfileImage(userId: String, completion: @escaping (Result<URL, Error>) -> Void) {
         let profileImageRef = storage.child("users/\(userId)/profile_image.jpg")
         profileImageRef.downloadURL { url, error in
@@ -274,11 +274,11 @@ class DataController {
             }
         }
     }
-
+    
     func saveUserProfileImageURL(userId: String, url: String) {
         database.child("patient_users").child(userId).child("profileImageURL").setValue(url)
     }
-
+    
     // Method for fetching current user data and profile image
     func fetchCurrentUserData(completion: @escaping (User?, Image?) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
@@ -320,67 +320,45 @@ class DataController {
     }
     
     func fetchAppointments(userId: String, completion: @escaping ([Appointment]) -> Void) {
-            database.child("patient_users").child(userId).child("appointments").observeSingleEvent(of: .value) { snapshot in
-                var appointments: [Appointment] = []
-                let group = DispatchGroup()
-                
-                for child in snapshot.children {
-                    if let childSnapshot = child as? DataSnapshot {
-                        let appointmentID = childSnapshot.key
-                        group.enter()
-                        self.database.child("appointments").child(appointmentID).observeSingleEvent(of: .value) { appointmentSnapshot in
-                            if let appointmentDict = appointmentSnapshot.value as? [String: Any] {
-                                let id = appointmentDict["id"] as? String
-                                let patientID = appointmentDict["patientID"] as? String
-                                let doctorID = appointmentDict["doctorID"] as? String
-                                let timeInterval = appointmentDict["date"] as? TimeInterval ?? 0
-                                let date = Date(timeIntervalSince1970: timeInterval)
-                                let timeSlotsID = appointmentDict["timeSlotsID"] as? String
-                                let shortDescription = appointmentDict["shortDescription"] as? String
-                                let prescription = appointmentDict["prescription"] as? String
-                                
-                                let appointment = Appointment(
-                                    id: id,
-                                    patientID: patientID,
-                                    doctorID: doctorID,
-                                    date: date,
-                                    timeSlotsID: timeSlotsID,
-                                    shortDescription: shortDescription,
-                                    prescription: prescription
-                                )
-                                
-                                appointments.append(appointment)
-                            }
-                            group.leave()
+        database.child("patient_users").child(userId).child("appointments").observeSingleEvent(of: .value) { snapshot in
+            var appointments: [Appointment] = []
+            let group = DispatchGroup()
+            
+            for child in snapshot.children {
+                if let childSnapshot = child as? DataSnapshot {
+                    let appointmentID = childSnapshot.key
+                    group.enter()
+                    self.database.child("appointments").child(appointmentID).observeSingleEvent(of: .value) { appointmentSnapshot in
+                        if let appointmentDict = appointmentSnapshot.value as? [String: Any] {
+                            let id = appointmentDict["id"] as? String
+                            let patientID = appointmentDict["patientID"] as? String
+                            let doctorID = appointmentDict["doctorID"] as? String
+                            let timeInterval = appointmentDict["date"] as? TimeInterval ?? 0
+                            let date = Date(timeIntervalSince1970: timeInterval)
+                            let timeSlotsID = appointmentDict["timeSlotsID"] as? String
+                            let shortDescription = appointmentDict["shortDescription"] as? String
+                            let prescription = appointmentDict["prescription"] as? String
+                            
+                            let appointment = Appointment(
+                                id: id,
+                                patientID: patientID,
+                                doctorID: doctorID,
+                                date: date,
+                                timeSlotsID: timeSlotsID,
+                                shortDescription: shortDescription,
+                                prescription: prescription
+                            )
+                            
+                            appointments.append(appointment)
                         }
+                        group.leave()
                     }
                 }
-                
-                group.notify(queue: .main) {
-                    completion(appointments)
-                }
+            }
+            
+            group.notify(queue: .main) {
+                completion(appointments)
             }
         }
-//    func fetchAllAppointments(completion: @escaping ([Appointment]) -> Void) {
-//        let appointmentsRef = database.child("appointments")
-//        
-//        appointmentsRef.observeSingleEvent(of: .value) { snapshot in
-//            var appointments: [Appointment] = []
-//            
-//            for child in snapshot.children {
-//                if let snapshot = child as? DataSnapshot,
-//                   let dict = snapshot.value as? [String: Any],
-//                   let appointment = Appointment(from: dict) {
-//                    appointments.append(appointment)
-//                } else {
-//                    print("Error decoding appointment")
-//                }
-//            }
-//            
-//            completion(appointments)
-//        }
-//    }
-
-
-
+    }
 }

@@ -31,7 +31,6 @@
 		81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */; };
 		81B22DDF2C45B101005C45F4 /* MyAppointmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B22DDE2C45B101005C45F4 /* MyAppointmentsView.swift */; };
 		E906D1362C43D3D900620531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E906D1352C43D3D900620531 /* GoogleService-Info.plist */; };
-		E9078DC42C48E6DE00EE3D81 /* BackgroundTasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9078DC32C48E6DE00EE3D81 /* BackgroundTasks.swift */; };
 		E90E6D5E2C4934D100BDE963 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = E90E6D5D2C4934D100BDE963 /* FirebaseStorageCombine-Community */; };
 		E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */; };
 		E94E68CE2C37F4CA00ED9F1C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CD2C37F4CA00ED9F1C /* FirebaseAuth */; };
@@ -74,7 +73,6 @@
 		81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		81B22DDE2C45B101005C45F4 /* MyAppointmentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyAppointmentsView.swift; sourceTree = "<group>"; };
 		E906D1352C43D3D900620531 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		E9078DC32C48E6DE00EE3D81 /* BackgroundTasks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTasks.swift; sourceTree = "<group>"; };
 		E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication_Logic.swift; sourceTree = "<group>"; };
 		E94E68D52C37F55A00ED9F1C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E94E68D72C37F5DC00ED9F1C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -163,7 +161,6 @@
 		81ACDCAE2C3FA7400097CAB6 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				E9078DC32C48E6DE00EE3D81 /* BackgroundTasks.swift */,
 				8132A4C12C4467E400FA8772 /* EventKitManager.swift */,
 				E9EB70E52C3DC69C0086F6E5 /* LocationManager.swift */,
 				81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */,
@@ -329,7 +326,6 @@
 				EA95BFFE2C371FB100582FDC /* HomeScreen.swift in Sources */,
 				81ACDCAF2C3FA7400097CAB6 /* BookAppointment.swift in Sources */,
 				80EC88492C47CEAF00034516 /* DoctorPickerView.swift in Sources */,
-				E9078DC42C48E6DE00EE3D81 /* BackgroundTasks.swift in Sources */,
 				80EC88552C4862AC00034516 /* Calculator.swift in Sources */,
 				244E8C6B2C36B89400812262 /* Profile_Setup_View.swift in Sources */,
 				62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */,
