@@ -2,6 +2,7 @@ import SwiftUI
 import FirebaseAuth
 
 struct BookAppointment: View {
+    @State private var selectedDoctor: Doctor?
     @State private var selectedCategoryIndex = 0
     @State private var selectedDoctorIndex: Int? = nil
     @State private var currentDate = Date()
@@ -16,6 +17,12 @@ struct BookAppointment: View {
     @StateObject private var eventKitManager = EventKitManager()
     @State private var appointmentBooked = false
     var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
+
+    init(selectedDoctor: Doctor? = nil) {
+        _selectedDoctor = State(initialValue: selectedDoctor)
+        _doctorSelected = State(initialValue: selectedDoctor != nil)
+        setupInitialState()
+    }
 
     var body: some View {
         ScrollView {
@@ -136,18 +143,42 @@ struct BookAppointment: View {
             .navigationTitle("Book Appointment")
             .navigationBarTitleDisplayMode(.large)
             .onAppear {
-                weeks = fetchWeeks(from: currentDate)
+                setupInitialState()
+            }
+            .onChange(of: selectedDoctor) { newDoctor in
+                if let doctor = newDoctor {
+                    selectedCategoryIndex = categories.firstIndex(where: { $0 == doctor.designation }) ?? 0
+                    fetchDoctors()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        selectedDoctorIndex = filteredDoctors.firstIndex(where: { $0.id == doctor.id })
+                        doctorSelected = true
+                        generatedTimeSlots = doctor.generateTimeSlots()
+                    }
+                }
             }
         }
         .background(Color.customBackground)
     }
-
+    
+    private func setupInitialState() {
+        weeks = fetchWeeks(from: currentDate)
+        if let doctor = selectedDoctor {
+            selectedCategoryIndex = categories.firstIndex(where: { $0 == doctor.designation }) ?? 0
+            fetchDoctors() // This will populate filteredDoctors
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { // Small delay to ensure filteredDoctors is populated
+                selectedDoctorIndex = filteredDoctors.firstIndex(where: { $0.id == doctor.id })
+                doctorSelected = true
+                generatedTimeSlots = doctor.generateTimeSlots()
+            }
+        }
+    }
+    
     private func categoryChanged(_ index: Int) {
         selectedDoctorIndex = nil
         doctorSelected = false
         fetchDoctors()
     }
-
+    
     private func fetchDoctors() {
         guard let selectedCategory = categories[safe: selectedCategoryIndex] else { return }
         isLoadingDoctors = true
@@ -156,6 +187,11 @@ struct BookAppointment: View {
                 filteredDoctors = doctors
                 isLoadingDoctors = false
                 print("Filtered doctors count: \(filteredDoctors.count)")
+                
+                // Update selectedDoctorIndex if a doctor was pre-selected
+                if let selectedDoctor = selectedDoctor {
+                    selectedDoctorIndex = filteredDoctors.firstIndex(where: { $0.id == selectedDoctor.id })
+                }
             }
         }
     }
@@ -237,6 +273,8 @@ private func fetchWeeks(from baseDate: Date) -> [[Date]] {
         }
     }
 }
+
+
 
 struct BookAppointment_Previews: PreviewProvider {
     static var previews: some View {
