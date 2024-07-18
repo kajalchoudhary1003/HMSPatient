@@ -145,7 +145,7 @@ struct Authentication: View {
                                     RoundedRectangle(cornerRadius: 10)
                                         .fill(Color.customPrimary)
                                     Text("Continue")
-                                        .foregroundColor(Color.white)
+                                        .foregroundColor(Color("SecondaryColor"))
                                         .padding()
                                         .frame(maxWidth: .infinity)
                                 }

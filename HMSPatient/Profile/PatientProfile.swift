@@ -103,7 +103,7 @@ struct PatientProfileView: View {
                         )
                         .disabled(!isEditing) // Disable editing when not in edit mode
                 }
-
+                
                 Section(header: Text("Details")) {
                     DatePicker("Date Of Birth", selection: $dateOfBirth, in: ageRange, displayedComponents: .date)
                         .disabled(!isEditing) // Disable editing when not in edit mode
@@ -120,7 +120,7 @@ struct PatientProfileView: View {
                     }
                     .disabled(!isEditing) // Disable editing when not in edit mode
                 }
-
+                
                 Section {
                     if isAddingEmergencyPhone {
                         TextField("Emergency Contact", text: $emergencyPhone)
@@ -165,26 +165,21 @@ struct PatientProfileView: View {
                 }
                 
                 VStack {
-                                   Button(action: {
-                                       logout()
-                                   }) {
-                                       Text("Log out")
-                                           .fontWeight(.semibold)
-                                           .frame(maxWidth: .infinity)
-                                           .padding(-2)
-                                           .foregroundColor(.red)
-                                           .font(.title)
-                                           .background(.white)
-                                           .cornerRadius(10)
-                                   }
-                                   .padding(.horizontal)
-                                   .padding(.leading, 16)
-                                   .padding(.trailing, 16)
-                               }
+                    Button(action: {
+                        logout()
+                    }) {
+                        Text("Log out")
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(Color(UIColor.systemRed))
+                            .font(.title2).fontWeight(.regular)
+                            .cornerRadius(10)
+                    }
+                    .padding(.horizontal)
+                }
             }
             .scrollContentBackground(.hidden)
         }
-        .background(Color(hex:"ECEEEE"))
+        .background(Color("BackgroundColor"))
         .navigationBarBackButtonHidden(true)
         .onAppear {
             dataController.fetchCurrentUserData { user, image in

@@ -6,7 +6,7 @@ struct CustomSegmentedControlAppearance: UIViewRepresentable {
     func makeUIView(context: Context) -> UIView {
         let view = UIView()
         UISegmentedControl.appearance().selectedSegmentTintColor = selectedColor
-        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
+        UISegmentedControl.appearance().setTitleTextAttributes([.foregroundColor: Color("SecondaryColor")], for: .selected)
         return view
     }
 

@@ -45,7 +45,7 @@ struct AppointmentSummaryView: View {
                             }
                             .padding()
                             .padding(.horizontal,10)
-                            .background(Color.white)
+                            .background(Color("SecondaryColor"))
                             .cornerRadius(10)
                         }
                     }
@@ -57,7 +57,7 @@ struct AppointmentSummaryView: View {
                                 TextEditor(text: $descriptionText)
                                     .frame(height: 150)
                                     .padding(6)
-                                    .background(Color.white)
+                                    .background(Color("SecondaryColor"))
                                     .cornerRadius(10)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 10)
@@ -73,6 +73,7 @@ struct AppointmentSummaryView: View {
                                 }
                             }
                         }
+
                     }
                     
                     Spacer()
@@ -125,7 +126,7 @@ struct AppointmentSummaryView: View {
                         .font(.headline)
                         .foregroundColor(.gray)
                         .padding()
-                        .background(Color.white)
+                        .background(Color("SecondaryColor"))
                         .cornerRadius(10)
                         .shadow(radius: 3)
                 }

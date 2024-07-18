@@ -20,7 +20,6 @@
 		80EC88492C47CEAF00034516 /* DoctorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC88482C47CEAF00034516 /* DoctorPickerView.swift */; };
 		80EC884D2C4835D200034516 /* DoctorSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC884C2C4835D100034516 /* DoctorSearchView.swift */; };
 		80EC884F2C483B6800034516 /* OfferCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC884E2C483B6800034516 /* OfferCard.swift */; };
-		80EC88512C48466D00034516 /* SearchedAppointments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC88502C48466C00034516 /* SearchedAppointments.swift */; };
 		80EC88532C485F0C00034516 /* debounce.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC88522C485F0C00034516 /* debounce.swift */; };
 		80EC88552C4862AC00034516 /* Calculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC88542C4862AC00034516 /* Calculator.swift */; };
 		8132A4C22C4467E400FA8772 /* EventKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8132A4C12C4467E400FA8772 /* EventKitManager.swift */; };
@@ -61,7 +60,6 @@
 		80EC88482C47CEAF00034516 /* DoctorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorPickerView.swift; sourceTree = "<group>"; };
 		80EC884C2C4835D100034516 /* DoctorSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorSearchView.swift; sourceTree = "<group>"; };
 		80EC884E2C483B6800034516 /* OfferCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferCard.swift; sourceTree = "<group>"; };
-		80EC88502C48466C00034516 /* SearchedAppointments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchedAppointments.swift; sourceTree = "<group>"; };
 		80EC88522C485F0C00034516 /* debounce.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = debounce.swift; sourceTree = "<group>"; };
 		80EC88542C4862AC00034516 /* Calculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calculator.swift; sourceTree = "<group>"; };
 		8132A4C12C4467E400FA8772 /* EventKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitManager.swift; sourceTree = "<group>"; };
@@ -148,7 +146,6 @@
 			isa = PBXGroup;
 			children = (
 				81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */,
-				80EC88502C48466C00034516 /* SearchedAppointments.swift */,
 				80EC88482C47CEAF00034516 /* DoctorPickerView.swift */,
 				81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */,
 				81ACDCAA2C3FA7400097CAB6 /* Summary.swift */,
@@ -328,7 +325,6 @@
 				244E8C6B2C36B89400812262 /* Profile_Setup_View.swift in Sources */,
 				62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */,
 				E9EB70DA2C3DBC440086F6E5 /* Data Model.swift in Sources */,
-				80EC88512C48466D00034516 /* SearchedAppointments.swift in Sources */,
 				80EC884D2C4835D200034516 /* DoctorSearchView.swift in Sources */,
 				E9EB70E62C3DC69C0086F6E5 /* LocationManager.swift in Sources */,
 			);
