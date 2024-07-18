@@ -70,7 +70,7 @@ struct HomeTab: View {
                         showingProfile = true
                     }) {
                         Image(systemName: "person.circle.fill")
-                            .foregroundColor(Color(hex: "0E6B60"))
+                            .foregroundColor(Color("AccentColor"))
                     }
                 }
             }
@@ -188,7 +188,7 @@ struct AppointmentCard: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Color("SecondaryColor"))
         .cornerRadius(10)
     }
 }
@@ -214,12 +214,12 @@ struct FeatureCard: View {
                 .font(.headline)
                 .fontWeight(.regular)
                 .multilineTextAlignment(.leading)
-                .foregroundColor(.black)
+                .foregroundColor(Color("TextColor"))
         }
         .frame(height: 130)
         .frame(maxWidth: .infinity)
         .padding()
-        .background(Color.white)
+        .background(Color("SecondaryColor"))
         .cornerRadius(10)
     }
 }

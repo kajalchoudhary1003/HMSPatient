@@ -81,7 +81,7 @@ struct RecordCard: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Color("SecondaryColor"))
         .cornerRadius(10)
     }
     

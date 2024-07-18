@@ -43,7 +43,7 @@ struct WeekView: View {
                         .frame(width: 35, height: 35)
                         .background(content: {
                             if isSameDate(day, currentDate) {
-                                Circle().fill(isPremiumSlotsEnabled ? Color(hex:"BC79B8") : .customPrimary)
+                                Circle().fill(isPremiumSlotsEnabled ? Color("PremiumColor") : .customPrimary)
                                     .matchedGeometryEffect(id: "TABINDICATOR", in: calendarNamespace)
                             }
 
@@ -55,7 +55,7 @@ struct WeekView: View {
                                     .offset(y: 12)
                             }
                         })
-                        .background(.white.shadow(.drop(radius: 1)), in: .circle)
+                        .background(Color("SecondaryColor").shadow(.drop(radius: 1)), in: .circle)
                         .onTapGesture {
                             withAnimation(.snappy) {
                                 currentDate = day

@@ -17,7 +17,7 @@ struct Backdrop: UIViewRepresentable {
 struct Blur: View {
     var radius: CGFloat = 7
     var opaque: Bool = false
-    var tintColor: Color = .white
+    var tintColor: Color = Color("BlurColor")
     var tintOpacity: Double = 0.5 // Adjust this value to control the intensity of the whitish tint
     
     var body: some View {

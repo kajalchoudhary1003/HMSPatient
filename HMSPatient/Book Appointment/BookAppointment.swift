@@ -39,7 +39,7 @@ struct BookAppointment: View {
                         .pickerStyle(.menu)
                     }
                     .padding()
-                    .background(Color.white)
+                    .background(Color("SecondaryColor"))
                     .cornerRadius(10)
 
                     if selectedCategoryIndex != 0 {
@@ -49,7 +49,8 @@ struct BookAppointment: View {
                                 Spacer()
                                 Image(systemName: "chevron.right")
                             }
-                            .foregroundColor(selectedDoctorIndex != nil ? .gray : .black)
+                            .foregroundColor(selectedDoctorIndex != nil ? .gray :
+                                    Color("TextColor"))
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .onChange(of: selectedDoctorIndex) { newValue in
@@ -63,7 +64,7 @@ struct BookAppointment: View {
                                 }
                             }
                         }
-                        .background(Color.white)
+                        .background(Color("SecondaryColor"))
                         .cornerRadius(10)
                         .disabled(selectedCategoryIndex == 0)
                     }
@@ -74,7 +75,7 @@ struct BookAppointment: View {
                     VStack {
                         DoctorCardView(doctor: selectedDoctor)
                             .padding()
-                            .background(Color.white)
+                            .background(Color("SecondaryColor"))
                             .cornerRadius(10)
                     }
                 }
@@ -103,11 +104,11 @@ struct BookAppointment: View {
                             Text("Premium Slots")
                                 .font(.headline)
                         }
-                        .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#BC79B8")))
+                        .toggleStyle(SwitchToggleStyle(tint: Color("PremiumColor")))
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
-                    .background(Color.white)
+                    .background(Color("SecondaryColor"))
                     .cornerRadius(10)
 
                     NavigationLink(destination:
@@ -240,10 +241,10 @@ struct TimeSlotView: View {
                     }) {
                         Text(formatTimeSlot(timeSlot))
                             .font(.body)
-                            .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
+                            .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white :  Color("TextColor")) : .gray)
                             .padding()
                             .frame(maxWidth: .infinity, minHeight: 48)
-                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : .customPrimary) : Color.white) : Color.gray.opacity(0.3))
+                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color("PremiumColor") : .customPrimary) : Color("SecondaryColor")) : Color.gray.opacity(0.3))
                             .cornerRadius(10)
                     }
                     .disabled(!timeSlot.isAvailable)

@@ -72,7 +72,7 @@ struct DoctorCardView: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(doctor.name)
                 .font(.title2)
-                .foregroundColor(.black)
+                .foregroundColor(Color("TextColor"))
 
             if doctor.name != "Select Doctor" {
                 Text("Age: \(calculateAge(from: doctor.dob))")
@@ -93,7 +93,7 @@ struct DoctorCardView: View {
             }
         }
         .padding()
-        .background(Color.white)
+        .background(Color("SecondaryColor"))
         .cornerRadius(10)
         .onAppear {
             print("DoctorCardView appeared for \(doctor.name)")

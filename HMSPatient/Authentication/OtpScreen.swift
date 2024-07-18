@@ -28,7 +28,7 @@ struct OtpView: View {
                 ForEach(0..<6) { index in
                     ZStack {
                         RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.white)
+                            .fill(Color("SecondaryColor"))
                             .frame(width: 50, height: 50)
                         
                         RoundedRectangle(cornerRadius: 10)
