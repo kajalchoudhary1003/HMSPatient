@@ -15,7 +15,6 @@ struct BookAppointment: View {
     @State private var generatedTimeSlots: [TimeSlot] = []
     @StateObject private var eventKitManager = EventKitManager()
     @State private var appointmentBooked = false
-
     var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
 
     var body: some View {

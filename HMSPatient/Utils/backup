@@ -1,0 +1,1049 @@
+diff --git a/HMSPatient.xcodeproj/project.pbxproj b/HMSPatient.xcodeproj/project.pbxproj
+index 70478ed..d63bcfb 100644
+--- a/HMSPatient.xcodeproj/project.pbxproj
++++ b/HMSPatient.xcodeproj/project.pbxproj
+@@ -18,10 +18,13 @@
+ 		62530F6A2C33E6E2001B496B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F692C33E6E2001B496B /* Assets.xcassets */; };
+ 		62530F6D2C33E6E2001B496B /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */; };
+ 		802E5B232C40034E0039A184 /* PatientProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 802E5B222C40034E0039A184 /* PatientProfile.swift */; };
++		80EC88492C47CEAF00034516 /* DoctorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC88482C47CEAF00034516 /* DoctorPickerView.swift */; };
++		80EC884D2C4835D200034516 /* DoctorSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC884C2C4835D100034516 /* DoctorSearchView.swift */; };
++		80EC884F2C483B6800034516 /* OfferCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC884E2C483B6800034516 /* OfferCard.swift */; };
++		80EC88512C48466D00034516 /* SearchedAppointments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80EC88502C48466C00034516 /* SearchedAppointments.swift */; };
+ 		8132A4C22C4467E400FA8772 /* EventKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8132A4C12C4467E400FA8772 /* EventKitManager.swift */; };
+ 		81ACDCAF2C3FA7400097CAB6 /* BookAppointment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */; };
+ 		81ACDCB02C3FA7400097CAB6 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */; };
+-		81ACDCB12C3FA7400097CAB6 /* DoctorPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */; };
+ 		81ACDCB22C3FA7400097CAB6 /* Summary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAA2C3FA7400097CAB6 /* Summary.swift */; };
+ 		81ACDCB32C3FA7400097CAB6 /* Blur.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAC2C3FA7400097CAB6 /* Blur.swift */; };
+ 		81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */; };
+@@ -55,10 +58,13 @@
+ 		62530F692C33E6E2001B496B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+ 		62530F6C2C33E6E2001B496B /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+ 		802E5B222C40034E0039A184 /* PatientProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientProfile.swift; sourceTree = "<group>"; };
++		80EC88482C47CEAF00034516 /* DoctorPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorPickerView.swift; sourceTree = "<group>"; };
++		80EC884C2C4835D100034516 /* DoctorSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DoctorSearchView.swift; sourceTree = "<group>"; };
++		80EC884E2C483B6800034516 /* OfferCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfferCard.swift; sourceTree = "<group>"; };
++		80EC88502C48466C00034516 /* SearchedAppointments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchedAppointments.swift; sourceTree = "<group>"; };
+ 		8132A4C12C4467E400FA8772 /* EventKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventKitManager.swift; sourceTree = "<group>"; };
+ 		81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BookAppointment.swift; sourceTree = "<group>"; };
+ 		81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+-		81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoctorPickerView.swift; sourceTree = "<group>"; };
+ 		81ACDCAA2C3FA7400097CAB6 /* Summary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Summary.swift; sourceTree = "<group>"; };
+ 		81ACDCAC2C3FA7400097CAB6 /* Blur.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Blur.swift; sourceTree = "<group>"; };
+ 		81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+@@ -140,8 +146,9 @@
+ 			isa = PBXGroup;
+ 			children = (
+ 				81ACDCA72C3FA7400097CAB6 /* BookAppointment.swift */,
++				80EC88502C48466C00034516 /* SearchedAppointments.swift */,
++				80EC88482C47CEAF00034516 /* DoctorPickerView.swift */,
+ 				81ACDCA82C3FA7400097CAB6 /* CalendarView.swift */,
+-				81ACDCA92C3FA7400097CAB6 /* DoctorPickerView.swift */,
+ 				81ACDCAA2C3FA7400097CAB6 /* Summary.swift */,
+ 			);
+ 			path = "Book Appointment";
+@@ -172,6 +179,7 @@
+ 			isa = PBXGroup;
+ 			children = (
+ 				EA95BFFD2C371FB100582FDC /* HomeScreen.swift */,
++				80EC884E2C483B6800034516 /* OfferCard.swift */,
+ 				249FD5BA2C37EC4D008CC7F9 /* RecordsView.swift */,
+ 				E9EB70FD2C3E91640086F6E5 /* DetailView */,
+ 			);
+@@ -203,6 +211,7 @@
+ 			children = (
+ 				E9EB71022C3E91F00086F6E5 /* DocumentView.swift */,
+ 				81B22DDE2C45B101005C45F4 /* MyAppointmentsView.swift */,
++				80EC884C2C4835D100034516 /* DoctorSearchView.swift */,
+ 			);
+ 			path = DetailView;
+ 			sourceTree = "<group>";
+@@ -295,7 +304,6 @@
+ 				81ACDCB32C3FA7400097CAB6 /* Blur.swift in Sources */,
+ 				24A780FA2C3F9B9C00C8F3B1 /* PrescriptionsView.swift in Sources */,
+ 				244E8C6D2C36B89400812262 /* OtpScreen.swift in Sources */,
+-				81ACDCB12C3FA7400097CAB6 /* DoctorPickerView.swift in Sources */,
+ 				81ACDCB02C3FA7400097CAB6 /* CalendarView.swift in Sources */,
+ 				81B22DDF2C45B101005C45F4 /* MyAppointmentsView.swift in Sources */,
+ 				81ACDCB22C3FA7400097CAB6 /* Summary.swift in Sources */,
+@@ -304,16 +312,20 @@
+ 				24A780FC2C3FA8B000C8F3B1 /* PrescriptionDetailView.swift in Sources */,
+ 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
+ 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
++				80EC884F2C483B6800034516 /* OfferCard.swift in Sources */,
+ 				802E5B232C40034E0039A184 /* PatientProfile.swift in Sources */,
+ 				E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */,
+ 				E9EB71012C3E918A0086F6E5 /* FileType.swift in Sources */,
+ 				81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */,
+ 				EA95BFFE2C371FB100582FDC /* HomeScreen.swift in Sources */,
+ 				81ACDCAF2C3FA7400097CAB6 /* BookAppointment.swift in Sources */,
++				80EC88492C47CEAF00034516 /* DoctorPickerView.swift in Sources */,
+ 				244E8C6C2C36B89400812262 /* ImagePicker.swift in Sources */,
+ 				244E8C6B2C36B89400812262 /* Profile_Setup_View.swift in Sources */,
+ 				62530F662C33E6DF001B496B /* HMSPatientApp.swift in Sources */,
+ 				E9EB70DA2C3DBC440086F6E5 /* Data Model.swift in Sources */,
++				80EC88512C48466D00034516 /* SearchedAppointments.swift in Sources */,
++				80EC884D2C4835D200034516 /* DoctorSearchView.swift in Sources */,
+ 				E9EB70E62C3DC69C0086F6E5 /* LocationManager.swift in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+diff --git a/HMSPatient/Book Appointment/BookAppointment.swift b/HMSPatient/Book Appointment/BookAppointment.swift
+index 40a75d3..466385d 100644
+--- a/HMSPatient/Book Appointment/BookAppointment.swift	
++++ b/HMSPatient/Book Appointment/BookAppointment.swift	
+@@ -123,7 +123,7 @@ struct BookAppointment: View {
+                                 patientID: currentUserId,
+                                 doctorID: selectedDoctor.id,
+                                 date: currentDate,
+-                                timeSlotID: selectedTimeSlot.id
++                                timeSlotsID: selectedTimeSlot.id
+                             )
+                             
+                             DataController.shared.saveAppointment(appointment: appointment) { success in
+diff --git a/HMSPatient/Book Appointment/SearchedAppointments.swift b/HMSPatient/Book Appointment/SearchedAppointments.swift
+new file mode 100644
+index 0000000..1c0cdb1
+--- /dev/null
++++ b/HMSPatient/Book Appointment/SearchedAppointments.swift	
+@@ -0,0 +1,173 @@
++import SwiftUI
++import FirebaseAuth
++
++struct SearchedBookAppointment: View {
++    var selectedDoctor: Doctor
++    @State private var currentDate = Date()
++    @Namespace private var calendarNamespace
++    @State private var weeks: [[Date]] = []
++    @State private var selectedTimeSlot: TimeSlot?
++    @State private var isPremiumSlotsEnabled = false
++    @State private var appointmentBooked = false
++
++    var body: some View {
++        ScrollView {
++            VStack(alignment: .center, spacing: 16) {
++                VStack {
++                    DoctorCardView(doctor: selectedDoctor)
++                        .padding()
++                        .background(Color.white)
++                        .cornerRadius(10)
++                }
++
++                ScrollView(.horizontal) {
++                    LazyHStack(spacing: 20) {
++                        ForEach(weeks.indices, id: \.self) { weekIndex in
++                            WeekView(week: weeks[weekIndex], currentDate: $currentDate, calendarNamespace: calendarNamespace, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
++                                .frame(width: UIScreen.main.bounds.width - 40)
++                        }
++                    }
++                }
++                .padding(.vertical, 16)
++
++                VStack {
++                    TimeSlotView(selectedDoctor: selectedDoctor, timeSlots: selectedDoctor.generateTimeSlots(), selectedTimeSlot: $selectedTimeSlot, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
++                        .padding()
++                        .cornerRadius(10)
++                }
++
++                HStack {
++                    Toggle(isOn: $isPremiumSlotsEnabled) {
++                        Text("Premium Slots")
++                            .font(.headline)
++                    }
++                    .toggleStyle(SwitchToggleStyle(tint: Color(hex: "#BC79B8")))
++                }
++                .frame(maxWidth: .infinity, alignment: .leading)
++                .padding()
++                .background(Color.white)
++                .cornerRadius(10)
++
++                NavigationLink(destination: AppointmentSummaryView(
++                    selectedDoctor: selectedDoctor,
++                    selectedTimeSlot: selectedTimeSlot,
++                    appointmentDate: currentDate
++                ), isActive: $appointmentBooked) {
++                    Button(action: {
++                        guard let selectedTimeSlot = selectedTimeSlot,
++                              let currentUserId = Auth.auth().currentUser?.uid else {
++                            print("Missing required information for booking appointment")
++                            return
++                        }
++                        
++                        let appointment = Appointment(
++                            patientID: currentUserId,
++                            doctorID: selectedDoctor.id,
++                            date: currentDate,
++                            timeSlotsID: selectedTimeSlot.id
++                        )
++                        
++                        DataController.shared.saveAppointment(appointment: appointment) { success in
++                            if success {
++                                print("Appointment booked successfully")
++                                self.appointmentBooked = true
++                            } else {
++                                print("Failed to book appointment")
++                            }
++                        }
++                    }) {
++                        Text("Book").fontWeight(.bold)
++                            .frame(maxWidth: .infinity, alignment: .center)
++                            .foregroundColor(.white)
++                            .padding()
++                            .background(isPremiumSlotsEnabled ? Color(hex: "#AE75AC") : Color(hex: "0E6B60"))
++                            .cornerRadius(10)
++                    }
++                    .padding(.vertical)
++                }
++            }
++            .padding()
++            .cornerRadius(10)
++            .navigationTitle("Book Appointment")
++            .navigationBarTitleDisplayMode(.large)
++            .onAppear {
++                weeks = fetchWeeks(from: currentDate)
++            }
++        }
++        .background(Color(hex: "ECEEEE"))
++    }
++
++    private func fetchWeeks(from baseDate: Date) -> [[Date]] {
++        var calendar = Calendar.current
++        calendar.firstWeekday = 1 // Sunday as the first day of the week
++
++        guard let startOfWeek = calendar.date(from: calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: baseDate)) else {
++            return []
++        }
++
++        return (0..<2).map { weekOffset in
++            (0..<7).compactMap { dayOffset in
++                calendar.date(byAdding: .day, value: weekOffset * 7 + dayOffset, to: startOfWeek)
++            }
++        }
++    }
++}
++
++struct SearchedTimeSlotView: View {
++    let selectedDoctor: Doctor
++    var timeSlots: [TimeSlot]
++
++    @Binding var selectedTimeSlot: TimeSlot?
++    @Binding var isPremiumSlotsEnabled: Bool
++
++    let columns = [
++        GridItem(.flexible()),
++        GridItem(.flexible())
++    ]
++
++    var body: some View {
++        if timeSlots.isEmpty {
++            Text("No time slots available")
++                .font(.headline)
++                .foregroundColor(.gray)
++                .padding()
++        } else {
++            LazyVGrid(columns: columns, spacing: 12) {
++                ForEach(timeSlots.filter { timeSlot in
++                    isPremiumSlotsEnabled ? timeSlot.isPremium : !timeSlot.isPremium
++                }) { timeSlot in
++                    Button(action: {
++                        if timeSlot.isAvailable {
++                            if selectedTimeSlot == timeSlot {
++                                selectedTimeSlot = nil
++                            } else {
++                                selectedTimeSlot = timeSlot
++                            }
++                        }
++                    }) {
++                        Text(formatTimeSlot(timeSlot))
++                            .font(.body)
++                            .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : .black) : .gray)
++                            .padding()
++                            .frame(maxWidth: .infinity, minHeight: 50)
++                            .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color(hex: "BC79B8") : Color(hex: "0E6B60")) : Color.white) : Color.gray.opacity(0.3))
++                            .cornerRadius(10)
++                    }
++                    .disabled(!timeSlot.isAvailable)
++                }
++            }
++        }
++    }
++
++    private func formatTimeSlot(_ timeSlot: TimeSlot) -> String {
++        let formatter = DateFormatter()
++        formatter.timeStyle = .short
++        return "\(formatter.string(from: timeSlot.startTime))   "
++    }
++}
++
++//struct SearchedBookAppointment_Previews: PreviewProvider {
++//    static var previews: some View {
++//        SearchedBookAppointment(selectedDoctor: )
++//    }
++//}
+diff --git a/HMSPatient/Data Model.swift b/HMSPatient/Data Model.swift
+index 3b137fb..be4a530 100644
+--- a/HMSPatient/Data Model.swift	
++++ b/HMSPatient/Data Model.swift	
+@@ -9,79 +9,91 @@ struct User: Codable {
+     var emergencyPhone: String
+ }
+ 
+-struct TimeSlot: Codable, Identifiable, Equatable {
++struct TimeSlot: Codable,Hashable, Identifiable, Equatable {
+     var id: String = UUID().uuidString
+     var startTime: Date
+     var endTime: Date
+     var isAvailable: Bool = true
+     var isPremium: Bool = false
+     
+-    static func == (lhs: TimeSlot, rhs: TimeSlot) -> Bool {
+-        return lhs.id == rhs.id && lhs.startTime == rhs.startTime && lhs.endTime == rhs.endTime
+-    }
+-
++    // Correct the time property to format the start and end times
+     var time: String {
+-        return "\(startTime) \(endTime)"
+-    }
+-
+-    func toDictionary() -> [String: Any] {
+-        return [
+-            "startTime": startTime.timeIntervalSince1970,
+-            "endTime": endTime.timeIntervalSince1970
+-        ]
++        let formatter = DateFormatter()
++        formatter.dateStyle = .short
++        formatter.timeStyle = .short
++        return "\(formatter.string(from: startTime)) - \(formatter.string(from: endTime))"
+     }
+     
+-    init(startTime: TimeInterval, endTime: TimeInterval) {
+-        self.startTime = Date(timeIntervalSince1970: startTime)
+-        self.endTime = Date(timeIntervalSince1970: endTime)
++    // Initializer to create TimeSlot from time intervals
++    init(startTime: Date, endTime: Date, isPremium: Bool = false, isAvailable: Bool = true) {
++        self.startTime = startTime
++        self.endTime = endTime
++        self.isPremium = isPremium
++        self.isAvailable = isAvailable
+     }
+-
++    
++    // Initializer to create TimeSlot from dictionary
+     init?(from dictionary: [String: Any]) {
+-        print("Attempting to parse TimeSlot from dictionary: \(dictionary)")
+-        guard let startTime = dictionary["startTime"] as? TimeInterval else {
+-            print("Failed to parse startTime from timeSlot")
++        guard let startTimeInterval = dictionary["startTime"] as? TimeInterval,
++              let endTimeInterval = dictionary["endTime"] as? TimeInterval else {
+             return nil
+         }
+-        guard let endTime = dictionary["endTime"] as? TimeInterval else {
+-            print("Failed to parse endTime from timeSlot")
+-            return nil
+-        }
+-        self.startTime = Date(timeIntervalSince1970: startTime)
+-        self.endTime = Date(timeIntervalSince1970: endTime)
++        self.startTime = Date(timeIntervalSince1970: startTimeInterval)
++        self.endTime = Date(timeIntervalSince1970: endTimeInterval)
+         self.isAvailable = dictionary["isAvailable"] as? Bool ?? true
+         self.isPremium = dictionary["isPremium"] as? Bool ?? false
+     }
++    
++    // Method to convert TimeSlot to dictionary
++    func toDictionary() -> [String: Any] {
++        return [
++            "startTime": startTime.timeIntervalSince1970,
++            "endTime": endTime.timeIntervalSince1970,
++            "isAvailable": isAvailable,
++            "isPremium": isPremium
++        ]
++    }
++    
++    // Equatable implementation
++    static func == (lhs: TimeSlot, rhs: TimeSlot) -> Bool {
++        return lhs.id == rhs.id && lhs.startTime == rhs.startTime && lhs.endTime == rhs.endTime
++    }
+ }
+ 
++
++import Foundation
++
+ struct Appointment: Hashable, Codable {
+     var id: String?
+     var patientID: String?
+     var doctorID: String?
+     var date: Date
+-    var timeSlotID: String
++    var timeSlotsID: String? // Corrected property name
+     
+     enum CodingKeys: String, CodingKey {
+-        case id, patientID, doctorID, date, timeSlotID
++        case id, patientID, doctorID, date, timeSlotsID // Removed '?' from timeSlotsID
+     }
+     
+-    init(patientID: String, doctorID: String, date: Date, timeSlotID: String, id: String? = nil) {
++    init(patientID: String, doctorID: String, date: Date, timeSlotsID: String? = nil, id: String? = nil) { // Added default value for timeSlotsID
+         self.id = id
+         self.patientID = patientID
+         self.doctorID = doctorID
+         self.date = date
+-        self.timeSlotID = timeSlotID
++        self.timeSlotsID = timeSlotsID // Corrected assignment
+     }
+     
++    // Decoder initializer
+     init(from decoder: Decoder) throws {
+         let container = try decoder.container(keyedBy: CodingKeys.self)
+         self.id = try container.decodeIfPresent(String.self, forKey: .id)
+         self.patientID = try container.decode(String.self, forKey: .patientID)
+         self.doctorID = try container.decode(String.self, forKey: .doctorID)
+         self.date = try container.decode(Date.self, forKey: .date)
+-        self.timeSlotID = try container.decode(String.self, forKey: .timeSlotID)
++        self.timeSlotsID = try container.decodeIfPresent(String.self, forKey: .timeSlotsID) // Corrected decoding
+     }
+ }
+ 
++
+ struct Doctor: Codable, Identifiable, Equatable {
+     var id: String
+     var firstName: String
+@@ -152,6 +164,21 @@ struct Doctor: Codable, Identifiable, Equatable {
+     static func == (lhs: Doctor, rhs: Doctor) -> Bool {
+         return lhs.id == rhs.id
+     }
++    static var example: Doctor {
++            return Doctor(
++                id: "1",
++                firstName: "John",
++                lastName: "Doe",
++                email: "john.doe@example.com",
++                phone: "123-456-7890",
++                dob: Date(timeIntervalSince1970: 567648000), // Arbitrary date
++                designation: .cardiologist,
++                titles: "MD",
++                experience: 15,
++                starts: Date(),
++                ends: Date().addingTimeInterval(3600)
++            )
++        }
+ }
+ 
+ enum DoctorDesignation: String, Codable, CaseIterable {
+@@ -160,25 +187,7 @@ enum DoctorDesignation: String, Codable, CaseIterable {
+         case cardiologist = "Cardiologist"
+         case dermatologist = "Dermatologist"
+         case neurologist = "Neurologist"
+-        case orthopedist = "Orthopedist"
+-        case gastroenterologist = "Gastroenterologist"
+-        case endocrinologist = "Endocrinologist"
+-        case oncologist = "Oncologist"
+-        case ophthalmologist = "Ophthalmologist"
+-        case otolaryngologist = "Otolaryngologist"
+-        case psychiatrist = "Psychiatrist"
+-        case rheumatologist = "Rheumatologist"
+-        case urologist = "Urologist"
+-        case nephrologist = "Nephrologist"
+-        case pulmonologist = "Pulmonologist"
+-        case hematologist = "Hematologist"
+-        case immunologist = "Immunologist"
+-        case infectiousDiseaseSpecialist = "Infectious Disease Specialist"
+-        case geriatrician = "Geriatrician"
+-        case allergist = "Allergist"
+-        case anesthesiologist = "Anesthesiologist"
+-        case plasticSurgeon = "Plastic Surgeon"
+-        case radiologist = "Radiologist"
++        
+ 
+         // Returns the title of the designation
+         var title: String {
+@@ -193,25 +202,6 @@ enum DoctorDesignation: String, Codable, CaseIterable {
+             case .cardiologist: return "$150"
+             case .dermatologist: return "$130"
+             case .neurologist: return "$160"
+-            case .orthopedist: return "$140"
+-            case .gastroenterologist: return "$145"
+-            case .endocrinologist: return "$150"
+-            case .oncologist: return "$170"
+-            case .ophthalmologist: return "$135"
+-            case .otolaryngologist: return "$140"
+-            case .psychiatrist: return "$155"
+-            case .rheumatologist: return "$150"
+-            case .urologist: return "$145"
+-            case .nephrologist: return "$150"
+-            case .pulmonologist: return "$150"
+-            case .hematologist: return "$150"
+-            case .immunologist: return "$140"
+-            case .infectiousDiseaseSpecialist: return "$150"
+-            case .geriatrician: return "$130"
+-            case .allergist: return "$130"
+-            case .anesthesiologist: return "$180"
+-            case .plasticSurgeon: return "$200"
+-            case .radiologist: return "$150"
+             }
+         }
+         
+@@ -223,25 +213,6 @@ enum DoctorDesignation: String, Codable, CaseIterable {
+             case .cardiologist: return ["heart disease", "hypertension"]
+             case .dermatologist: return ["skin conditions", "acne"]
+             case .neurologist: return ["migraines", "seizures", "neuropathy"]
+-            case .orthopedist: return ["fractures", "arthritis", "sports injuries"]
+-            case .gastroenterologist: return ["IBS", "ulcers", "Crohn's disease"]
+-            case .endocrinologist: return ["diabetes", "thyroid disorders", "hormonal imbalances"]
+-            case .oncologist: return ["cancer", "tumors", "leukemia"]
+-            case .ophthalmologist: return ["glaucoma", "cataracts", "vision problems"]
+-            case .otolaryngologist: return ["sinusitis", "hearing loss", "tonsillitis"]
+-            case .psychiatrist: return ["depression", "anxiety", "bipolar disorder"]
+-            case .rheumatologist: return ["arthritis", "lupus", "fibromyalgia"]
+-            case .urologist: return ["UTIs", "kidney stones", "prostate issues"]
+-            case .nephrologist: return ["kidney disease", "hypertension", "electrolyte disorders"]
+-            case .pulmonologist: return ["asthma", "COPD", "lung cancer"]
+-            case .hematologist: return ["anemia", "hemophilia", "blood cancers"]
+-            case .immunologist: return ["allergies", "autoimmune diseases", "immune deficiencies"]
+-            case .infectiousDiseaseSpecialist: return ["HIV/AIDS", "tuberculosis", "malaria"]
+-            case .geriatrician: return ["dementia", "osteoporosis", "elderly care"]
+-            case .allergist: return ["allergies", "asthma", "eczema"]
+-            case .anesthesiologist: return ["pain management", "anesthesia"]
+-            case .plasticSurgeon: return ["reconstructive surgery", "cosmetic surgery", "burn treatment"]
+-            case .radiologist: return ["diagnostic imaging", "radiation therapy"]
+             }
+         }
+ 
+@@ -253,25 +224,6 @@ enum DoctorDesignation: String, Codable, CaseIterable {
+             case .cardiologist: return "15"
+             case .dermatologist: return "20"
+             case .neurologist: return "25"
+-            case .orthopedist: return "20"
+-            case .gastroenterologist: return "25"
+-            case .endocrinologist: return "25"
+-            case .oncologist: return "30"
+-            case .ophthalmologist: return "20"
+-            case .otolaryngologist: return "20"
+-            case .psychiatrist: return "30"
+-            case .rheumatologist: return "25"
+-            case .urologist: return "25"
+-            case .nephrologist: return "25"
+-            case .pulmonologist: return "25"
+-            case .hematologist: return "25"
+-            case .immunologist: return "20"
+-            case .infectiousDiseaseSpecialist: return "25"
+-            case .geriatrician: return "20"
+-            case .allergist: return "20"
+-            case .anesthesiologist: return "30"
+-            case .plasticSurgeon: return "40"
+-            case .radiologist: return "30"
+             }
+         }
+     static var withSelectOption: [DoctorDesignation?] {
+diff --git a/HMSPatient/DataController.swift b/HMSPatient/DataController.swift
+index a3a5233..8ca20f8 100644
+--- a/HMSPatient/DataController.swift
++++ b/HMSPatient/DataController.swift
+@@ -3,6 +3,7 @@ import FirebaseAuth
+ import FirebaseDatabase
+ import FirebaseStorage
+ import Zip
++import SwiftUI
+ 
+ class DataController {
+     private var database = Database.database().reference()
+@@ -204,7 +205,7 @@ class DataController {
+             "patientID": userId,
+             "doctorID": appointment.doctorID ?? "",
+             "date": appointment.date.timeIntervalSince1970,
+-            "timeSlotID": appointment.timeSlotID
++            "timeSlotID": appointment.timeSlotsID
+         ]
+         
+         let appointmentId = appointment.id ?? UUID().uuidString
+@@ -222,4 +223,32 @@ class DataController {
+             }
+         }
+     }
++    func searchDoctors(query: String, completion: @escaping ([Doctor]) -> Void) {
++        fetchDoctors { allDoctors in
++            let filteredDoctors = allDoctors.filter { $0.matches(searchQuery: query) }
++            completion(filteredDoctors)
++        }
++    }
++//    func fetchAllAppointments(completion: @escaping ([Appointment]) -> Void) {
++//        let appointmentsRef = database.child("appointments")
++//        
++//        appointmentsRef.observeSingleEvent(of: .value) { snapshot in
++//            var appointments: [Appointment] = []
++//            
++//            for child in snapshot.children {
++//                if let snapshot = child as? DataSnapshot,
++//                   let dict = snapshot.value as? [String: Any],
++//                   let appointment = Appointment(from: dict) {
++//                    appointments.append(appointment)
++//                } else {
++//                    print("Error decoding appointment")
++//                }
++//            }
++//            
++//            completion(appointments)
++//        }
++//    }
++
++
++
+ }
+diff --git a/HMSPatient/Preview Content/Assets.xcassets/1.imageset/Contents.json b/HMSPatient/Preview Content/Assets.xcassets/1.imageset/Contents.json
+new file mode 100644
+index 0000000..8feb3f7
+--- /dev/null
++++ b/HMSPatient/Preview Content/Assets.xcassets/1.imageset/Contents.json	
+@@ -0,0 +1,21 @@
++{
++  "images" : [
++    {
++      "filename" : "Group 571.png",
++      "idiom" : "universal",
++      "scale" : "1x"
++    },
++    {
++      "idiom" : "universal",
++      "scale" : "2x"
++    },
++    {
++      "idiom" : "universal",
++      "scale" : "3x"
++    }
++  ],
++  "info" : {
++    "author" : "xcode",
++    "version" : 1
++  }
++}
+diff --git a/HMSPatient/Preview Content/Assets.xcassets/1.imageset/Group 571.png b/HMSPatient/Preview Content/Assets.xcassets/1.imageset/Group 571.png
+new file mode 100644
+index 0000000..ce15fe6
+Binary files /dev/null and b/HMSPatient/Preview Content/Assets.xcassets/1.imageset/Group 571.png differ
+diff --git a/HMSPatient/Preview Content/Assets.xcassets/2.imageset/Contents.json b/HMSPatient/Preview Content/Assets.xcassets/2.imageset/Contents.json
+new file mode 100644
+index 0000000..d4c6e83
+--- /dev/null
++++ b/HMSPatient/Preview Content/Assets.xcassets/2.imageset/Contents.json	
+@@ -0,0 +1,21 @@
++{
++  "images" : [
++    {
++      "filename" : "Group 573.png",
++      "idiom" : "universal",
++      "scale" : "1x"
++    },
++    {
++      "idiom" : "universal",
++      "scale" : "2x"
++    },
++    {
++      "idiom" : "universal",
++      "scale" : "3x"
++    }
++  ],
++  "info" : {
++    "author" : "xcode",
++    "version" : 1
++  }
++}
+diff --git a/HMSPatient/Preview Content/Assets.xcassets/2.imageset/Group 573.png b/HMSPatient/Preview Content/Assets.xcassets/2.imageset/Group 573.png
+new file mode 100644
+index 0000000..ab7c310
+Binary files /dev/null and b/HMSPatient/Preview Content/Assets.xcassets/2.imageset/Group 573.png differ
+diff --git a/HMSPatient/TabBar/DetailView/DoctorSearchView.swift b/HMSPatient/TabBar/DetailView/DoctorSearchView.swift
+new file mode 100644
+index 0000000..bd78118
+--- /dev/null
++++ b/HMSPatient/TabBar/DetailView/DoctorSearchView.swift
+@@ -0,0 +1,21 @@
++import SwiftUI
++
++struct DoctorRowView: View {
++    let doctor: Doctor
++    
++    var body: some View {
++        VStack(alignment: .leading) {
++            Text(doctor.name)
++                .font(.headline)
++            Text(doctor.designation.title)
++                .font(.subheadline)
++            Text("Experience: \(doctor.experience) years")
++                .font(.caption)
++        }
++        .padding()
++        .background(Color.white)
++        .cornerRadius(10)
++        .shadow(radius: 2)
++        .padding(.horizontal)
++    }
++}
+diff --git a/HMSPatient/TabBar/HomeScreen.swift b/HMSPatient/TabBar/HomeScreen.swift
+index 7fa4fda..dbaf54d 100644
+--- a/HMSPatient/TabBar/HomeScreen.swift
++++ b/HMSPatient/TabBar/HomeScreen.swift
+@@ -1,16 +1,21 @@
+ import SwiftUI
++import Combine
+ 
+ struct HomeView: View {
+     @State private var selectedTab = 0
++    @StateObject private var searchViewModel = SearchViewModel()
+     
+     var body: some View {
+         TabView(selection: $selectedTab) {
+-            HomeTab()
+-                .tabItem {
+-                    Image(systemName: "house.fill")
+-                    Text("Home")
+-                }
+-                .tag(0)
++            NavigationView {
++                HomeTab(searchViewModel: searchViewModel)
++                    .navigationTitle("Hi, User")
++            }
++            .tabItem {
++                Image(systemName: "house.fill")
++                Text("Home")
++            }
++            .tag(0)
+             
+             RecordsView()
+                 .tabItem {
+@@ -20,87 +25,153 @@ struct HomeView: View {
+                 .tag(1)
+         }
+     }
+-       
+ }
+ 
+ struct HomeTab: View {
+-    @State private var searchText = ""
++    @ObservedObject var searchViewModel: SearchViewModel
+     @State private var showingProfile = false
++    @State private var selectedDoctor: Doctor?
++    @State private var navigateToBookAppointment = false
+     
+     var body: some View {
+         NavigationView {
+             GeometryReader { geometry in
+-                VStack(spacing: 5) {
+-                    ScrollView {
+-                        VStack(alignment: .leading, spacing: 20) {
+-                            VStack(alignment: .leading, spacing: 7) {
+-                                HStack{
+-                                    Text("My Appointments")
+-                                        .font(.title2)
+-                                        .fontWeight(.bold)
+-                                    
+-                                    Spacer()
+-                                    
+-                                    NavigationLink(destination: MyAppointmentsView()) {
+-                                        Text("See All")
+-                                        
+-                                    }
+-                                }
+-                                AppointmentCard()
+-                            }
+-                            .padding(.horizontal)
+-                            .padding(.top,7)
+-                            VStack(alignment: .leading, spacing: 7) {
+-                                Text("Features")
+-                                    .font(.title2)
+-                                    .fontWeight(.bold)
+-                                HStack {
+-                                    NavigationLink(destination: BookAppointment()){
+-                                        FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
+-                                    }
+-                                    NavigationLink(destination: PrescriptionListView()) {
+-                                        FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
+-                                    }
+-                                }
+-                            }
+-                            .padding(.horizontal)
+-                            VStack(alignment: .leading, spacing: 7) {
+-                                Text("For You")
+-                                    .font(.title2)
+-                                    .fontWeight(.bold)
+-                                OfferCards()
+-                            }
+-                            .padding(.horizontal)
++                ScrollView {
++                    VStack(alignment: .leading, spacing: 20) {
++                        if searchViewModel.isSearching {
++                            searchResultsView
++                        } else {
++                            regularContent
+                         }
+-                        .frame(width: geometry.size.width) // Ensure ScrollView does not exceed the screen width
+                     }
++                    .frame(width: geometry.size.width)
+                 }
+-                }
+-                .searchable(text: $searchText)
+-                .background(Color(hex:"ECEEEE"))
+-                .navigationBarTitle("Hi, User") // Set navigationTitle outside GeometryReader
+-                .toolbar {
+-                    ToolbarItemGroup(placement: .navigationBarTrailing) {
+-                        Button(action: {
+-                            if let url = URL(string: "tel://112") {
+-                                UIApplication.shared.open(url)
+-                            }
+-                        }) {
+-                            Image(systemName: "cross.circle.fill")
+-                                .foregroundColor(Color(UIColor.systemRed))
+-                        }
+-                        Button(action: {                            showingProfile = true
+-                        }) {
+-                            Image(systemName: "person.circle.fill")
+-                                .foregroundColor(Color(hex: "0E6B60"))
+-                        }
+-                        .sheet(isPresented: $showingProfile) {
+-                            PatientProfileView()
++            }
++            .background(Color(hex: "ECEEEE"))
++            .searchable(text: $searchViewModel.searchText, prompt: "Search doctors, diseases, or specialties")
++            .toolbar {
++                ToolbarItemGroup(placement: .navigationBarTrailing) {
++                    Button(action: {
++                        if let url = URL(string: "tel://112") {
++                            UIApplication.shared.open(url)
+                         }
++                    }) {
++                        Image(systemName: "cross.circle.fill")
++                            .foregroundColor(Color(UIColor.systemRed))
++                    }
++                    Button(action: {
++                        showingProfile = true
++                    }) {
++                        Image(systemName: "person.circle.fill")
++                            .foregroundColor(Color(hex: "0E6B60"))
++                    }
++                    .sheet(isPresented: $showingProfile) {
++                        PatientProfileView()
+                     }
+                 }
++            }
++//            .background(
++//                NavigationLink(
++//                    destination: SearchedBookAppointment(selectedDoctor: selectedDoctor ?? Doctor.example),
++//                    isActive: $navigateToBookAppointment
++//                ) {
++//                    EmptyView()
++//                }
++//            )
++        }
++    }
++    
++    var searchResultsView: some View {
++        VStack(alignment: .leading) {
++            Text("Search Results")
++                .font(.title2)
++                .fontWeight(.bold)
++                .padding(.horizontal)
++            
++            ForEach(searchViewModel.searchResults) { doctor in
++                DoctorRowView(doctor: doctor)
++                    .onTapGesture {
++                        selectedDoctor = doctor
++                        navigateToBookAppointment = true
++                    }
++            }
++        }
++    }
++    
++    var regularContent: some View {
++        VStack(alignment: .leading, spacing: 20) {
++            VStack(alignment: .leading, spacing: 7) {
++                HStack {
++                    Text("My Appointments")
++                        .font(.title2)
++                        .fontWeight(.bold)
++                    
++                    Spacer()
++                    
++                    NavigationLink(destination: MyAppointmentsView()) {
++                        Text("See All")
++                    }
++                }
++                AppointmentCard()
++            }
++            .padding(.horizontal)
++            
++            VStack(alignment: .leading, spacing: 7) {
++                Text("Features")
++                    .font(.title2)
++                    .fontWeight(.bold)
++                HStack {
++                    NavigationLink(destination: BookAppointment()) {
++                        FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
++                    }
++                    NavigationLink(destination: PrescriptionListView()) {
++                        FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
++                    }
++                }
++            }
++            .padding(.horizontal)
++            
++            VStack(alignment: .leading, spacing: 7) {
++                Text("For You")
++                    .font(.title2)
++                    .fontWeight(.bold)
++                OfferCards()
++            }
++            .padding(.horizontal)
++        }
++    }
++}
++
++class SearchViewModel: ObservableObject {
++    @Published var searchText = ""
++    @Published var searchResults: [Doctor] = []
++    @Published var isSearching = false
++    private var searchCancellable: AnyCancellable?
++    
++    init() {
++        setupSearch()
++    }
++    
++    private func setupSearch() {
++        searchCancellable = $searchText
++            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
++            .sink { [weak self] searchText in
++                self?.performSearch(with: searchText)
++            }
++    }
++    
++    private func performSearch(with searchText: String) {
++        if !searchText.isEmpty {
++            isSearching = true
++            DataController.shared.searchDoctors(query: searchText) { result in
++                DispatchQueue.main.async {
++                    self.searchResults = result
++                }
++            }
++        } else {
++            isSearching = false
++            searchResults = []
+         }
+-        .navigationBarHidden(true)
+     }
+ }
+ 
+@@ -166,38 +237,6 @@ struct FeatureCard: View {
+         .cornerRadius(10)
+     }
+ }
+-
+-struct OfferCards: View {
+-    var body: some View {
+-        TabView {
+-            OfferCard(offerText: "% Off Offer: 1")
+-            OfferCard(offerText: "% Off Offer: 2")
+-        }
+-        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+-        .frame(height: 100)
+-        .font(.title)
+-    }
+-}
+-
+-struct OfferCard: View {
+-    var offerText: String
+-
+-    var body: some View {
+-        Button(action: {
+-            print("Tapped on offer: \(offerText)")
+-        }) {
+-            Text(offerText)
+-                .padding()
+-                .foregroundColor(Color(hex: "0E6B60"))
+-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+-                .background(Color.white)
+-                .cornerRadius(10)
+-        }.padding(.horizontal,5)
+-    }
+-}
+-
+-struct HomeView_Previews: PreviewProvider {
+-    static var previews: some View {
+-        HomeView()
+-    }
++#Preview{
++    HomeView()
+ }
+diff --git a/HMSPatient/TabBar/OfferCard.swift b/HMSPatient/TabBar/OfferCard.swift
+new file mode 100644
+index 0000000..b92a4cb
+--- /dev/null
++++ b/HMSPatient/TabBar/OfferCard.swift
+@@ -0,0 +1,40 @@
++//
++//  OfferCard.swift
++//  HMSPatient
++//
++//  Created by pushker yadav on 17/07/24.
++//
++
++import SwiftUI
++
++struct OfferCards: View {
++    var body: some View {
++        TabView {
++            OfferCard(imageName: "1", url: "https://www.example.com/offer1")
++            OfferCard(imageName: "2", url: "https://www.example.com/offer2")
++        }
++        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
++        .frame(width:320,height: 133,alignment: .center)
++        .font(.title)
++    }
++}
++
++struct OfferCard: View {
++    var imageName: String
++    var url: String
++
++    var body: some View {
++        Button(action: {
++            if let link = URL(string: url) {
++                UIApplication.shared.open(link)
++            }
++        }) {
++            Image(imageName)
++                .resizable()
++                .aspectRatio(contentMode: .fit)
++                .frame(maxWidth: .infinity, maxHeight: .infinity)
++                .cornerRadius(10)
++        }
++        .padding(.horizontal, 5)
++    }
++}
+diff --git a/HMSPatient/Utils/Extensions.swift b/HMSPatient/Utils/Extensions.swift
+index fd701a7..791982a 100644
+--- a/HMSPatient/Utils/Extensions.swift
++++ b/HMSPatient/Utils/Extensions.swift
+@@ -107,12 +107,12 @@ extension Collection {
+ extension Doctor {
+     func generateTimeSlots() -> [TimeSlot] {
+         let intervalMinutes = 15
+-        
++
+         var currentTime = self.starts
+         var slots: [TimeSlot] = []
+         while currentTime < self.ends {
+             let slotEndTime = min(currentTime.addingTimeInterval(TimeInterval(intervalMinutes * 60)), self.ends)
+-            let newSlot = TimeSlot(startTime: currentTime.timeIntervalSince1970, endTime: slotEndTime.timeIntervalSince1970)
++            let newSlot = TimeSlot(startTime: currentTime, endTime: slotEndTime,isPremium: false,isAvailable: true)
+             slots.append(newSlot)
+             print("Added slot from \(currentTime.formattedString("HH:mm")) to \(slotEndTime.formattedString("HH:mm"))")
+             currentTime = slotEndTime
+@@ -125,4 +125,10 @@ extension Doctor {
+         print("Total slots generated: \(slots.count)")
+         return slots
+     }
+-}  
++    func matches(searchQuery: String) -> Bool {
++            let query = searchQuery.lowercased()
++            return name.lowercased().contains(query) ||
++                   designation.title.lowercased().contains(query) ||
++                   designation.relatedDiseases.contains { $0.lowercased().contains(query) }
++        }
++}

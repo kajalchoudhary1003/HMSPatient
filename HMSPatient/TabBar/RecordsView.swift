@@ -55,7 +55,7 @@ struct RecordsView: View {
                         }
                     } else {
                         ScrollView {
-                            LazyVStack(spacing: 16) {
+                            LazyVStack(spacing: 20) {
                                 ForEach(records.filter {
                                     searchText.isEmpty ? true : $0.title.localizedCaseInsensitiveContains(searchText)
                                 }) { record in

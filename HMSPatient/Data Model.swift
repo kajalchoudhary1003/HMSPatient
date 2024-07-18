@@ -9,78 +9,102 @@ struct User: Codable {
     var emergencyPhone: String
 }
 
-struct TimeSlot: Codable, Identifiable, Equatable {
+struct TimeSlot: Codable,Hashable, Identifiable, Equatable {
     var id: String = UUID().uuidString
     var startTime: Date
     var endTime: Date
     var isAvailable: Bool = true
     var isPremium: Bool = false
     
-    static func == (lhs: TimeSlot, rhs: TimeSlot) -> Bool {
-        return lhs.id == rhs.id && lhs.startTime == rhs.startTime && lhs.endTime == rhs.endTime
-    }
-
+    // Correct the time property to format the start and end times
     var time: String {
-        return "\(startTime) \(endTime)"
-    }
-
-    func toDictionary() -> [String: Any] {
-        return [
-            "startTime": startTime.timeIntervalSince1970,
-            "endTime": endTime.timeIntervalSince1970
-        ]
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return "\(formatter.string(from: startTime)) - \(formatter.string(from: endTime))"
     }
     
-    init(startTime: TimeInterval, endTime: TimeInterval) {
-        self.startTime = Date(timeIntervalSince1970: startTime)
-        self.endTime = Date(timeIntervalSince1970: endTime)
+    // Initializer to create TimeSlot from time intervals
+    init(startTime: Date, endTime: Date, isPremium: Bool = false, isAvailable: Bool = true) {
+        self.startTime = startTime
+        self.endTime = endTime
+        self.isPremium = isPremium
+        self.isAvailable = isAvailable
     }
-
+    
+    // Initializer to create TimeSlot from dictionary
     init?(from dictionary: [String: Any]) {
-        print("Attempting to parse TimeSlot from dictionary: \(dictionary)")
-        guard let startTime = dictionary["startTime"] as? TimeInterval else {
-            print("Failed to parse startTime from timeSlot")
+        guard let startTimeInterval = dictionary["startTime"] as? TimeInterval,
+              let endTimeInterval = dictionary["endTime"] as? TimeInterval else {
             return nil
         }
-        guard let endTime = dictionary["endTime"] as? TimeInterval else {
-            print("Failed to parse endTime from timeSlot")
-            return nil
-        }
-        self.startTime = Date(timeIntervalSince1970: startTime)
-        self.endTime = Date(timeIntervalSince1970: endTime)
+        self.startTime = Date(timeIntervalSince1970: startTimeInterval)
+        self.endTime = Date(timeIntervalSince1970: endTimeInterval)
         self.isAvailable = dictionary["isAvailable"] as? Bool ?? true
         self.isPremium = dictionary["isPremium"] as? Bool ?? false
     }
+    
+    // Method to convert TimeSlot to dictionary
+    func toDictionary() -> [String: Any] {
+        return [
+            "startTime": startTime.timeIntervalSince1970,
+            "endTime": endTime.timeIntervalSince1970,
+            "isAvailable": isAvailable,
+            "isPremium": isPremium
+        ]
+    }
+    
+    // Equatable implementation
+    static func == (lhs: TimeSlot, rhs: TimeSlot) -> Bool {
+        return lhs.id == rhs.id && lhs.startTime == rhs.startTime && lhs.endTime == rhs.endTime
+    }
 }
+
 
 struct Appointment: Hashable, Codable {
     var id: String?
     var patientID: String?
     var doctorID: String?
     var date: Date
-    var timeSlotID: String
+    var timeSlotsID: String?
+    var shortDescription: String?
     
     enum CodingKeys: String, CodingKey {
-        case id, patientID, doctorID, date, timeSlotID
+        case id, patientID, doctorID, date, timeSlotsID, shortDescription
     }
     
-    init(patientID: String, doctorID: String, date: Date, timeSlotID: String, id: String? = nil) {
+    init(id: String? = nil, patientID: String? = nil, doctorID: String? = nil, date: Date, timeSlotsID: String? = nil, shortDescription: String? = nil) {
         self.id = id
         self.patientID = patientID
         self.doctorID = doctorID
         self.date = date
-        self.timeSlotID = timeSlotID
+        self.timeSlotsID = timeSlotsID
+        self.shortDescription = shortDescription
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decodeIfPresent(String.self, forKey: .id)
-        self.patientID = try container.decode(String.self, forKey: .patientID)
-        self.doctorID = try container.decode(String.self, forKey: .doctorID)
-        self.date = try container.decode(Date.self, forKey: .date)
-        self.timeSlotID = try container.decode(String.self, forKey: .timeSlotID)
+        self.patientID = try container.decodeIfPresent(String.self, forKey: .patientID)
+        self.doctorID = try container.decodeIfPresent(String.self, forKey: .doctorID)
+        let timeInterval = try container.decode(TimeInterval.self, forKey: .date)
+        self.date = Date(timeIntervalSince1970: timeInterval)
+        self.timeSlotsID = try container.decodeIfPresent(String.self, forKey: .timeSlotsID)
+        self.shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(id, forKey: .id)
+        try container.encodeIfPresent(patientID, forKey: .patientID)
+        try container.encodeIfPresent(doctorID, forKey: .doctorID)
+        try container.encode(date.timeIntervalSince1970, forKey: .date)
+        try container.encodeIfPresent(timeSlotsID, forKey: .timeSlotsID)
+        try container.encodeIfPresent(shortDescription, forKey: .shortDescription)
     }
 }
+
+
 
 struct Doctor: Codable, Identifiable, Equatable {
     var id: String
@@ -94,7 +118,6 @@ struct Doctor: Codable, Identifiable, Equatable {
     var experience: Int
     var starts: Date
     var ends: Date
-
     var interval: String {
         return designation.interval
     }
@@ -152,6 +175,21 @@ struct Doctor: Codable, Identifiable, Equatable {
     static func == (lhs: Doctor, rhs: Doctor) -> Bool {
         return lhs.id == rhs.id
     }
+    static var example: Doctor {
+            return Doctor(
+                id: "1",
+                firstName: "John",
+                lastName: "Doe",
+                email: "john.doe@example.com",
+                phone: "123-456-7890",
+                dob: Date(timeIntervalSince1970: 567648000), // Arbitrary date
+                designation: .cardiologist,
+                titles: "MD",
+                experience: 15,
+                starts: Date(),
+                ends: Date().addingTimeInterval(3600)
+            )
+        }
 }
 
 enum DoctorDesignation: String, Codable, CaseIterable {
@@ -160,25 +198,7 @@ enum DoctorDesignation: String, Codable, CaseIterable {
         case cardiologist = "Cardiologist"
         case dermatologist = "Dermatologist"
         case neurologist = "Neurologist"
-        case orthopedist = "Orthopedist"
-        case gastroenterologist = "Gastroenterologist"
-        case endocrinologist = "Endocrinologist"
-        case oncologist = "Oncologist"
-        case ophthalmologist = "Ophthalmologist"
-        case otolaryngologist = "Otolaryngologist"
-        case psychiatrist = "Psychiatrist"
-        case rheumatologist = "Rheumatologist"
-        case urologist = "Urologist"
-        case nephrologist = "Nephrologist"
-        case pulmonologist = "Pulmonologist"
-        case hematologist = "Hematologist"
-        case immunologist = "Immunologist"
-        case infectiousDiseaseSpecialist = "Infectious Disease Specialist"
-        case geriatrician = "Geriatrician"
-        case allergist = "Allergist"
-        case anesthesiologist = "Anesthesiologist"
-        case plasticSurgeon = "Plastic Surgeon"
-        case radiologist = "Radiologist"
+        
 
         // Returns the title of the designation
         var title: String {
@@ -193,25 +213,6 @@ enum DoctorDesignation: String, Codable, CaseIterable {
             case .cardiologist: return "$150"
             case .dermatologist: return "$130"
             case .neurologist: return "$160"
-            case .orthopedist: return "$140"
-            case .gastroenterologist: return "$145"
-            case .endocrinologist: return "$150"
-            case .oncologist: return "$170"
-            case .ophthalmologist: return "$135"
-            case .otolaryngologist: return "$140"
-            case .psychiatrist: return "$155"
-            case .rheumatologist: return "$150"
-            case .urologist: return "$145"
-            case .nephrologist: return "$150"
-            case .pulmonologist: return "$150"
-            case .hematologist: return "$150"
-            case .immunologist: return "$140"
-            case .infectiousDiseaseSpecialist: return "$150"
-            case .geriatrician: return "$130"
-            case .allergist: return "$130"
-            case .anesthesiologist: return "$180"
-            case .plasticSurgeon: return "$200"
-            case .radiologist: return "$150"
             }
         }
         
@@ -223,25 +224,6 @@ enum DoctorDesignation: String, Codable, CaseIterable {
             case .cardiologist: return ["heart disease", "hypertension"]
             case .dermatologist: return ["skin conditions", "acne"]
             case .neurologist: return ["migraines", "seizures", "neuropathy"]
-            case .orthopedist: return ["fractures", "arthritis", "sports injuries"]
-            case .gastroenterologist: return ["IBS", "ulcers", "Crohn's disease"]
-            case .endocrinologist: return ["diabetes", "thyroid disorders", "hormonal imbalances"]
-            case .oncologist: return ["cancer", "tumors", "leukemia"]
-            case .ophthalmologist: return ["glaucoma", "cataracts", "vision problems"]
-            case .otolaryngologist: return ["sinusitis", "hearing loss", "tonsillitis"]
-            case .psychiatrist: return ["depression", "anxiety", "bipolar disorder"]
-            case .rheumatologist: return ["arthritis", "lupus", "fibromyalgia"]
-            case .urologist: return ["UTIs", "kidney stones", "prostate issues"]
-            case .nephrologist: return ["kidney disease", "hypertension", "electrolyte disorders"]
-            case .pulmonologist: return ["asthma", "COPD", "lung cancer"]
-            case .hematologist: return ["anemia", "hemophilia", "blood cancers"]
-            case .immunologist: return ["allergies", "autoimmune diseases", "immune deficiencies"]
-            case .infectiousDiseaseSpecialist: return ["HIV/AIDS", "tuberculosis", "malaria"]
-            case .geriatrician: return ["dementia", "osteoporosis", "elderly care"]
-            case .allergist: return ["allergies", "asthma", "eczema"]
-            case .anesthesiologist: return ["pain management", "anesthesia"]
-            case .plasticSurgeon: return ["reconstructive surgery", "cosmetic surgery", "burn treatment"]
-            case .radiologist: return ["diagnostic imaging", "radiation therapy"]
             }
         }
 
@@ -253,28 +235,31 @@ enum DoctorDesignation: String, Codable, CaseIterable {
             case .cardiologist: return "15"
             case .dermatologist: return "20"
             case .neurologist: return "25"
-            case .orthopedist: return "20"
-            case .gastroenterologist: return "25"
-            case .endocrinologist: return "25"
-            case .oncologist: return "30"
-            case .ophthalmologist: return "20"
-            case .otolaryngologist: return "20"
-            case .psychiatrist: return "30"
-            case .rheumatologist: return "25"
-            case .urologist: return "25"
-            case .nephrologist: return "25"
-            case .pulmonologist: return "25"
-            case .hematologist: return "25"
-            case .immunologist: return "20"
-            case .infectiousDiseaseSpecialist: return "25"
-            case .geriatrician: return "20"
-            case .allergist: return "20"
-            case .anesthesiologist: return "30"
-            case .plasticSurgeon: return "40"
-            case .radiologist: return "30"
             }
         }
     static var withSelectOption: [DoctorDesignation?] {
         return [nil] + DoctorDesignation.allCases
     }
 }
+
+struct Offers: Codable,Hashable {
+    var id:String?
+    var image:String
+    var hyperlink:String
+    
+    init(id: String? = nil, image: String, hyperlink: String) {
+        self.id = id
+        self.image = image
+        self.hyperlink = hyperlink
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decodeIfPresent(String.self, forKey: .id)
+        self.image = try container.decode(String.self, forKey: .image)
+        self.hyperlink = try container.decode(String.self, forKey: .hyperlink)
+    }
+}
+
+
+
