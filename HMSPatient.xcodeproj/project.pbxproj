@@ -31,6 +31,7 @@
 		81ACDCB42C3FA7400097CAB6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81ACDCAD2C3FA7400097CAB6 /* Extensions.swift */; };
 		81B22DDF2C45B101005C45F4 /* MyAppointmentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81B22DDE2C45B101005C45F4 /* MyAppointmentsView.swift */; };
 		E906D1362C43D3D900620531 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E906D1352C43D3D900620531 /* GoogleService-Info.plist */; };
+		E90E6D5E2C4934D100BDE963 /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = E90E6D5D2C4934D100BDE963 /* FirebaseStorageCombine-Community */; };
 		E94E68C92C37F37800ED9F1C /* Authentication_Logic.swift in Sources */ = {isa = PBXBuildFile; fileRef = E94E68C82C37F37800ED9F1C /* Authentication_Logic.swift */; };
 		E94E68CE2C37F4CA00ED9F1C /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CD2C37F4CA00ED9F1C /* FirebaseAuth */; };
 		E94E68D02C37F4CA00ED9F1C /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = E94E68CF2C37F4CA00ED9F1C /* FirebaseDatabase */; };
@@ -92,6 +93,7 @@
 				E94E68D42C37F4CA00ED9F1C /* FirebaseStorage in Frameworks */,
 				E94E68D02C37F4CA00ED9F1C /* FirebaseDatabase in Frameworks */,
 				E94E68CE2C37F4CA00ED9F1C /* FirebaseAuth in Frameworks */,
+				E90E6D5E2C4934D100BDE963 /* FirebaseStorageCombine-Community in Frameworks */,
 				E9EB71062C3E93CC0086F6E5 /* Zip in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -241,6 +243,7 @@
 				E94E68D12C37F4CA00ED9F1C /* FirebaseDatabaseSwift */,
 				E94E68D32C37F4CA00ED9F1C /* FirebaseStorage */,
 				E9EB71052C3E93CC0086F6E5 /* Zip */,
+				E90E6D5D2C4934D100BDE963 /* FirebaseStorageCombine-Community */,
 			);
 			productName = HMSPatient;
 			productReference = 62530F622C33E6DF001B496B /* HMSPatient.app */;
@@ -254,7 +257,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					62530F612C33E6DF001B496B = {
 						CreatedOnToolsVersion = 15.4;
@@ -313,7 +316,6 @@
 				249FD5BB2C37EC4D008CC7F9 /* RecordsView.swift in Sources */,
 				E9EB71032C3E91F00086F6E5 /* DocumentView.swift in Sources */,
 				24A780FC2C3FA8B000C8F3B1 /* PrescriptionDetailView.swift in Sources */,
-				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				62530F682C33E6DF001B496B /* Authentication.swift in Sources */,
 				80EC884F2C483B6800034516 /* OfferCard.swift in Sources */,
 				80EC88532C485F0C00034516 /* debounce.swift in Sources */,
@@ -464,7 +466,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"HMSPatient/Preview Content\"";
-				DEVELOPMENT_TEAM = 5L2J78NFQ6;
+				DEVELOPMENT_TEAM = 45FSZ24S5Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HMSPatient/Info.plist;
@@ -485,7 +487,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "ansh.HMS-PatientApp";
+				PRODUCT_BUNDLE_IDENTIFIER = "team02.HMS-PatientApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -501,7 +503,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"HMSPatient/Preview Content\"";
-				DEVELOPMENT_TEAM = 5L2J78NFQ6;
+				DEVELOPMENT_TEAM = 45FSZ24S5Y;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HMSPatient/Info.plist;
@@ -522,7 +524,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "ansh.HMS-PatientApp";
+				PRODUCT_BUNDLE_IDENTIFIER = "team02.HMS-PatientApp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -573,6 +575,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		E90E6D5D2C4934D100BDE963 /* FirebaseStorageCombine-Community */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E94E68CC2C37F4CA00ED9F1C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = "FirebaseStorageCombine-Community";
+		};
 		E94E68CD2C37F4CA00ED9F1C /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = E94E68CC2C37F4CA00ED9F1C /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

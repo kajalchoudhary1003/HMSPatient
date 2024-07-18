@@ -129,27 +129,25 @@ struct RecordsView: View {
 
         DispatchQueue.global(qos: .userInitiated).async {
             do {
-                // Start accessing the security scoped resources
                 for url in urls {
                     _ = url.startAccessingSecurityScopedResource()
                 }
                 
-                // Create zip file
                 try Zip.zipFiles(paths: urls, zipFilePath: zipFilePath, password: nil, progress: nil)
 
-                // Stop accessing the security scoped resources
                 for url in urls {
                     url.stopAccessingSecurityScopedResource()
                 }
 
-                // Upload to Firebase Storage
+                let newRecord = Record(title: "New Record", date: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none), fileURL: zipFilePath.absoluteString, fileType: self.determineFileType(for: urls.first!))
+                DispatchQueue.main.async {
+                    self.records.append(newRecord) // Add to list immediately
+                    self.isProcessing = false
+                }
+
                 self.dataController.uploadZippedFiles(userId: self.userId, localFile: zipFilePath) { result in
-                    DispatchQueue.main.async {
-                        self.isProcessing = false
-                    }
                     switch result {
                     case .success(let fileURL):
-                        let newRecord = Record(title: "New Record", date: DateFormatter.localizedString(from: Date(), dateStyle: .short, timeStyle: .none), fileURL: fileURL, fileType: self.determineFileType(for: urls.first!))
                         self.saveRecord(record: newRecord)
                     case .failure(let error):
                         print("Upload failed: \(error.localizedDescription)")
