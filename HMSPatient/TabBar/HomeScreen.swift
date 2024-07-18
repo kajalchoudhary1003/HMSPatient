@@ -79,6 +79,9 @@ struct HomeTab: View {
             .onAppear {
                 fetchUserData()
             }
+            .background(NavigationLink(destination: BookAppointment(selectedDoctor: selectedDoctor), isActive: $navigateToBookAppointment){
+                EmptyView()
+            })
         }.navigationBarHidden(true)
     }
     
@@ -90,13 +93,13 @@ struct HomeTab: View {
                 .padding(.horizontal)
             
             ForEach(searchViewModel.searchResults) { doctor in
-                DoctorRowView(doctor: doctor)
-                    .onTapGesture {
-                        selectedDoctor = doctor
-                        navigateToBookAppointment = true
-                    }
+                DoctorRowView(doctor: doctor, onSelect: { selectedDoctor in
+                    self.selectedDoctor = selectedDoctor
+                    self.navigateToBookAppointment = true
+                })
             }
-        }.padding()
+        }
+        .padding()
     }
     
     var regularContent: some View {
