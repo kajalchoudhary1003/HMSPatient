@@ -291,6 +291,50 @@ class DataController {
             completion(filteredDoctors)
         }
     }
+    
+    
+    func fetchAppointments(userId: String, completion: @escaping ([Appointment]) -> Void) {
+            database.child("patient_users").child(userId).child("appointments").observeSingleEvent(of: .value) { snapshot in
+                var appointments: [Appointment] = []
+                let group = DispatchGroup()
+                
+                for child in snapshot.children {
+                    if let childSnapshot = child as? DataSnapshot {
+                        let appointmentID = childSnapshot.key
+                        group.enter()
+                        self.database.child("appointments").child(appointmentID).observeSingleEvent(of: .value) { appointmentSnapshot in
+                            if let appointmentDict = appointmentSnapshot.value as? [String: Any] {
+                                let id = appointmentDict["id"] as? String
+                                let patientID = appointmentDict["patientID"] as? String
+                                let doctorID = appointmentDict["doctorID"] as? String
+                                let timeInterval = appointmentDict["date"] as? TimeInterval ?? 0
+                                let date = Date(timeIntervalSince1970: timeInterval)
+                                let timeSlotsID = appointmentDict["timeSlotsID"] as? String
+                                let shortDescription = appointmentDict["shortDescription"] as? String
+                                let prescription = appointmentDict["prescription"] as? String
+                                
+                                let appointment = Appointment(
+                                    id: id,
+                                    patientID: patientID,
+                                    doctorID: doctorID,
+                                    date: date,
+                                    timeSlotsID: timeSlotsID,
+                                    shortDescription: shortDescription,
+                                    prescription: prescription
+                                )
+                                
+                                appointments.append(appointment)
+                            }
+                            group.leave()
+                        }
+                    }
+                }
+                
+                group.notify(queue: .main) {
+                    completion(appointments)
+                }
+            }
+        }
 //    func fetchAllAppointments(completion: @escaping ([Appointment]) -> Void) {
 //        let appointmentsRef = database.child("appointments")
 //        

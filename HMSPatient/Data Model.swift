@@ -68,18 +68,20 @@ struct Appointment: Hashable, Codable {
     var date: Date
     var timeSlotsID: String?
     var shortDescription: String?
+    var prescription: String?
     
     enum CodingKeys: String, CodingKey {
-        case id, patientID, doctorID, date, timeSlotsID, shortDescription
+        case id, patientID, doctorID, date, timeSlotsID, shortDescription, prescription
     }
     
-    init(id: String? = nil, patientID: String? = nil, doctorID: String? = nil, date: Date, timeSlotsID: String? = nil, shortDescription: String? = nil) {
+    init(id: String? = nil, patientID: String? = nil, doctorID: String? = nil, date: Date, timeSlotsID: String? = nil, shortDescription: String? = nil, prescription: String? = nil) {
         self.id = id
         self.patientID = patientID
         self.doctorID = doctorID
         self.date = date
         self.timeSlotsID = timeSlotsID
         self.shortDescription = shortDescription
+        self.prescription = prescription
     }
     
     init(from decoder: Decoder) throws {
@@ -91,6 +93,7 @@ struct Appointment: Hashable, Codable {
         self.date = Date(timeIntervalSince1970: timeInterval)
         self.timeSlotsID = try container.decodeIfPresent(String.self, forKey: .timeSlotsID)
         self.shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
+        self.prescription = try container.decodeIfPresent(String.self, forKey: .prescription)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -101,6 +104,7 @@ struct Appointment: Hashable, Codable {
         try container.encode(date.timeIntervalSince1970, forKey: .date)
         try container.encodeIfPresent(timeSlotsID, forKey: .timeSlotsID)
         try container.encodeIfPresent(shortDescription, forKey: .shortDescription)
+        try container.encodeIfPresent(prescription, forKey: .prescription)
     }
 }
 
