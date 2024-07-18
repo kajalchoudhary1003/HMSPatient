@@ -335,27 +335,30 @@ class DataController {
                     let appointmentID = childSnapshot.key
                     group.enter()
                     self.database.child("appointments").child(appointmentID).observeSingleEvent(of: .value) { appointmentSnapshot in
-                        if let appointmentDict = appointmentSnapshot.value as? [String: Any] {
-                            let id = appointmentDict["id"] as? String
-                            let patientID = appointmentDict["patientID"] as? String
-                            let doctorID = appointmentDict["doctorID"] as? String
-                            let timeInterval = appointmentDict["date"] as? TimeInterval ?? 0
+                        if let appointmentDict = appointmentSnapshot.value as? [String: Any],
+                           let id = appointmentDict["id"] as? String,
+                           let patientID = appointmentDict["patientID"] as? String,
+                           let doctorID = appointmentDict["doctorID"] as? String,
+                           let timeInterval = appointmentDict["date"] as? TimeInterval,
+                           let timeSlotDict = appointmentDict["timeSlot"] as? [String: Any] {
+                            
                             let date = Date(timeIntervalSince1970: timeInterval)
-                            let timeSlotsID = appointmentDict["timeSlotsID"] as? String
                             let shortDescription = appointmentDict["shortDescription"] as? String
                             let prescription = appointmentDict["prescription"] as? String
                             
-                            let appointment = Appointment(
-                                id: id,
-                                patientID: patientID,
-                                doctorID: doctorID,
-                                date: date,
-                                timeSlotsID: timeSlotsID,
-                                shortDescription: shortDescription,
-                                prescription: prescription
-                            )
-                            
-                            appointments.append(appointment)
+                            // Decode the timeSlot dictionary into a TimeSlot instance
+                            if let timeSlot = try? JSONDecoder().decode(TimeSlot.self, from: JSONSerialization.data(withJSONObject: timeSlotDict)) {
+                                let appointment = Appointment(
+                                    id: id,
+                                    patientID: patientID,
+                                    doctorID: doctorID,
+                                    date: date,
+                                    shortDescription: shortDescription,
+                                    prescription: prescription,
+                                    timeSlot: timeSlot
+                                )
+                                appointments.append(appointment)
+                            }
                         }
                         group.leave()
                     }

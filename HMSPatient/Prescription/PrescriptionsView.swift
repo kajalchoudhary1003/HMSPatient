@@ -50,7 +50,7 @@ struct PrescriptionListView: View {
             return appointments
         } else {
             return appointments.filter { appointment in
-                (appointment.doctorID?.lowercased().contains(searchText.lowercased()) ?? false) ||
+                (appointment.doctorID.lowercased().contains(searchText.lowercased()) ?? false) ||
                 formatDate(appointment.date).lowercased().contains(searchText.lowercased()) ||
                 (appointment.prescription?.lowercased().contains(searchText.lowercased()) ?? false)
             }
