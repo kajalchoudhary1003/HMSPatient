@@ -22,6 +22,10 @@ class DataController {
         ]
         
         database.child("patient_users").child(userId).setValue(userDict) { error, _ in
+            if error == nil {
+                // Save to cache
+                UserDefaults.standard.set(userDict, forKey: "cachedUser-\(userId)")
+            }
             completion(error == nil)
         }
     }
@@ -234,6 +238,14 @@ class DataController {
     
     // New Methods for fetching user data and profile image
     func fetchUser(userId: String, completion: @escaping (User?) -> Void) {
+        // Check cache first
+        if let cachedUserDict = UserDefaults.standard.dictionary(forKey: "cachedUser-\(userId)"),
+           let jsonData = try? JSONSerialization.data(withJSONObject: cachedUserDict, options: []),
+           let cachedUser = try? JSONDecoder().decode(User.self, from: jsonData) {
+            completion(cachedUser)
+        }
+
+        // Fetch from Firebase
         database.child("patient_users").child(userId).observeSingleEvent(of: .value) { snapshot in
             guard let userDict = snapshot.value as? [String: Any] else {
                 completion(nil)
@@ -242,6 +254,8 @@ class DataController {
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: userDict, options: [])
                 let user = try JSONDecoder().decode(User.self, from: jsonData)
+                // Save to cache
+                UserDefaults.standard.set(userDict, forKey: "cachedUser-\(userId)")
                 completion(user)
             } catch {
                 print("Error decoding user data: \(error.localizedDescription)")
@@ -290,12 +304,14 @@ class DataController {
             }
         }
     }
+    
     func searchDoctors(query: String, completion: @escaping ([Doctor]) -> Void) {
         fetchDoctors { allDoctors in
             let filteredDoctors = allDoctors.filter { $0.matches(searchQuery: query) }
             completion(filteredDoctors)
         }
     }
+    
     func uploadPendingFiles(completion: @escaping (Bool) -> Void) {
         // Implement logic to check for pending files and upload them
         // This is a placeholder function, you need to maintain a list of pending files to upload

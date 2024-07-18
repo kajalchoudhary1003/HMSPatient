@@ -1,18 +1,27 @@
+import Foundation
 import SwiftUI
 import AVFoundation
 
-enum FileType: String {
+enum FileType: String, Codable {
     case audio
     case image
     case pdf
 }
 
-struct Record: Identifiable {
-    let id = UUID()
+struct Record: Identifiable, Codable {
+    let id: UUID
     let title: String
     let date: String
     let fileURL: String // URL to the file in Firebase Storage
     let fileType: FileType // Add file type information
+    
+    init(id: UUID = UUID(), title: String, date: String, fileURL: String, fileType: FileType) {
+        self.id = id
+        self.title = title
+        self.date = date
+        self.fileURL = fileURL
+        self.fileType = fileType
+    }
 }
 
 struct RecordCard: View {

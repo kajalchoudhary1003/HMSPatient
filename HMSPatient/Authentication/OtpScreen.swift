@@ -31,9 +31,9 @@ struct OtpView: View {
                         .multilineTextAlignment(.center)
                         .frame(width: 50, height: 50)
                         .overlay(
-                                                    RoundedRectangle(cornerRadius: 10)
-                                                        .stroke(Color.gray, lineWidth: 1)
-                                                    )
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(Color.gray, lineWidth: 1)
+                        )
                         .focused($focusedField, equals: index)
                         .onChange(of: otpFields[index]) { newValue in
                             if newValue.count > 1 {
