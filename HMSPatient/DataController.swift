@@ -212,18 +212,22 @@ class DataController {
             return
         }
         
-        let appointmentDict: [String: Any] = [
-            "patientID": userId,
-            "doctorID": appointment.doctorID ?? "",
-            "date": appointment.date.timeIntervalSince1970,
-            "timeSlotID": appointment.timeSlotsID,
-            "description":appointment.shortDescription
-        ]
+        var updatedAppointment = appointment
+        updatedAppointment.timeSlot.isAvailable = false
+        
+        let appointmentData: [String: Any] = [
+               "id": appointment.id,
+               "patientID": appointment.patientID ?? "",
+               "doctorID": appointment.doctorID,
+               "date": appointment.date.timeIntervalSince1970,
+               "shortDescription": appointment.shortDescription ?? "",
+               "timeSlot": appointment.timeSlot.toDictionary(),
+           ]
         
         let appointmentId = appointment.id ?? UUID().uuidString
         let appointmentRef = database.child("appointments").child(appointmentId)
         
-        appointmentRef.setValue(appointmentDict) { [self] error, _ in
+        appointmentRef.setValue(appointmentData) { [self] error, _ in
             if let error = error {
                 print("Error saving appointment: \(error.localizedDescription)")
                 completion(false)
@@ -235,7 +239,9 @@ class DataController {
             }
         }
     }
-    
+    func fetchAppointments(){
+        
+    }
     // New Methods for fetching user data and profile image
     func fetchUser(userId: String, completion: @escaping (User?) -> Void) {
         // Check cache first

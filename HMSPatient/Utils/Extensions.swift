@@ -109,14 +109,25 @@ extension Collection {
 
 extension Doctor {
     func generateTimeSlots() -> [TimeSlot] {
-        let intervalMinutes = 15
-        var currentTime = self.starts
+        let regularIntervalMinutes = 15
+        let premiumIntervalMinutes = 30
+        var currentTime = roundToNearestHour(self.starts)
         var slots: [TimeSlot] = []
+        
         while currentTime < self.ends {
+            let isPremium = isFirstSlotOfHour(time: currentTime)
+            let intervalMinutes = isPremium ? premiumIntervalMinutes : regularIntervalMinutes
+            
             let slotEndTime = min(currentTime.addingTimeInterval(TimeInterval(intervalMinutes * 60)), self.ends)
-            let newSlot = TimeSlot(startTime: currentTime, endTime: slotEndTime,isPremium: false,isAvailable: true)
+            
+            let newSlot = TimeSlot(startTime: currentTime,
+                                   endTime: slotEndTime,
+                                   isPremium: isPremium,
+                                   isAvailable: true)
             slots.append(newSlot)
-            print("Added slot from \(currentTime.formattedString("HH:mm")) to \(slotEndTime.formattedString("HH:mm"))")
+            
+            print("Added slot from \(currentTime.formattedString("HH:mm")) to \(slotEndTime.formattedString("HH:mm")) - Premium: \(isPremium)")
+            
             currentTime = slotEndTime
             
             if currentTime >= self.ends {
@@ -126,6 +137,20 @@ extension Doctor {
         
         print("Total slots generated: \(slots.count)")
         return slots
+    }
+
+    private func isFirstSlotOfHour(time: Date) -> Bool {
+        let calendar = Calendar.current
+        let minute = calendar.component(.minute, from: time)
+        return minute == 0
+    }
+
+    private func roundToNearestHour(_ date: Date) -> Date {
+        let calendar = Calendar.current
+        var components = calendar.dateComponents([.year, .month, .day, .hour], from: date)
+        components.minute = 0
+        components.second = 0
+        return calendar.date(from: components) ?? date
     }
     func matches(searchQuery: String) -> Bool {
             let query = searchQuery.lowercased()

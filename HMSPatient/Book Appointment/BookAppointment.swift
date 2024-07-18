@@ -196,6 +196,9 @@ struct BookAppointment: View {
             }
         }
     }
+    private func fetchAppointment(){
+        
+    }
 
     private var selectedDoctorLabel: String {
         if let _ = selectedDoctorIndex {

@@ -83,28 +83,36 @@ struct AppointmentSummaryView: View {
                             bookingErrorMessage = IdentifiableError(message: "User not authenticated")
                             return
                         }
+                            
+                            var timeSlot = selectedTimeSlot
+                            timeSlot?.isAvailable = false
+
+                            guard let timeSlot = timeSlot else {
+                                bookingErrorMessage = IdentifiableError(message: "Invalid time slot")
+                                return
+                            }
                         
                         let appointment = Appointment(
+                            id: UUID().uuidString,
                             patientID: currentUserId,
                             doctorID: doctor.id,
                             date: appointmentDate,
-                            timeSlotsID: timeSlot.id,
-                            shortDescription: descriptionText
+                            shortDescription: descriptionText,
+                            timeSlot: timeSlot
                         )
-                        
                         DataController.shared.saveAppointment(appointment: appointment) { success in
-                            if success {
-                                print("Appointment booked successfully")
-                                addEventToCalendar(doctor: doctor, timeSlot: timeSlot)
-                                showSuccessAnimation = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                                    animationFinished = true
+                                if success {
+                                    print("Appointment booked successfully")
+                                    addEventToCalendar(doctor: doctor, timeSlot: timeSlot)
+                                    showSuccessAnimation = true
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                                        animationFinished = true
+                                    }
+                                } else {
+                                    bookingErrorMessage = IdentifiableError(message: "Failed to book appointment")
+                                    print("Failed to book appointment")
                                 }
-                            } else {
-                                bookingErrorMessage = IdentifiableError(message: "Failed to book appointment")
-                                print("Failed to book appointment")
                             }
-                        }
                     }) {
                         Text("Pay: \(doctor.fees)")
                             .fontWeight(.bold)

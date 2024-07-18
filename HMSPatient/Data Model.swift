@@ -60,51 +60,49 @@ struct TimeSlot: Codable,Hashable, Identifiable, Equatable {
     }
 }
 
-
 struct Appointment: Hashable, Codable {
-    var id: String?
+    let id: String
     var patientID: String?
-    var doctorID: String?
-    var date: Date
-    var timeSlotsID: String?
+    let doctorID: String
+    let date: Date
     var shortDescription: String?
     var prescription: String?
-    
+    var timeSlot: TimeSlot
+
     enum CodingKeys: String, CodingKey {
-        case id, patientID, doctorID, date, timeSlotsID, shortDescription, prescription
+        case id, patientID, doctorID, date, shortDescription, prescription, timeSlot
     }
-    
-    init(id: String? = nil, patientID: String? = nil, doctorID: String? = nil, date: Date, timeSlotsID: String? = nil, shortDescription: String? = nil, prescription: String? = nil) {
+
+    init(id: String, patientID: String? = nil, doctorID: String, date: Date, shortDescription: String? = nil, prescription: String? = nil, timeSlot: TimeSlot) {
         self.id = id
         self.patientID = patientID
         self.doctorID = doctorID
         self.date = date
-        self.timeSlotsID = timeSlotsID
         self.shortDescription = shortDescription
         self.prescription = prescription
+        self.timeSlot = timeSlot
     }
-    
+
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.id = try container.decodeIfPresent(String.self, forKey: .id)
-        self.patientID = try container.decodeIfPresent(String.self, forKey: .patientID)
-        self.doctorID = try container.decodeIfPresent(String.self, forKey: .doctorID)
-        let timeInterval = try container.decode(TimeInterval.self, forKey: .date)
-        self.date = Date(timeIntervalSince1970: timeInterval)
-        self.timeSlotsID = try container.decodeIfPresent(String.self, forKey: .timeSlotsID)
-        self.shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
-        self.prescription = try container.decodeIfPresent(String.self, forKey: .prescription)
+        id = try container.decode(String.self, forKey: .id)
+        patientID = try container.decodeIfPresent(String.self, forKey: .patientID)
+        doctorID = try container.decode(String.self, forKey: .doctorID)
+        date = try container.decode(Date.self, forKey: .date)
+        shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
+        prescription = try container.decodeIfPresent(String.self, forKey: .prescription)
+        timeSlot = try container.decode(TimeSlot.self, forKey: .timeSlot)
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        try container.encodeIfPresent(id, forKey: .id)
+        try container.encode(id, forKey: .id)
         try container.encodeIfPresent(patientID, forKey: .patientID)
-        try container.encodeIfPresent(doctorID, forKey: .doctorID)
-        try container.encode(date.timeIntervalSince1970, forKey: .date)
-        try container.encodeIfPresent(timeSlotsID, forKey: .timeSlotsID)
+        try container.encode(doctorID, forKey: .doctorID)
+        try container.encode(date, forKey: .date)
         try container.encodeIfPresent(shortDescription, forKey: .shortDescription)
         try container.encodeIfPresent(prescription, forKey: .prescription)
+        try container.encode(timeSlot, forKey: .timeSlot)
     }
 }
 
