@@ -37,9 +37,10 @@ struct HomeTab: View {
     @State private var selectedDoctor: Doctor?
     @State private var navigateToBookAppointment = false
     @State private var userId: String?
-    
+    @State private var appointments: [Appointment] = []
+
     var body: some View {
-        NavigationView{
+        NavigationView {
             GeometryReader { geometry in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
@@ -79,20 +80,21 @@ struct HomeTab: View {
             }
             .onAppear {
                 fetchUserData()
+                fetchAppointments()
             }
             .background(NavigationLink(destination: BookAppointment(selectedDoctor: selectedDoctor), isActive: $navigateToBookAppointment){
                 EmptyView()
             })
         }.navigationBarHidden(true)
     }
-    
+
     var searchResultsView: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Search Results")
                 .font(.title2)
                 .fontWeight(.bold)
                 .padding(.horizontal)
-            
+
             ForEach(searchViewModel.searchResults) { doctor in
                 DoctorRowView(doctor: doctor, onSelect: { selectedDoctor in
                     self.selectedDoctor = selectedDoctor
@@ -102,7 +104,7 @@ struct HomeTab: View {
         }
         .padding()
     }
-    
+
     var regularContent: some View {
         VStack(alignment: .leading, spacing: 20) {
             VStack(alignment: .leading, spacing: 7) {
@@ -110,17 +112,19 @@ struct HomeTab: View {
                     Text("My Appointments")
                         .font(.title2)
                         .fontWeight(.bold)
-                    
+
                     Spacer()
-                    
+
                     NavigationLink(destination: MyAppointmentsView()) {
                         Text("See All")
                     }
                 }
-                AppointmentCard()
+                ForEach(appointments) { appointment in
+                    AppointmentCard(appointment: appointment)
+                }
             }
             .padding(.horizontal)
-            
+
             VStack(alignment: .leading, spacing: 7) {
                 Text("Features")
                     .font(.title2)
@@ -129,7 +133,7 @@ struct HomeTab: View {
                     NavigationLink(destination: BookAppointment()) {
                         FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
                     }
-                    if let userId = userId{
+                    if let userId = userId {
                         NavigationLink(destination: PrescriptionListView(userId: userId)) {
                             FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
                         }
@@ -137,7 +141,7 @@ struct HomeTab: View {
                 }
             }
             .padding(.horizontal)
-            
+
             VStack(alignment: .leading, spacing: 7) {
                 Text("For You")
                     .font(.title2)
@@ -147,9 +151,9 @@ struct HomeTab: View {
             .padding(.horizontal)
         }
     }
-    
+
     private func fetchUserData() {
-        if let user = Auth.auth().currentUser{
+        if let user = Auth.auth().currentUser {
             self.userId = user.uid
             dataController.fetchCurrentUserData { user, image in
                 if let user = user {
@@ -159,39 +163,74 @@ struct HomeTab: View {
             }
         }
     }
+
+    private func fetchAppointments() {
+        guard let userId = Auth.auth().currentUser?.uid else { return }
+        dataController.fetchAppointments(userId: userId) { appointments in
+            self.appointments = appointments
+        }
+    }
 }
 
 
 struct AppointmentCard: View {
+    var appointment: Appointment
+
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("Dr. Renu Luthra")
+                Text(appointment.doctorName) // You need to fetch the doctor's name using the doctorID from the appointment
                     .font(.title)
-                Text("Gynecologist")
+                Text(appointment.doctorSpeciality) // You need to fetch the doctor's speciality using the doctorID from the appointment
                     .font(.subheadline)
                     .foregroundColor(.gray)
                     .padding(.bottom, 5)
-                Text("10:15 - 10:35")
+                Text(appointment.timeSlot) // You need to format the appointment date and time slot
                     .font(.subheadline)
                     .foregroundColor(.customPrimary)
             }
             Spacer()
-            VStack(alignment: .center) {
-                Text("WED")
-                    .font(.subheadline)
-                    .fontWeight(.bold)
-                    .foregroundColor(.customPrimary)
-                Text("28")
-                    .font(.largeTitle)
-                    .fontWeight(.regular)
-            }
+//            VStack(alignment: .center) {
+//                Text(appointment.day) // You need to format the appointment date to get the day
+//                    .font(.subheadline)
+//                    .fontWeight(.bold)
+//                    .foregroundColor(.customPrimary)
+//                Text(appointment.date) // You need to format the appointment date to get the date
+//                    .font(.largeTitle)
+//                    .fontWeight(.regular)
+//            }
         }
         .padding()
         .background(Color.white)
         .cornerRadius(10)
     }
 }
+extension Appointment {
+    var doctorName: String {
+        // Fetch the doctor's name using the doctorID from the appointment
+        return "Dr. \(doctorID ?? "")" // Placeholder
+    }
+
+    var doctorSpeciality: String {
+        // Fetch the doctor's speciality using the doctorID from the appointment
+        return "Speciality" // Placeholder
+    }
+
+    var timeSlot: String {
+        // Format the appointment date and time slot
+        let formatter = DateFormatter()
+        formatter.dateFormat = "hh:mm a"
+        return formatter.string(from: date)
+    }
+
+    var day: String {
+        // Format the appointment date to get the day
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE"
+        return formatter.string(from: date)
+    }
+}
+
 
 struct FeatureCard: View {
     var icon: String

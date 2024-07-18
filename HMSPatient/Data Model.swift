@@ -61,7 +61,7 @@ struct TimeSlot: Codable,Hashable, Identifiable, Equatable {
 }
 
 
-struct Appointment: Hashable, Codable {
+struct Appointment: Hashable, Codable,Identifiable {
     var id: String?
     var patientID: String?
     var doctorID: String?
