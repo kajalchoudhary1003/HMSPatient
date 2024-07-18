@@ -26,26 +26,32 @@ struct OtpView: View {
 
             HStack(spacing: 10) {
                 ForEach(0..<6) { index in
-                    TextField("", text: $otpFields[index])
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.center)
-                        .frame(width: 50, height: 50)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.gray, lineWidth: 1)
-                        )
-                        .focused($focusedField, equals: index)
-                        .onChange(of: otpFields[index]) { newValue in
-                            if newValue.count > 1 {
-                                otpFields[index] = String(newValue.prefix(1))
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.white)
+                            .frame(width: 50, height: 50)
+                        
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color.gray, lineWidth: 1)
+                            .frame(width: 50, height: 50)
+                        
+                        TextField("", text: $otpFields[index])
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.center)
+                            .frame(width: 50, height: 50)
+                            .focused($focusedField, equals: index)
+                            .onChange(of: otpFields[index]) { newValue in
+                                if newValue.count > 1 {
+                                    otpFields[index] = String(newValue.prefix(1))
+                                }
+                                if !newValue.isEmpty && index < 5 {
+                                    focusedField = index + 1
+                                }
+                                if newValue.isEmpty && index > 0 {
+                                    focusedField = index - 1
+                                }
                             }
-                            if !newValue.isEmpty && index < 5 {
-                                focusedField = index + 1
-                            }
-                            if newValue.isEmpty && index > 0 {
-                                focusedField = index - 1
-                            }
-                        }
+                    }
                 }
             }
             .padding(.bottom, 30)

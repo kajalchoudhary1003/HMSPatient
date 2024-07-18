@@ -36,6 +36,7 @@ struct HomeTab: View {
 
     @State private var selectedDoctor: Doctor?
     @State private var navigateToBookAppointment = false
+    @State private var userId: String?
     
     var body: some View {
         NavigationView{
@@ -79,6 +80,9 @@ struct HomeTab: View {
             .onAppear {
                 fetchUserData()
             }
+            .background(NavigationLink(destination: BookAppointment(selectedDoctor: selectedDoctor), isActive: $navigateToBookAppointment){
+                EmptyView()
+            })
         }.navigationBarHidden(true)
     }
     
@@ -90,13 +94,13 @@ struct HomeTab: View {
                 .padding(.horizontal)
             
             ForEach(searchViewModel.searchResults) { doctor in
-                DoctorRowView(doctor: doctor)
-                    .onTapGesture {
-                        selectedDoctor = doctor
-                        navigateToBookAppointment = true
-                    }
+                DoctorRowView(doctor: doctor, onSelect: { selectedDoctor in
+                    self.selectedDoctor = selectedDoctor
+                    self.navigateToBookAppointment = true
+                })
             }
-        }.padding()
+        }
+        .padding()
     }
     
     var regularContent: some View {
@@ -125,8 +129,10 @@ struct HomeTab: View {
                     NavigationLink(destination: BookAppointment()) {
                         FeatureCard(icon: "stethoscope", title: "Book an\nAppointment")
                     }
-                    NavigationLink(destination: PrescriptionListView()) {
-                        FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
+                    if let userId = userId{
+                        NavigationLink(destination: PrescriptionListView(userId: userId)) {
+                            FeatureCard(icon: "list.bullet.clipboard", title: "My\nPrescriptions")
+                        }
                     }
                 }
             }
@@ -143,11 +149,14 @@ struct HomeTab: View {
     }
     
     private func fetchUserData() {
-        dataController.fetchCurrentUserData { user, image in
-            if let user = user {
-                self.userFirstName = user.firstName
+        if let user = Auth.auth().currentUser{
+            self.userId = user.uid
+            dataController.fetchCurrentUserData { user, image in
+                if let user = user {
+                    self.userFirstName = user.firstName
+                }
+                self.profileImage = image
             }
-            self.profileImage = image
         }
     }
 }
