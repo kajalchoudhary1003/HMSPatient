@@ -15,8 +15,8 @@ struct RecordsView: View {
     @State private var isProcessing = false
     @State private var processingMessage = ""
     @State private var isLoading = true
-    
-    private let dataController = DataController()
+    @StateObject private var dataController = DataController.shared
+
 
     var body: some View {
         NavigationView {
@@ -145,7 +145,7 @@ struct RecordsView: View {
                     self.isProcessing = false
                 }
 
-                self.dataController.uploadZippedFiles(userId: self.userId, localFile: zipFilePath) { result in
+                DataController.shared.uploadZippedFiles(userId: self.userId, localFile: zipFilePath) { result in
                     switch result {
                     case .success(let fileURL):
                         self.saveRecord(record: newRecord)
@@ -163,7 +163,7 @@ struct RecordsView: View {
     }
     
     private func saveRecord(record: Record) {
-        dataController.saveRecord(record: record) { success in
+        DataController.shared.saveRecord(record: record) { success in
             if success {
                 fetchRecords()
             } else {
@@ -175,7 +175,7 @@ struct RecordsView: View {
     private func fetchRecords() {
         processingMessage = "Fetching documents..."
         isProcessing = true
-        dataController.fetchCurrentUserDocuments { fetchedRecords in
+        DataController.shared.fetchCurrentUserDocuments { fetchedRecords in
             self.records = fetchedRecords
             self.isProcessing = false
             self.isLoading = false
@@ -202,7 +202,7 @@ struct RecordsView: View {
     private func deleteRecords(at offsets: IndexSet) {
         offsets.forEach { index in
             let record = records[index]
-            dataController.deleteDocument(userId: userId, documentId: record.id.uuidString, documentURL: record.fileURL) { success in
+            DataController.shared.deleteDocument(userId: userId, documentId: record.id.uuidString, documentURL: record.fileURL) { success in
                 DispatchQueue.main.async {
                     self.isProcessing = false
                     if success {

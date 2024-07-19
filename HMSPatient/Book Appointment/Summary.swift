@@ -98,7 +98,7 @@ struct AppointmentSummaryView: View {
                             doctorID: doctor.id,
                             date: appointmentDate,
                             shortDescription: descriptionText,
-                            timeSlot: timeSlot
+                            timeSlot: timeSlot,isCompleted: false
                         )
                         DataController.shared.saveAppointment(appointment: appointment) { success in
                                 if success {

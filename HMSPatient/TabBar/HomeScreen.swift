@@ -31,7 +31,6 @@ struct HomeTab: View {
     @State private var showingProfile = false
     @State private var profileImage: Image? = nil
     @State private var userFirstName: String = "User"
-    private let dataController = DataController()
     @Binding var showingActionSheet: Bool
 
     @State private var selectedDoctor: Doctor?
@@ -151,7 +150,7 @@ struct HomeTab: View {
     private func fetchUserData() {
         if let user = Auth.auth().currentUser{
             self.userId = user.uid
-            dataController.fetchCurrentUserData { user, image in
+            DataController.shared.fetchCurrentUserData { user, image in
                 if let user = user {
                     self.userFirstName = user.firstName
                 }

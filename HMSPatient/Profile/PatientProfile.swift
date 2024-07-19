@@ -14,7 +14,6 @@ struct PatientProfileView: View {
     @AppStorage("isLoggedIn") var isLoggedIn: Bool = false
     
     @Environment(\.presentationMode) var presentationMode
-    private let dataController = DataController()
 
     var isSaveDisabled: Bool {
         !isFormValid || (isAddingEmergencyPhone && !isEmergencyPhoneValid)
@@ -182,7 +181,7 @@ struct PatientProfileView: View {
         .background(Color("BackgroundColor"))
         .navigationBarBackButtonHidden(true)
         .onAppear {
-            dataController.fetchCurrentUserData { user, image in
+            DataController.shared.fetchCurrentUserData { user, image in
                 if let user = user {
                     self.firstName = user.firstName
                     self.lastName = user.lastName
@@ -233,7 +232,7 @@ struct PatientProfileView: View {
             emergencyPhone: emergencyPhone
         )
 
-        dataController.saveUser(userId: userId, user: user) { success in
+        DataController.shared.saveUser(userId: userId, user: user) { success in
             if !success {
                 // Handle error (show an alert, etc.)
             }

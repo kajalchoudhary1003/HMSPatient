@@ -11,7 +11,6 @@ struct ProfileSetupView: View {
     @State private var profileImage: Image? = nil
     @State private var isAddingEmergencyPhone = false
     @State private var navigateToHome = false
-    private let dataController = DataController()
 
     var isSaveDisabled: Bool {
         !isFormValid || (isAddingEmergencyPhone && !isEmergencyPhoneValid)
@@ -184,7 +183,7 @@ struct ProfileSetupView: View {
             emergencyPhone: emergencyPhone
         )
 
-        dataController.saveUser(userId: userId, user: user) { success in
+        DataController.shared.saveUser(userId: userId, user: user) { success in
             if success {
                 navigateToHome = true
             } else {

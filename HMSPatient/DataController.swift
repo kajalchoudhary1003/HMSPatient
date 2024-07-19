@@ -5,11 +5,35 @@ import FirebaseAuth
 import FirebaseDatabase
 import FirebaseStorage
 
-class DataController {
+class DataController: ObservableObject{
     private var database = Database.database().reference()
     private let storage = Storage.storage().reference()
     private let currentUser = Auth.auth().currentUser?.uid
     static let shared = DataController()
+       @Published var appointments: [Appointment] = []
+       @Published var patients: [String: User] = [:]
+        @Published var bookedTimeSlots: [String: [TimeSlot]] = [:]
+       
+    func fetchBookedTimeSlots(for doctorID: String, date: Date, completion: @escaping () -> Void) {
+            let dateString = ISO8601DateFormatter().string(from: date)
+            database.child("appointments").queryOrdered(byChild: "doctorID").queryEqual(toValue: doctorID).observe(.value) { snapshot in
+                var newBookedSlots: [TimeSlot] = []
+                for child in snapshot.children {
+                    if let childSnapshot = child as? DataSnapshot,
+                       let appointmentData = childSnapshot.value as? [String: Any],
+                       let appointmentDate = appointmentData["date"] as? TimeInterval,
+                       let timeSlotData = appointmentData["timeSlot"] as? [String: Any],
+                       Calendar.current.isDate(Date(timeIntervalSince1970: appointmentDate), inSameDayAs: date),
+                       let timeSlot = TimeSlot(from: timeSlotData) {
+                        newBookedSlots.append(timeSlot)
+                    }
+                }
+                DispatchQueue.main.async {
+                    self.bookedTimeSlots[doctorID] = newBookedSlots
+                    completion()
+                }
+            }
+        }
     
     func saveUser(userId: String, user: User, completion: @escaping (Bool) -> Void) {
         let userDict: [String: Any] = [
@@ -222,6 +246,7 @@ class DataController {
                "date": appointment.date.timeIntervalSince1970,
                "shortDescription": appointment.shortDescription ?? "",
                "timeSlot": appointment.timeSlot.toDictionary(),
+               "isCompleted": appointment.isCompleted
            ]
         
         let appointmentId = appointment.id ?? UUID().uuidString

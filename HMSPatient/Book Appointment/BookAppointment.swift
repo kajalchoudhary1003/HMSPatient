@@ -17,6 +17,8 @@ struct BookAppointment: View {
     @StateObject private var eventKitManager = EventKitManager()
     @State private var appointmentBooked = false
     var categories: [DoctorDesignation?] = DoctorDesignation.withSelectOption
+    @StateObject private var dataController = DataController.shared
+    @State private var availableTimeSlots: [TimeSlot] = []
 
     init(selectedDoctor: Doctor? = nil) {
         _selectedDoctor = State(initialValue: selectedDoctor)
@@ -41,7 +43,7 @@ struct BookAppointment: View {
                     .padding()
                     .background(Color("SecondaryColor"))
                     .cornerRadius(10)
-
+                    
                     if selectedCategoryIndex != 0 {
                         NavigationLink(destination: DoctorPickerView(doctors: filteredDoctors, selectedDoctorIndex: $selectedDoctorIndex)) {
                             HStack {
@@ -49,8 +51,7 @@ struct BookAppointment: View {
                                 Spacer()
                                 Image(systemName: "chevron.right")
                             }
-                            .foregroundColor(selectedDoctorIndex != nil ? .gray :
-                                    Color("TextColor"))
+                            .foregroundColor(selectedDoctorIndex != nil ? .gray : Color("TextColor"))
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .onChange(of: selectedDoctorIndex) { newValue in
@@ -69,7 +70,7 @@ struct BookAppointment: View {
                         .disabled(selectedCategoryIndex == 0)
                     }
                 }
-
+                
                 if doctorSelected,
                    let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1] {
                     VStack {
@@ -78,53 +79,57 @@ struct BookAppointment: View {
                             .background(Color("SecondaryColor"))
                             .cornerRadius(10)
                     }
-                }
-
-                if doctorSelected {
-                    ScrollView(.horizontal) {
-                        LazyHStack(spacing: 20) {
-                            ForEach(weeks.indices, id: \.self) { weekIndex in
-                                WeekView(week: weeks[weekIndex], currentDate: $currentDate, calendarNamespace: calendarNamespace, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
-                                    .frame(width: UIScreen.main.bounds.width - 40)
+                    
+                    if doctorSelected {
+                        ScrollView(.horizontal) {
+                            LazyHStack(spacing: 20) {
+                                ForEach(weeks.indices, id: \.self) { weekIndex in
+                                    WeekView(week: weeks[weekIndex], currentDate: $currentDate, calendarNamespace: calendarNamespace, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
+                                        .frame(width: UIScreen.main.bounds.width - 40)
+                                }
                             }
                         }
-                    }
-                    .padding(.vertical, 16)
-
-                    if let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1] {
-                        VStack {
-                            TimeSlotView(selectedDoctor: selectedDoctor, timeSlots: generatedTimeSlots, selectedTimeSlot: $selectedTimeSlot, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
-                                .padding()
-                                .cornerRadius(10)
+                        .padding(.vertical, 16)
+                        
+                        if let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1] {
+                            VStack {
+                                TimeSlotView(selectedDoctor: selectedDoctor, timeSlots: availableTimeSlots, selectedTimeSlot: $selectedTimeSlot, isPremiumSlotsEnabled: $isPremiumSlotsEnabled)
+                                    .padding()
+                                    .cornerRadius(10)
+                            }.onChange(of: currentDate) { newDate in
+                                updateAvailableTimeSlots()
+                            }.onChange(of: selectedDoctorIndex) { _ in
+                                updateAvailableTimeSlots()
+                            }
                         }
-                    }
 
-                    HStack {
-                        Toggle(isOn: $isPremiumSlotsEnabled) {
-                            Text("Premium Slots")
-                                .font(.headline)
-                        }
-                        .toggleStyle(SwitchToggleStyle(tint: Color("PremiumColor")))
+                
+                HStack {
+                    Toggle(isOn: $isPremiumSlotsEnabled) {
+                        Text("Premium Slots")
+                            .font(.headline)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(Color("SecondaryColor"))
-                    .cornerRadius(10)
-
-                    NavigationLink(destination:
-                        AppointmentSummaryView(
-                            selectedDoctor: filteredDoctors[safe: selectedDoctorIndex ?? -1],
-                            selectedTimeSlot: selectedTimeSlot,
-                            appointmentDate: currentDate
-                        )
-                    ) {
-                        Text("Proceed")
-                            .fontWeight(.bold)
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(.white)
-                            .padding()
-                            .background(
-                                Group {
+                    .toggleStyle(SwitchToggleStyle(tint: Color("PremiumColor")))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding()
+                .background(Color("SecondaryColor"))
+                .cornerRadius(10)
+                
+                NavigationLink(destination:
+                    AppointmentSummaryView(
+                        selectedDoctor: filteredDoctors[safe: selectedDoctorIndex ?? -1],
+                        selectedTimeSlot: selectedTimeSlot,
+                        appointmentDate: currentDate
+                    )
+                ) {
+                    Text("Proceed")
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(
+                            Group {
                                 if selectedTimeSlot == nil {
                                     Color(UIColor.systemGray)
                                 } else if isPremiumSlotsEnabled {
@@ -132,29 +137,31 @@ struct BookAppointment: View {
                                 } else {
                                     Color.customPrimary
                                 }
-                            })
-                            .cornerRadius(10)
-                            .padding(.vertical)
-                    }
-                    .disabled(selectedTimeSlot == nil)// Disable the button if no time slot is selected
+                            }
+                        )
+                        .cornerRadius(10)
+                        .padding(.vertical)
+                }
+                .disabled(selectedTimeSlot == nil) // Disable the button if no time slot is selected
+            }
                 }
             }
-            .padding()
-            .cornerRadius(10)
-            .navigationTitle("Book Appointment")
-            .navigationBarTitleDisplayMode(.large)
-            .onAppear {
-                setupInitialState()
-            }
-            .onChange(of: selectedDoctor) { newDoctor in
-                if let doctor = newDoctor {
-                    selectedCategoryIndex = categories.firstIndex(where: { $0 == doctor.designation }) ?? 0
-                    fetchDoctors()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        selectedDoctorIndex = filteredDoctors.firstIndex(where: { $0.id == doctor.id })
-                        doctorSelected = true
-                        generatedTimeSlots = doctor.generateTimeSlots()
-                    }
+        }
+        .padding()
+        .cornerRadius(10)
+        .navigationTitle("Book Appointment")
+        .navigationBarTitleDisplayMode(.large)
+        .onAppear {
+            setupInitialState()
+        }
+        .onChange(of: selectedDoctor) { newDoctor in
+            if let doctor = newDoctor {
+                selectedCategoryIndex = categories.firstIndex(where: { $0 == doctor.designation }) ?? 0
+                fetchDoctors()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    selectedDoctorIndex = filteredDoctors.firstIndex(where: { $0.id == doctor.id })
+                    doctorSelected = true
+                    generatedTimeSlots = doctor.generateTimeSlots()
                 }
             }
         }
@@ -196,8 +203,22 @@ struct BookAppointment: View {
             }
         }
     }
-    private func fetchAppointment(){
+    
+    private func updateAvailableTimeSlots() {
+        guard let selectedDoctor = filteredDoctors[safe: selectedDoctorIndex ?? -1] else { return }
         
+        dataController.fetchBookedTimeSlots(for: selectedDoctor.id, date: currentDate) {
+            let allTimeSlots = selectedDoctor.generateTimeSlots()
+            let bookedSlots = dataController.bookedTimeSlots[selectedDoctor.id] ?? []
+            
+            self.availableTimeSlots = allTimeSlots.map { slot in
+                var updatedSlot = slot
+                if bookedSlots.contains(where: { $0.startTime == slot.startTime }) {
+                    updatedSlot.isAvailable = false
+                }
+                return updatedSlot
+            }
+        }
     }
 
     private var selectedDoctorLabel: String {
@@ -244,7 +265,7 @@ struct TimeSlotView: View {
                     }) {
                         Text(formatTimeSlot(timeSlot))
                             .font(.body)
-                            .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white :  Color("TextColor")) : .gray)
+                            .foregroundColor(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? .white : Color("TextColor")) : .gray)
                             .padding()
                             .frame(maxWidth: .infinity, minHeight: 48)
                             .background(timeSlot.isAvailable ? (timeSlot == selectedTimeSlot ? (timeSlot.isPremium ? Color("PremiumColor") : .customPrimary) : Color("SecondaryColor")) : Color.gray.opacity(0.3))
@@ -277,8 +298,6 @@ private func fetchWeeks(from baseDate: Date) -> [[Date]] {
         }
     }
 }
-
-
 
 struct BookAppointment_Previews: PreviewProvider {
     static var previews: some View {

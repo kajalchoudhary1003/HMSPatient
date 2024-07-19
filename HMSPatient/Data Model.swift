@@ -68,12 +68,13 @@ struct Appointment: Hashable, Codable {
     var shortDescription: String?
     var prescription: String?
     var timeSlot: TimeSlot
-
+    var isCompleted: Bool
+    
     enum CodingKeys: String, CodingKey {
-        case id, patientID, doctorID, date, shortDescription, prescription, timeSlot
+        case id, patientID, doctorID, date, shortDescription, prescription, timeSlot, isCompleted
     }
 
-    init(id: String, patientID: String? = nil, doctorID: String, date: Date, shortDescription: String? = nil, prescription: String? = nil, timeSlot: TimeSlot) {
+    init(id: String, patientID: String? = nil, doctorID: String, date: Date, shortDescription: String? = nil, prescription: String? = nil, timeSlot: TimeSlot, isCompleted: Bool = false) {
         self.id = id
         self.patientID = patientID
         self.doctorID = doctorID
@@ -81,19 +82,21 @@ struct Appointment: Hashable, Codable {
         self.shortDescription = shortDescription
         self.prescription = prescription
         self.timeSlot = timeSlot
+        self.isCompleted = isCompleted
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
-        patientID = try container.decodeIfPresent(String.self, forKey: .patientID)
-        doctorID = try container.decode(String.self, forKey: .doctorID)
-        date = try container.decode(Date.self, forKey: .date)
-        shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
-        prescription = try container.decodeIfPresent(String.self, forKey: .prescription)
-        timeSlot = try container.decode(TimeSlot.self, forKey: .timeSlot)
+        self.id = try container.decode(String.self, forKey: .id)
+        self.patientID = try container.decodeIfPresent(String.self, forKey: .patientID)
+        self.doctorID = try container.decode(String.self, forKey: .doctorID)
+        self.date = try container.decode(Date.self, forKey: .date)
+        self.shortDescription = try container.decodeIfPresent(String.self, forKey: .shortDescription)
+        self.prescription = try container.decodeIfPresent(String.self, forKey: .prescription)
+        self.timeSlot = try container.decode(TimeSlot.self, forKey: .timeSlot)
+        self.isCompleted = try container.decode(Bool.self, forKey: .isCompleted)
     }
-
+    
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -103,9 +106,9 @@ struct Appointment: Hashable, Codable {
         try container.encodeIfPresent(shortDescription, forKey: .shortDescription)
         try container.encodeIfPresent(prescription, forKey: .prescription)
         try container.encode(timeSlot, forKey: .timeSlot)
+        try container.encode(isCompleted, forKey: .isCompleted)
     }
 }
-
 
 
 struct Doctor: Codable, Identifiable, Equatable {
