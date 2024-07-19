@@ -142,9 +142,17 @@ struct AppointmentSummaryView: View {
             .padding()
             .navigationBarTitle("Summary", displayMode: .large)
             .background(
-                NavigationLink(destination: HomeView(), isActive: $animationFinished) {
-                    EmptyView()
-                }
+                EmptyView()
+                    .onChange(of: animationFinished) { finished in
+                        if finished {
+                            DispatchQueue.main.async {
+                                if let window = UIApplication.shared.windows.first {
+                                    window.rootViewController = UIHostingController(rootView: HomeView())
+                                    window.makeKeyAndVisible()
+                                }
+                            }
+                        }
+                    }
             )
             
             if showSuccessAnimation {
